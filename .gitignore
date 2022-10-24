@@ -3,6 +3,9 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+dormtown/
+dormtown/settings.py
+
 # C extensions
 *.so
 
