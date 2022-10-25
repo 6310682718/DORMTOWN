@@ -10,6 +10,7 @@ jobs:
         run: |
           pip3 install --user -r requirements.txt
           pip3 install coverage
+          pip3 install livereload
           python3 manage.py makemigrations
           python3 manage.py migrate
           coverage run --source='.' manage.py test
