@@ -2,24 +2,22 @@
 Project Dormitory Website
 
 ## Member list
-* 6310682653 - Natnicha Faksang
-* 6310682718 - Pongsakorn Parsoppornpiboon
-* 6310682734 - Thanapat Pongpipat
-* 6310682783 - Kantapat Kowadisai 
+* 6310682653 - Natnicha Faksang - 6310682635@student.tu.ac.th
+* 6310682718 - Pongsakorn Parsoppornpiboon - 6310682718@student.tu.ac.th
+* 6310682734 - Thanapat Pongpipat - 6310682734@student.tu.ac.th
+* 6310682783 - Kantapat Kowadisai - 6310682783@student.tu.ac.th
 
 ## About Project
-about this project ...
+DormTown is a dormitory and website for evryone so we have 3 cores to provide for occupants and employees.
+* Friendly
+* Security
+* Convenience
 
 ### Built With
 * [![Django][djangoproject.com]][Django-url]
 * [![Bootstrap][Bootstrap.com]][Bootstrap-url]
 
 ## Getting Started
-DormTown is a dormitory and website for evryone so we have 3 cores to provide for occupants and employees.
-* Friendly
-* Security
-* Convenience
-
 ### Prerequisites
 You have to install software before using the project.
 
@@ -42,23 +40,19 @@ You have to install software before using the project.
 
 ## Usage
 1. Open git bash terminal in Visual Studio Code
-2. Install requirements for the project
-    ```sh
-    python -m pip install -r requirements.txt
-    ```
-3. Activate virtual environment
+2. Activate virtual environment
     ```sh
     source ./.venv/Scripts/activate
     ```
-4. Change directory to project directory
+3. Install requirements for the project
     ```sh
-    cd registration
+    python -m pip install -r requirements.txt
     ```
-5. Run server
+4. Run server
     ```sh
     python manage.py runserver
     ```
-6. Open link [click] (http://127.0.0.1:8000/)
+5. Open link [click] (http://127.0.0.1:8000/)
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [djangoproject.com]: https://img.shields.io/badge/Djang0-35495E?style=for-the-badge&logo=django&logoColor=4FC08D
