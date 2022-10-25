@@ -34,6 +34,7 @@
 .font-mid {
     font-size: 35px;
     line-height: 20px;
+    margin-left: 0;
 }
 
 
@@ -55,4 +56,9 @@
 .list-group-item {
     background: transparent;
     /* background-color: #1e3799; */
+}
+.detail {
+    font-size: 13px;
+    margin-left: 15px;
+    line-height: 7px;
 }
