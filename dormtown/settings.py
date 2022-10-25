@@ -34,6 +34,7 @@ INSTALLED_APPS = [
     "rooms",
     "dormtown",
     'livereload',
+    'fontawesomefree',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -120,4 +121,4 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-CSRF_TRUSTED_ORIGINS = ['']
+# CSRF_TRUSTED_ORIGINS = ['']
