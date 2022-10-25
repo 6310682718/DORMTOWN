@@ -42,7 +42,7 @@ You have to install software before using the project.
 1. Open git bash terminal in Visual Studio Code
 2. Activate virtual environment
     ```sh
-    source ./.venv/Scripts/activate
+    source venv/bin/activate
     ```
 3. Install requirements for the project
     ```sh
@@ -52,7 +52,7 @@ You have to install software before using the project.
     ```sh
     python manage.py runserver
     ```
-5. Open link [click](http://127.0.0.1:8000/)
+5. Open link [click](http://127.0.0.1:8000/)ß
 
 <!-- MARKDOWN LINKS & IMAGES -->
 [djangoproject.com]: https://img.shields.io/badge/Djang0-35495E?style=for-the-badge&logo=django&logoColor=4FC08D
