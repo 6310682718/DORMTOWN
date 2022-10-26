@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-+pd8a=5cs_*@vokbxehpdh^mmm0g6@7n1o-10pyv@aa4jh*2j)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['https://dormtownproj.herokuapp.com/']
+ALLOWED_HOSTS = ['https://git.heroku.com/dormtownproj.git']
 
 
 # Application definition
@@ -122,6 +122,6 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-CSRF_TRUSTED_ORIGINS = ['https://dormtownproj.herokuapp.com/']
+CSRF_TRUSTED_ORIGINS = ['https://git.heroku.com/dormtownproj.git']
 
 django_heroku.settings(locals())
