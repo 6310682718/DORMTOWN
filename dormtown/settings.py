@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-+pd8a=5cs_*@vokbxehpdh^mmm0g6@7n1o-10pyv@aa4jh*2j)"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['https://git.heroku.com/dormtownproj.git']
 
