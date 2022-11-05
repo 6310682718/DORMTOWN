@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 
-import django_heroku
+# import django_heroku
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,7 +26,7 @@ SECRET_KEY = "django-insecure-+pd8a=5cs_*@vokbxehpdh^mmm0g6@7n1o-10pyv@aa4jh*2j)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['https://git.heroku.com/dormtownproj.git']
+ALLOWED_HOSTS = ['https://git.heroku.com/dormtownproj.git', '127.0.0.1', 'localhost']
 
 
 # Application definition
@@ -34,6 +34,7 @@ ALLOWED_HOSTS = ['https://git.heroku.com/dormtownproj.git']
 INSTALLED_APPS = [
     "rooms",
     "dormtown",
+    'occupant',
     'livereload',
     'fontawesomefree',
     "django.contrib.admin",
@@ -122,6 +123,6 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-CSRF_TRUSTED_ORIGINS = ['https://git.heroku.com/dormtownproj.git']
+CSRF_TRUSTED_ORIGINS = ['https://git.heroku.com/dormtownproj.git', 'https://127.0.0.1', 'https://localhost']
 
-django_heroku.settings(locals())
+# django_heroku.settings(locals())

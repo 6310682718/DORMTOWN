@@ -1,0 +1,52 @@
+{% extends 'occupant/layout.html' %}
+{% block body %}
+<section class="vh-100">
+    <div class="container">
+        <div class="py-3"></div>
+        <div class="row card">
+            <div class="text-center mt-4">
+                <h1>List of Reporting</h1>
+            </div>
+            <div class="card-body">
+                {% if report %}
+                <table class="table table-hover table-striped" style="text-align: center;">
+                    <tr>
+                        <th>#</th>
+                        <th>Title</th>
+                        <th>Assign to</th>
+                        <th>Due date</th>
+                        <th>status</th>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>Cleaning Service</td>
+                        <td>Natnicha Faksang</td>
+                        <td>{{ report.date }}</td>
+                        <td><a class="btn btn-dark text-white" href="#">Detail</a></td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Fix door</td>
+                        <td>Natnicha Faksang</td>
+                        <td>{{ report.date }}</td>
+                        <td><a class="btn btn-dark text-white" href="#">Detail</a></td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td>Fix shower</td>
+                        <td>Natnicha Faksang</td>
+                        <td>{{ report.date }}</td>
+                        <td><a class="btn btn-dark text-white" href="#">Detail</a></td>
+                    </tr>
+                </table>
+                {% else %}
+                <div class="alert alert-danger" role="alert">
+                    You have not reported yet.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}
