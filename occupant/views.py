@@ -3,11 +3,13 @@ from django.shortcuts import render
 import datetime
 
 def index(request):
-    # if login return occupant page
+    # if did not login return login page
+    # if not request.user.is_authenticated:
+    #     return render(request, 'users/login.html',status = 400)
+    # else return occupant page
     return render(request, 'occupant/index.html', {
         'room_status': True
     })
-    # else return login page
 
 def reserve(request):
     # if did not login return login detail
@@ -138,3 +140,11 @@ def list_report(request):
     }
 
     return render(request, 'occupant/list_report.html', lists)
+
+def delete_report(request, report_id):
+    # if did not login return login detail
+    # check report_id if valid, delete and return home page
+    # else return 404 not found
+    return render(request, 'occupant/index.html', {
+        'room_status': True
+    })

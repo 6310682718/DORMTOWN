@@ -23,6 +23,10 @@
                         <td colspan="2">Due date:</td>
                         <td class="text-end">{{ report.date }}</td>
                     </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td colspan="2" align="right"><a class="btn btn-danger text-white" href="{% url 'occupant:delete_report' 1 %}">Delete</a></td>
+                    </tr>
                 </table>
             </div>
         </div>
