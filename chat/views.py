@@ -4,5 +4,4 @@ from django.shortcuts import render
 
 
 def index(req):
-    # require only admin
-    return render(req, "rooms/index.html", {})
+    return render(req, "chat/index.html")
