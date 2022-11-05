@@ -1,19 +1,24 @@
 {% extends 'rooms/layout.html' %}
 {% block body %}
 <div class="container-fluid">
-  TEST MANAGER
-  <section class="profile">
-    <div class="row">
-      <div class="col-4">
-        Available
-      </div>
-      <div class="col-4">
-        Reserve
-      </div>
-      <div class="col-4">
-        Unavailable
+  <section class="manager-stat d-flex justify-content-around">
+    <div class="col-4 available-box">
+      <h3>Available</h3>
+      <span>50</span>
+    </div>
+    <div class="col-4 reserve-box mx-4">
+      <div>
+        <h3>Reserve</h3>
+        <span>5</span>
       </div>
     </div>
+    <div class="col-4 unavailable-box">
+      <h3>Unavailable</h3>
+      <span>5</span>
+    </div>
+  </section>
+  <section class="manager-log">
+    <!-- Manger Log -->
   </section>
   <section class="listing">
 
