@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "dormtown",
     "manager",
     "chat",
+    "employee",
     'livereload',
     'fontawesomefree',
     "django.contrib.admin",
