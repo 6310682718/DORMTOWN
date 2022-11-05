@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     "rooms",
     "dormtown",
+    "chat",
     'livereload',
     'fontawesomefree',
     "django.contrib.admin",
