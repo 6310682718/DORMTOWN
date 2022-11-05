@@ -40,9 +40,10 @@
 }
 
 .image {
-    display: inline-block;
-    width: auto;
-    object-fit: contain;
+    display: block;
+    margin: auto;
+    max-width: 100%;
+    height: 100%;
 }
 
 .font-mid {
@@ -79,15 +80,38 @@
 
 .bg-main {
     background-color: #192e80;
+    max-height: 1000px;
+    display: block;
+    box-sizing: border-box;
 }
 
 .banner{
-    max-height: 200px;
     padding-top: 40px;
 }
-.banner p {
-    font-size: 15px;
+.banner p.sub {
+    font-size: 20px;
     color: #ffff;
     text-align: center;
     line-height: 8px;
+}
+
+.score-text {
+    font-size: 50px;
+    color: #ffff;
+    margin-top: 90px;
+    margin-bottom: 20px;
+}
+
+.profile-image {
+    max-width: 80px;
+    margin: 10px;
+}
+
+.card-profile {
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 30px;
+    margin: auto;
+    
 }

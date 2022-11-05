@@ -1,9 +1,85 @@
 {% extends 'occupant/layout.html' %}
+{% load static %}
 {% block body %}
 <div class="text-center mt-4">
-    <p class="header">Reservation</p>
+    <h1>Reservation</h1>
 </div>
 
-<a class="btn btn-success" href="{% url 'occupant:post_reserve' 1 %}">Reserve a Room</a>
+<div class="container">
+    <div class="py-3"></div>
+    <div class="row">
+        <div class="col-lg-10 card" style="margin: auto">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center py-3">
+                    <h2 class="h5 mb-0">Room Class S</h2>
+                </div>
+                <div class="row">
+                    <div class="col-9">
+                        <img src="{% static 'occupant/room-s.jpeg' %}" height=500">
+                    </div>
+                    <div class="col-3 bg-main banner position-relative">
+                        <p class="sub">TV & Fridge</p>
+                        <p class="sub">Wardrobe</p>
+                        <p class="sub">Water heater</p>
+                        <p class="sub">Facility</p>
+                        <br>
+                        <br>
+                        <h2 class="text-white text-center">
+                        2
+                        </h2>
+                        <p class="sub">Room service</p>
+                        <br>
+                        <br>
+                        <h2 class="text-white text-center">
+                        6,500
+                        </h2>
+                        <p class="sub">Rent cost per month</p>
+                        <br>
+                        <br>
+                        <a class="btn btn-success btn-lg btn-block center" href="{% url 'occupant:create_reserve' 1 %}">Reserve a Room</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>    
 
+<div class="container">
+    <div class="py-3"></div>
+    <div class="row">
+        <div class="col-lg-10 card" style="margin: auto">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center py-3">
+                    <h2 class="h5 mb-0">Room Class A</h2>
+                </div>
+                <div class="row">
+                    <div class="col-9">
+                        <img src="{% static 'occupant/room-a.jpeg' %}" height=500">
+                    </div>
+                    <div class="col-3 bg-main banner position-relative">
+                        <p class="sub">Wardrobe</p>
+                        <p class="sub">Water heater</p>
+                        <p class="sub">Facility</p>
+                        <br>
+                        <br>
+                        <h2 class="text-white text-center">
+                        1
+                        </h2>
+                        <p class="sub">Room service</p>
+                        <br>
+                        <br>
+                        <h2 class="text-white text-center">
+                        4,500
+                        </h2>
+                        <p class="sub">Rent cost per month</p>
+                        <br>
+                        <br>
+                        <br>
+                        <a class="btn btn-success btn-lg btn-block center" href="{% url 'occupant:create_reserve' 2 %}">Reserve a Room</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>    
 {% endblock %}

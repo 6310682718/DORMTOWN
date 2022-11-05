@@ -1,12 +1,12 @@
 {% extends 'occupant/layout.html' %}
 {% block body %}
+<div class="text-center mt-4">
+    <h1>List of Reporting</h1>
+</div>
 <section class="vh-100">
     <div class="container">
         <div class="py-3"></div>
         <div class="row card">
-            <div class="text-center mt-4">
-                <h1>List of Reporting</h1>
-            </div>
             <div class="card-body">
                 {% if report %}
                 <table class="table table-hover table-striped" style="text-align: center;">
@@ -22,21 +22,21 @@
                         <td>Cleaning Service</td>
                         <td>Natnicha Faksang</td>
                         <td>{{ report.date }}</td>
-                        <td><a class="btn btn-dark text-white" href="#">Detail</a></td>
+                        <td><a class="btn btn-dark text-white" href="{% url 'occupant:get_report' 1 %}">Detail</a></td>
                     </tr>
                     <tr>
                         <td>2</td>
                         <td>Fix door</td>
                         <td>Natnicha Faksang</td>
                         <td>{{ report.date }}</td>
-                        <td><a class="btn btn-dark text-white" href="#">Detail</a></td>
+                        <td><a class="btn btn-dark text-white" href="{% url 'occupant:get_report' 2 %}">Detail</a></td>
                     </tr>
                     <tr>
                         <td>3</td>
                         <td>Fix shower</td>
                         <td>Natnicha Faksang</td>
                         <td>{{ report.date }}</td>
-                        <td><a class="btn btn-dark text-white" href="#">Detail</a></td>
+                        <td><a class="btn btn-dark text-white" href="{% url 'occupant:get_report' 3 %}">Detail</a></td>
                     </tr>
                 </table>
                 {% else %}
