@@ -21,5 +21,5 @@ urlpatterns = [
     path("", views.index),
     path("chat", include('chat.urls')),
     path("manager", include("manager.urls")),
-    path("employee", include("employee.urls") )
+    path("employee", include("employee.urls"))
 ]
