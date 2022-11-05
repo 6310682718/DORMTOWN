@@ -3,6 +3,7 @@ from django.urls import reverse, resolve
 
 from django.contrib.auth.models import User
 from .views import *
+import datetime
 
 class TestUrl(SimpleTestCase):
     def test_index_is_resolved(self):
@@ -44,3 +45,203 @@ class TestUrl(SimpleTestCase):
     def test_delete_report_is_resolved(self):
         url = reverse("occupant:delete_report", args=[1])
         self.assertEqual(resolve(url).func, delete_report)
+
+class TestViews(TestCase):
+    def setUp(self):
+        self.client = Client()
+
+        self.username = 'newuser'
+        self.password = 'newuserpass'
+        self.email = 'newuser@dormtown.com'
+        self.first = 'New'
+        self.last = 'User'
+        self.credentials = {
+            'username': self.username,
+            'password': self.password,
+            'email': self.email,
+            'first_name': self.first,
+            'last_name': self.last}
+        self.new_user = User.objects.create_user(**self.credentials)
+
+        self.index_url = reverse('occupant:index')
+        self.reserve_url = reverse('occupant:reserve')
+        self.create_reserve_url = reverse('occupant:create_reserve', args=[1])
+        self.detail_reserve_url = reverse('occupant:get_reserve')
+        self.delete_reserve_url = reverse('occupant:delete_reserve', args=[1])
+        self.report_url = reverse('occupant:report')
+        self.create_report_url = reverse('occupant:create_report')
+        self.detail_report_url = reverse('occupant:get_report', args=[1])
+        self.list_report_url = reverse('occupant:list_report')
+        self.delete_report_url = reverse('occupant:delete_report', args=[1])
+
+    def test_index(self):
+        response = self.client.get(self.index_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/index.html')
+
+    def test_reserve(self):
+        response = self.client.get(self.reserve_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/reserve.html')
+
+    def test_create_reserve(self):
+        response = self.client.get(self.create_reserve_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/result_reserve.html')
+
+    def test_detail_reserve(self):
+        response = self.client.get(self.detail_reserve_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/result_reserve.html')
+
+    def test_delete_reserve(self):
+        response = self.client.get(self.delete_reserve_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/index.html')
+
+    def test_report(self):
+        response = self.client.get(self.report_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/report.html')
+
+    def test_create_report_post(self):
+        response = self.client.post(self.create_report_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/result_report.html')
+
+    def test_create_report_get(self):
+        response = self.client.get(self.create_report_url)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertTemplateUsed(response, 'occupant/index.html')
+
+    def test_detail_report(self):
+        response = self.client.get(self.detail_report_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/result_report.html')
+
+    def test_list_report(self):
+        response = self.client.get(self.list_report_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/list_report.html')
+
+    def test_delete_report(self):
+        response = self.client.get(self.delete_report_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/index.html')
+
+class TestModel(TestCase):
+    def setUp(self):
+        self.username = 'newuser'
+        self.password = 'newuserpass'
+        self.email = 'newuser@dormtown.com'
+        self.first = 'New'
+        self.last = 'User'
+        self.credentials = {
+            'username': self.username,
+            'password': self.password,
+            'email': self.email,
+            'first_name': self.first,
+            'last_name': self.last}
+        self.new_user = User.objects.create_user(**self.credentials)
+
+        self.username = 'user'
+        self.password = 'userpass'
+        self.email = 'user@dormtown.com'
+        self.first = 'Another'
+        self.last = 'User'
+        self.credentials = {
+            'username': self.username,
+            'password': self.password,
+            'email': self.email,
+            'first_name': self.first,
+            'last_name': self.last}
+        self.another_user = User.objects.create_user(**self.credentials)
+
+        self.role = Role.objects.create(
+            role_name = 'Manager'
+        )
+
+        self.room_type = RoomType.objects.create(
+            class_level = 'C',
+            price = 6500
+        )
+
+        self.room = Room.objects.create(
+            room_number = 101,
+            room_type = self.room_type,
+            status = True
+        )
+
+        self.user_info = UserInfo.objects.create(
+            user_id = self.new_user,
+            role_id = self.role,
+            room_id = self.room,
+            phone_number = '0644153591',
+            address = '56 Moo. 3',
+            street = 'SomeStreet Road',
+            state = 'SomeState',
+            city = 'SomeCity',
+            country = 'Thailand',
+            zip_code = '12345'
+        )
+
+        self.status_type = StatusType.objects.create(
+            status_name = 'Idle'
+        )
+
+        self.reserve = Reserve.objects.create(
+            user_id = self.new_user,
+            room_type = self.room_type,
+            due_date = datetime.date.today(),
+            create_at = datetime.date.today(),
+            status_type = self.status_type
+        )
+
+        self.problem_type = ProblemType.objects.create(
+            problem_name = 'Cleaning service'
+        )
+
+        self.report = Report.objects.create(
+            from_user_id = self.new_user,
+            problem_type_id = self.problem_type,
+            due_date = datetime.date.today(),
+            note = 'Do not stole my stuff',
+            status_id = self.status_type,
+            assign_to_id = self.another_user,
+            role_id = self.role
+        )
+
+    def test_role_str(self):
+        self.assertEquals(self.role.__str__(), self.role.role_name)
+
+    def test_room_type_str(self):
+        self.assertEquals(self.room_type.__str__(), self.room_type.class_level)
+
+    def test_room_str(self):
+        self.assertEquals(self.room.__str__(), f'#{ self.room.room_number } Class { self.room.room_type }')
+
+    def test_user_info_str(self):
+        self.assertEquals(self.user_info.__str__(), f'{ self.new_user.username } { self.role.role_name }')
+
+    def test_status_type_str(self):
+        self.assertEquals(self.status_type.__str__(), self.status_type.status_name)
+
+    def test_reserve_str(self):
+        self.assertEquals(self.reserve.__str__(), f'Class { self.room_type.class_level } { self.status_type.status_name }')
+
+    def test_problem_type_str(self):
+        self.assertEquals(self.problem_type.__str__(), self.problem_type.problem_name)
+
+    def test_report_str(self):
+        self.assertEquals(self.report.__str__(), f'{ self.new_user.username } assign { self.problem_type.problem_name } to { self.another_user.username }')
