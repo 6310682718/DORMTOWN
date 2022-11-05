@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render
 import datetime
+from .models import *
 
 def index(request):
     # if did not login return login page
@@ -64,8 +65,6 @@ def get_reserve(request):
 
     if room is not None:
         return render(request, 'occupant/result_reserve.html', room)
-    else:
-        return reserve(request)
 
 def delete_reserve(request, reserve_id):
     # if did not login return login detail
@@ -103,6 +102,8 @@ def create_report(request):
             'header': 'Summary of Reporting'
         }
         return render(request, 'occupant/result_report.html', detail)
+    else:
+        return render(request, 'occupant/index.html', status=400)
 
 def get_report(request, report_id):
     # if did not login return login detail
