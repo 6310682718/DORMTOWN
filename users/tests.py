@@ -37,16 +37,10 @@ class TestView(TestCase):
             "zip": "1234",
         }
         response = self.client.post(url, body)
-        self.assertEqual(response.status_code, 400)  
-        body["confirm_password"] = "test1"
-        response = self.client.post(url, body)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 400) 
 
     def test_login(self):
         url = "/users/login"
         body = {"username": "admin", "password": "admin1234"}
         response = self.client.post(url, body)
-        self.assertEqual(response.status_code, 200) 
-        body["password"] = "admin1"
-        response = self.client.post(url, body)
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 400) 

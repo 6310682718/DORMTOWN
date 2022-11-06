@@ -45,7 +45,7 @@ def register(req):
         password = req.POST["password"]
         email = req.POST["email"]
         con_password = req.POST.get("confirmPassword", False)
-        phone = req.POST["phoneNumber"]
+        phone = req.POST.get("phoneNumber", False)
         address = req.POST.get("address", False)
         street = req.POST.get("street", False)
         city = req.POST.get("city", False)
