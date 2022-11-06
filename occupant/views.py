@@ -44,15 +44,15 @@ def update_profile(request):
         return render(request, 'users/login.html', status=400)
 
     if request.method == 'POST':
-        first = request.POST.get('firstname')
-        last = request.POST.get('lastname')
-        tel = request.POST.get('phoneNumber')
-        address = request.POST.get('address')
-        street = request.POST.get('street')
-        state = request.POST.get('state')
-        city = request.POST.get('city')
-        country = request.POST.get('country')
-        zip_code = request.POST.get('zip')
+        first = request.POST.get('firstname', False)
+        last = request.POST.get('lastname', False)
+        tel = request.POST.get('phoneNumber', False)
+        address = request.POST.get('address', False)
+        street = request.POST.get('street', False)
+        state = request.POST.get('state', False)
+        city = request.POST.get('city', False)
+        country = request.POST.get('country', False)
+        zip_code = request.POST.get('zip', False)
 
         User.objects.filter(pk=request.user.id).update(
             first_name =  first,
