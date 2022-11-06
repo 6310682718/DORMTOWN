@@ -16,15 +16,15 @@
                 <table class="table table-borderless">
                     <tr>
                         <td colspan="2">Name:</td>
-                        <td class="text-end">Natnicha Faksang</td>
+                        <td class="text-end">{{ user.first_name }} {{ user.last_name }}</td>
                     </tr>
                     <tr>
                         <td colspan="2">Contact:</td>
-                        <td class="text-end">0644153591</td>
+                        <td class="text-end">{{ user_info.phone_number }}</td>
                     </tr>
                     <tr>
                         <td colspan="2">Address:</td>
-                        <td class="text-end">9330 W Lake Dr ## A, Eagle River, Alaska 99577, USA</td>
+                        <td class="text-end">{{ user_info.address }}, {{ user_info.street }}, {{ user_info.state }}, {{ user_info.city }}, {{ user_info.country }}, {{ user_info.zip_code }} </td>
                     </tr>
                     <tr>
                         {% if room_status %}
@@ -76,3 +76,4 @@
 </div>    
 {% endif %}
 {% endblock %}
+
