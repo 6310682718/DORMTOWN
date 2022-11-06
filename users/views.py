@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from occupant.models import *
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 
+
 def login(req):
     print(req.POST)
     if (req.method == "POST"):
@@ -20,9 +21,11 @@ def login(req):
             return render(req, "users/login.html", {"message": "Invalid credential"}, status=400)
     return render(req, "users/login.html")
 
+
 def logout(req):
     auth_logout(req)
     return render(req, "users/login.html", {"message": "Logged out"})
+
 
 def register(req):
     obj = {
@@ -70,3 +73,7 @@ def register(req):
         else:
             return render(req, "users/register.html", {"status": False, "message": obj["message"]}, status=400)
     return render(req, "users/register.html", obj, status=200)
+
+
+def change_pass(req):
+    pass
