@@ -10,6 +10,9 @@ def login(req):
         password = req.POST.get("password", False)
         user = authenticate(req, username=username, password=password)
         print(username, password, user)
+
+        # find role and return to right path plz
+
         if (user is not None):
             auth_login(req, user)
             return render(req, "rooms/index.html", status=200)
@@ -52,6 +55,9 @@ def register(req):
         if (username == "" or len(username) == 0 or firstname == "" or lastname == "" or password == "" or con_password == "" or email == ""):
             obj["status"] = False
             obj["message"] = "Enter your information"
+
+            # when regist new user user info did not create anything
+
         # Register Process
         if (obj["status"]):
             obj['message'] = "Register successfully"
@@ -60,7 +66,7 @@ def register(req):
             user_info = UserInfo.objects.create(
                 phone_number=phone, address=address, street=street, state=state, city=city, country=country, zip_code=zip
             )
-            return render(req, "users/register.html", {"status": True, "message": obj["message"]}, status=200)
+            return render(req, "users/login.html", {"status": True, "message": obj["message"]}, status=200)
         else:
             return render(req, "users/register.html", {"status": False, "message": obj["message"]}, status=400)
     return render(req, "users/register.html", obj, status=200)

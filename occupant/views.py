@@ -4,19 +4,27 @@ import datetime
 from .models import *
 
 def index(request):
-    # if did not login return login page
-    # if not request.user.is_authenticated:
-    #     return render(request, 'users/login.html',status = 400)
-    # else return occupant page
+    if not request.user.is_authenticated:
+        return render(request, 'users/login.html',status = 400)
+
+    user = User.objects.filter(pk=request.user.id).first()
+    user_info = UserInfo.objects.filter(user_id=request.user.id).first()
+
+    if user_info.role_id.role_name == 'Occupant':
+        room_status = True
+    else:
+        room_status = False
+
     return render(request, 'occupant/index.html', {
-        'room_status': False
+        'room_status': room_status,
+        'user': user,
+        'user_info': user_info,
     })
 
 def reserve(request):
-    # if did not login return login detail
-    # if not request.user.is_authenticated:
-    #     return render(request, 'users/login.html',status = 400)
-    # else get detail of room from database then return room detail 
+    if not request.user.is_authenticated:
+        return render(request, 'users/login.html',status = 400)
+
     rooms = RoomType.objects.all()
     rooms_sperated = list()
     for room in rooms:
@@ -27,8 +35,15 @@ def reserve(request):
             'available': rooms_by_type.count()
         })
 
+    user_info = UserInfo.objects.filter(user_id=request.user.id).first()
+
+    if user_info.role_id.role_name == 'Occupant':
+        room_status = True
+    else:
+        room_status = False
+
     return render(request, 'occupant/reserve.html', {
-        'room_status': False,
+        'room_status': room_status,
         'rooms': rooms,
         'header': 'Summary of Reservation'
     })
