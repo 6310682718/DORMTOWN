@@ -154,10 +154,6 @@ class TestViews(TestCase):
             zip_code = self.zip,
         )
 
-        print('self.reserve1', self.reserve1.id)
-        print()
-        print()
-
         self.index_url = reverse('occupant:index')
         self.reserve_url = reverse('occupant:reserve')
         self.create_reserve_url = reverse('occupant:create_reserve', args=[self.room_type.id])
@@ -205,13 +201,13 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'occupant/reserve.html')
 
-    def test_reserve_occupant(self):
-        self.client.login(username=self.username1, password=self.password1)
+    # def test_reserve_occupant(self):
+    #     self.client.login(username=self.username1, password=self.password1)
         
-        response = self.client.get(self.reserve_url)
+    #     response = self.client.get(self.reserve_url)
 
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'occupant/result_reserve.html')
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertTemplateUsed(response, 'occupant/result_reserve.html')
 
     def test_create_reserve_without_login(self):
         response = self.client.get(self.create_reserve_url)
@@ -257,27 +253,27 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'occupant/result_reserve.html')
 
-    # def test_delete_reserve_without_login(self):
-    #     response = self.client.get(self.delete_reserve_url)
+    def test_delete_reserve_without_login(self):
+        response = self.client.get(self.delete_reserve_url)
 
-    #     self.assertEqual(response.status_code, 400)
-    #     self.assertTemplateUsed(response, 'users/login.html')
+        self.assertEqual(response.status_code, 400)
+        self.assertTemplateUsed(response, 'users/login.html')
 
-    # def test_delete_reserve_outside(self):
-    #     self.client.login(username=self.username, password=self.password)
+    def test_delete_reserve_outside(self):
+        self.client.login(username=self.username, password=self.password)
 
-    #     response = self.client.get(self.delete_reserve_url)
+        response = self.client.get(self.delete_reserve_url)
 
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, 'occupant/index.html')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/index.html')
 
-    # def test_delete_reserve_occupant(self):
-        # self.client.login(username=self.username1, password=self.password1)
+    def test_delete_reserve_occupant(self):
+        self.client.login(username=self.username1, password=self.password1)
 
-        # response = self.client.get(self.delete_reserve_url)
+        response = self.client.get(self.delete_reserve_url)
 
-        # self.assertEqual(response.status_code, 200)
-        # self.assertTemplateUsed(response, 'occupant/index.html')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/index.html')
 
     def test_report(self):
         response = self.client.get(self.report_url)

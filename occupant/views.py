@@ -50,7 +50,6 @@ def reserve(request):
             'room': reserve.room_type,
             'header': 'List of Reservation'
         }) 
-        
 
 def create_reserve(request, room_type):
     if not request.user.is_authenticated:
@@ -128,9 +127,7 @@ def delete_reserve(request, reserve_id):
     reserve = Reserve.objects.filter(pk=reserve_id, user_id=request.user)
 
     if reserve is not None:
-        print(reserve)
         reserve.delete()
-        print(Reserve.objects.filter(pk=reserve_id, user_id=request.user))
         
     return index(request)
 
