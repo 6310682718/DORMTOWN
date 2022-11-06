@@ -32,9 +32,31 @@ def reserve(request):
 
         rooms_sperated.append({
             'room': room,
-            'available': rooms_by_type.count()
+            'available': (rooms_by_type.count() > 0)
         })
 
+    user = User.objects.filter(email=request.user.email).first()
+    reserve = Reserve.objects.filter(user_id=user).first()
+    room_status = False
+
+    if reserve is None:
+        return render(request, 'occupant/reserve.html', {
+            'room_status': room_status,
+            'rooms': rooms,
+        })
+    else:
+        return render(request, 'occupant/result_reserve.html', {
+            'room_status': room_status,
+            'room': reserve.room_type,
+            'header': 'List of Reservation'
+        }) 
+        
+
+def create_reserve(request, room_type):
+    if not request.user.is_authenticated:
+        return render(request, 'users/login.html',status = 400)
+
+    user = User.objects.filter(email=request.user.email).first()
     user_info = UserInfo.objects.filter(user_id=request.user.id).first()
 
     if user_info.role_id.role_name == 'Occupant':
@@ -42,59 +64,75 @@ def reserve(request):
     else:
         room_status = False
 
-    return render(request, 'occupant/reserve.html', {
+    reserve = Reserve.objects.filter(user_id=user).first()
+    if reserve is None:
+        room_type = RoomType.objects.filter(pk=room_type).first()
+        status_type = StatusType.objects.filter(pk=1).first()
+
+        reserve = Reserve.objects.create(
+            user_id = user,
+            room_type = room_type,
+            due_date = datetime.datetime.today(),
+            create_at = datetime.datetime.now(),
+            status_type = status_type
+        )
+
+    return render(request, 'occupant/result_reserve.html', {
         'room_status': room_status,
-        'rooms': rooms,
+        'room': reserve.room_type,
+        'reserve_id': reserve.id,
         'header': 'Summary of Reservation'
     })
-
-def create_reserve(request, room_type):
-    # if did not login return login detail
-    # else check reservation before
-    # if none create reservation to db then go to reservation detail
-    # else return to reservation page
-    user = User.objects.filter(email=request.user.email).first()
-    room_type = RoomType.objects.filter(pk=room_type).first()
-
-    print(user )
-    print(room_type)
-
-    detail = {
-        'employee': {
-            'name': 'Natnicha Faksang',
-            'Tel': '0644153591',
-            'Job': 'Manager'
-        },
-        'room': {
-            'detail': 'BRAHHHHHHHH',
-            'type': room_type
-        },
-        'room_status': False,
-        'header': 'Summary of Reservation'
-    }
-    return render(request, 'occupant/result_reserve.html', detail)
 
 def get_reserve(request):
-    # if did not login return login detail
-    # else extract data from db
-    # if already reserve get reserve id then go to result_reserve.html
-    # else return 404 not found
-    room = {
-        'detail': 'BRAHHHHHHHH',
-        'header': 'List of Reservation',
-        'room_status': False,
-    }
+    if not request.user.is_authenticated:
+        return render(request, 'users/login.html',status = 400)
 
-    if room is not None:
-        return render(request, 'occupant/result_reserve.html', room)
+    user = User.objects.filter(email=request.user.email).first()
+    user_info = UserInfo.objects.filter(user_id=request.user.id).first()
+
+    if user_info.role_id.role_name == 'Occupant':
+        room_status = True
+    else:
+        room_status = False
+
+    reserve = Reserve.objects.filter(user_id=user).first()
+
+    if reserve is not None:
+        return render(request, 'occupant/result_reserve.html', {
+            'room_status': room_status,
+            'room': reserve.room_type,
+            'reserve_id': reserve.id,
+            'header': 'List of Reservation'
+        })
+    else:
+        rooms = RoomType.objects.all()
+        rooms_sperated = list()
+        for room in rooms:
+            rooms_by_type = Room.objects.filter(room_type=room, status=True)
+
+            rooms_sperated.append({
+                'room': room,
+                'available': (rooms_by_type.count() > 0)
+            })
+
+        return render(request, 'occupant/reserve.html', {
+            'room_status': room_status,
+            'rooms': rooms,
+        })
 
 def delete_reserve(request, reserve_id):
-    # if did not login return login detail
-    # check reserve_id if valid, delete and return home page
-    # else return 404 not found
-    return render(request, 'occupant/index.html', {
-        'room_status': False
-    })
+    if not request.user.is_authenticated:
+        return render(request, 'users/login.html',status = 400)
+
+    reserve = Reserve.objects.filter(pk=reserve_id, user_id=request.user)
+
+    if reserve is not None:
+        print(reserve)
+        reserve.delete()
+        print(Reserve.objects.filter(pk=reserve_id, user_id=request.user))
+        
+    return index(request)
 
 def report(request):
     # if did not login return login detail

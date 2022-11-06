@@ -63,6 +63,19 @@ class TestViews(TestCase):
             'last_name': self.last}
         self.new_user = User.objects.create_user(**self.credentials)
 
+        self.username1 = 'newuser1'
+        self.password1 = 'newuserpass1'
+        self.email1 = 'newuser1@dormtown.com'
+        self.first1 = 'New1'
+        self.last1 = 'User1'
+        self.credentials1 = {
+            'username': self.username1,
+            'password': self.password1,
+            'email': self.email1,
+            'first_name': self.first1,
+            'last_name': self.last1}
+        self.new_user1 = User.objects.create_user(**self.credentials1)
+
         self.outsite_role = Role.objects.create(role_name='Outside')
         self.occupant_role = Role.objects.create(role_name='Occupant')
 
@@ -74,6 +87,8 @@ class TestViews(TestCase):
         self.country = 'Thailand'
         self.zip = '12345'
 
+        self.phone1 = '0987654320'
+
         self.room_type = RoomType.objects.create(
             class_level = 'S',
             price = 6500,
@@ -83,13 +98,31 @@ class TestViews(TestCase):
             water_heater = True
         )
 
+        self.status_idle = StatusType.objects.create(
+            status_name = 'Idle'
+        )
+        self.status_doing = StatusType.objects.create(
+            status_name = 'Doing'
+        )
+        self.status_done = StatusType.objects.create(
+            status_name = 'Done'
+        )
+
+        self.reserve1 = Reserve.objects.create(
+            user_id = self.new_user1,
+            room_type = self.room_type,
+            due_date = datetime.datetime.today(),
+            create_at = datetime.datetime.now(),
+            status_type = self.status_done
+        )
+
         self.room_available = Room.objects.create(
             room_number = '101',
             room_type = self.room_type,
             status = True
         )
 
-        self.room_available = Room.objects.create(
+        self.room_unavailable = Room.objects.create(
             room_number = '102',
             room_type = self.room_type,
             status = False
@@ -100,6 +133,19 @@ class TestViews(TestCase):
             role_id = self.outsite_role,
             room_id = self.room_available,
             phone_number = self.phone,
+            address = self.address,
+            street = self.street,
+            city = self.city,
+            state = self.state,
+            country = self.country,
+            zip_code = self.zip,
+        )
+
+        self.user_info1 = UserInfo.objects.create(
+            user_id = self.new_user1,
+            role_id = self.occupant_role,
+            room_id = self.room_unavailable,
+            phone_number = self.phone1,
             address = self.address,
             street = self.street,
             city = self.city,
@@ -125,8 +171,16 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertTemplateUsed(response, 'users/login.html')
         
-    def test_index(self):
+    def test_index_outside(self):
         self.client.login(username=self.username, password=self.password)
+
+        response = self.client.get(self.index_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/index.html')
+
+    def test_index_occupant(self):
+        self.client.login(username=self.username1, password=self.password1)
 
         response = self.client.get(self.index_url)
 
@@ -139,7 +193,7 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertTemplateUsed(response, 'users/login.html')
 
-    def test_reserve(self):
+    def test_reserve_outside(self):
         self.client.login(username=self.username, password=self.password)
         
         response = self.client.get(self.reserve_url)
@@ -147,23 +201,79 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'occupant/reserve.html')
 
-    # def test_create_reserve(self):
-    #     response = self.client.get(self.create_reserve_url)
+    def test_reserve_occupant(self):
+        self.client.login(username=self.username1, password=self.password1)
+        
+        response = self.client.get(self.reserve_url)
 
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, 'occupant/result_reserve.html')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/result_reserve.html')
 
-    # def test_detail_reserve(self):
-    #     response = self.client.get(self.detail_reserve_url)
+    def test_create_reserve_without_login(self):
+        response = self.client.get(self.create_reserve_url)
 
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, 'occupant/result_reserve.html')
+        self.assertEqual(response.status_code, 400)
+        self.assertTemplateUsed(response, 'users/login.html')
 
-    # def test_delete_reserve(self):
-    #     response = self.client.get(self.delete_reserve_url)
+    def test_create_reserve_outside(self):
+        self.client.login(username=self.username, password=self.password)
+        
+        response = self.client.get(self.create_reserve_url)
 
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, 'occupant/index.html')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/result_reserve.html')
+
+    def test_create_reserve_occupant(self):
+        self.client.login(username=self.username1, password=self.password1)
+        
+        response = self.client.get(self.create_reserve_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/result_reserve.html')
+
+    def test_detail_reserve_without_login(self):
+        response = self.client.get(self.detail_reserve_url)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertTemplateUsed(response, 'users/login.html')
+
+    def test_detail_reserve_outside(self):
+        self.client.login(username=self.username, password=self.password)
+
+        response = self.client.get(self.detail_reserve_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/reserve.html')
+
+    def test_detail_reserve_occupant(self):
+        self.client.login(username=self.username1, password=self.password1)
+
+        response = self.client.get(self.detail_reserve_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/result_reserve.html')
+
+    def test_delete_reserve_without_login(self):
+        response = self.client.get(self.delete_reserve_url)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertTemplateUsed(response, 'occupant/index.html')
+
+    def test_delete_reserve_outside(self):
+        self.client.login(username=self.username, password=self.password)
+
+        response = self.client.get(self.delete_reserve_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/index.html')
+
+    def test_delete_reserve_occupant(self):
+        self.client.login(username=self.username1, password=self.password1)
+
+        response = self.client.get(self.delete_reserve_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/index.html')
 
     # def test_report(self):
     #     response = self.client.get(self.report_url)

@@ -16,27 +16,40 @@
                 </div>
                 <div class="row">
                     <div class="col-9">
-                        <img src="{% static 'occupant/room-a.jpeg' %}" height=500">
+                        {% if room.class_level == 'S' %}
+                            <img src="{% static 'occupant/room-s.jpeg' %}" height="500">
+                        {% else %}
+                            <img src="{% static 'occupant/room-a.jpeg' %}" height="500">
+                        {% endif %}
                     </div>
                     <div class="col-3 bg-main banner position-relative">
+                        {% if room.tv_fridge %}
+                        <p class="sub">TV & Fridge</p>
+                        {% else %}
+                        <br>
+                        {% endif %}
+                        {% if room.wardrobe %}
                         <p class="sub">Wardrobe</p>
+                        {% endif %}
+                        {% if room.water_heater %}
                         <p class="sub">Water heater</p>
+                        {% endif %}
                         <p class="sub">Facility</p>
                         <br>
                         <br>
                         <h2 class="text-white text-center">
-                        1
+                        {{ room.room_service }}
                         </h2>
                         <p class="sub">Room service</p>
                         <br>
                         <br>
                         <h2 class="text-white text-center">
-                        4,500
+                        {{ room.price }}
                         </h2>
                         <p class="sub">Rent cost per month</p>
                         <br>
                         <br>
-                        <a class="btn btn-danger btn-lg btn-block center" href="{% url 'occupant:delete_reserve' 1 %}">Delete</a>
+                        <a class="btn btn-danger btn-lg btn-block center" href="{% url 'occupant:delete_reserve' reserve_id %}">Delete</a>
                     </div>
                 </div>
             </div>
