@@ -1,0 +1,40 @@
+{% extends 'users/layout.html' %} {% block body %}
+<section class="about-header-section">
+  <div class="text-center mt-4">
+    <p class="header">Sign Up</p>
+    <div class="description">
+      <p>
+        Hello, Wellcome back !
+      </p>
+    </div>
+    <form class="mt-5">
+        <div class="form-row text-left">
+          <div class="form-group col-md-6">
+            <label for="inputEmail4">First Name</label>
+            <input type="text" class="form-control" id="firstname" placeholder="First Name">
+          </div>
+          <div class="form-group col-md-6">
+            <label for="inputPassword4">Last Name</label>
+            <input type="text" class="form-control" id="lastname" placeholder="Last Name">
+          </div>
+        </div>
+        <div class="form-group text-left">
+          <label for="inputAddress">Email</label>
+          <input type="email" class="form-control" id="email" placeholder="Email">
+        </div>
+        <div class="form-group text-left">
+          <label for="inputAddress2">Phone Number</label>
+          <input type="text" class="form-control" id="phoneNumber" placeholder="Phone Number">
+        </div>
+        <div class="form-group text-left">
+            <label for="inputAddress2">Password</label>
+            <input type="password" class="form-control" id="password" placeholder="Password">
+        </div>
+        <div class="form-group text-left">
+            <label for="inputAddress2">Confirm Password</label>
+            <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm Password">
+        </div>
+        <button type="submit" class="btn btn-primary">Sign Up</button>
+      </form>
+  </div>
+{% endblock %}
