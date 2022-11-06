@@ -1,7 +1,8 @@
 from django.test import TestCase, SimpleTestCase, Client
 from django.urls import reverse, resolve
-# Create your tests here.
+from django.contrib.auth.models import User
 from .views import *
+# Create your tests here.
 
 
 class TestUrl(SimpleTestCase):
