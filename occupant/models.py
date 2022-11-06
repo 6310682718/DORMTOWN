@@ -10,6 +10,10 @@ class Role(models.Model):
 class RoomType(models.Model):
     class_level = models.CharField(max_length=5)
     price = models.IntegerField()
+    room_service = models.IntegerField(default=1)
+    tv_fridge = models.BooleanField(default=True)
+    wardrobe = models.BooleanField(default=True)
+    water_heater = models.BooleanField(default=True)
 
     def __str__(self):
         return f'{ self.class_level }'
@@ -25,7 +29,7 @@ class Room(models.Model):
 class UserInfo(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_id", default="1")
     role_id = models.ForeignKey(Role, on_delete=models.CASCADE, related_name="role_id", default="5")
-    room_id = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="room_id", default="None")
+    room_id = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="room_id", default="1")
     phone_number = models.CharField(max_length=10)
     address = models.CharField(max_length=100)
     street = models.CharField(max_length=50)
@@ -48,7 +52,7 @@ class Reserve(models.Model):
     room_type = models.ForeignKey(RoomType, on_delete=models.CASCADE, related_name="reserved_room_type", default="1")
     due_date = models.DateField()
     create_at = models.DateTimeField()
-    status_type = models.ForeignKey(StatusType, on_delete=models.CASCADE, related_name="status_type", default="1")
+    status_type= models.ForeignKey(StatusType, on_delete=models.CASCADE, related_name="status_type", default="1")
 
     def __str__(self):
         return f'Class { self.room_type.class_level } { self.status_type }'

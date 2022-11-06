@@ -5,7 +5,7 @@ class RoleAdmin(admin.ModelAdmin):
     list_display = ['role_name']
 
 class RoomTypeAdmin(admin.ModelAdmin):
-    list_display = ['class_level', 'price']
+    list_display = ['class_level', 'price', 'room_service', 'tv_fridge', 'wardrobe', 'water_heater']
 
 class RoomAdmin(admin.ModelAdmin):
     list_display = ['room_number', 'room_type', 'status']

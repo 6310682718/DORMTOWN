@@ -18,17 +18,21 @@ def reserve(request):
     #     return render(request, 'users/login.html',status = 400)
     # else get detail of room from database then return room detail 
     rooms = RoomType.objects.all()
-    rooms_sperated = dict()
+    rooms_sperated = list()
     for room in rooms:
         rooms_by_type = Room.objects.filter(room_type=room, status=True)
-        rooms_sperated[room] = rooms_by_type
-        rooms_sperated[room]['amount']
+
+        rooms_sperated.append({
+            'room_type': room.class_level,
+            'price': room.price,
+            'available': rooms_by_type.count()
+        })
 
     print(rooms_sperated)
 
     return render(request, 'occupant/reserve.html', {
         'room_status': False,
-        'room': rooms,
+        'rooms': rooms,
         'header': 'Summary of Reservation'
     })
 
