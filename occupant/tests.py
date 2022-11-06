@@ -227,8 +227,16 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertTemplateUsed(response, 'rooms/index.html')
 
-    def test_update_profile_post(self):
+    def test_update_profile_post_outside(self):
         self.client.login(username=self.username, password=self.password)
+
+        response = self.client.post(self.update_profile_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/index.html')
+
+    def test_update_profile_post_occupant(self):
+        self.client.login(username=self.username1, password=self.password1)
 
         response = self.client.post(self.update_profile_url)
 
