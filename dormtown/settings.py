@@ -33,7 +33,12 @@ ALLOWED_HOSTS = ['https://git.heroku.com/dormtownproj.git']
 
 INSTALLED_APPS = [
     "rooms",
+    "users",
     "dormtown",
+    'occupant',
+    "manager",
+    "chat",
+    "employee",
     'fontawesomefree',
     "django.contrib.admin",
     "django.contrib.auth",
