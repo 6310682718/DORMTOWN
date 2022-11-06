@@ -11,7 +11,7 @@ urlpatterns = [
     path('reserve/detail', views.get_reserve, name='get_reserve'),
     path('reserve/delete/<int:reserve_id>', views.delete_reserve, name='delete_reserve'),
 
-    path('report', views.report, name='report'),
+    path('report/', views.report, name='report'),
     path('report/create', views.create_report, name='create_report'),
     path('report/detail/<int:report_id>', views.get_report, name='get_report'),
     path('report/all', views.list_report, name='list_report'),
