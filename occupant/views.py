@@ -23,12 +23,9 @@ def reserve(request):
         rooms_by_type = Room.objects.filter(room_type=room, status=True)
 
         rooms_sperated.append({
-            'room_type': room.class_level,
-            'price': room.price,
+            'room': room,
             'available': rooms_by_type.count()
         })
-
-    print(rooms_sperated)
 
     return render(request, 'occupant/reserve.html', {
         'room_status': False,
@@ -41,6 +38,12 @@ def create_reserve(request, room_type):
     # else check reservation before
     # if none create reservation to db then go to reservation detail
     # else return to reservation page
+    user = User.objects.filter(email=request.user.email).first()
+    room_type = RoomType.objects.filter(pk=room_type).first()
+
+    print(user )
+    print(room_type)
+
     detail = {
         'employee': {
             'name': 'Natnicha Faksang',
