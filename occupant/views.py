@@ -9,12 +9,22 @@ def index(request):
     #     return render(request, 'users/login.html',status = 400)
     # else return occupant page
     return render(request, 'occupant/index.html', {
-        'room_status': True
+        'room_status': False
     })
 
 def reserve(request):
     # if did not login return login detail
+    # if not request.user.is_authenticated:
+    #     return render(request, 'users/login.html',status = 400)
     # else get detail of room from database then return room detail 
+    rooms = RoomType.objects.all()
+    rooms_sperated = dict()
+    for room in rooms:
+        rooms_by_type = Room.objects.filter(room_type=room, status=True)
+        rooms_sperated[room] = rooms_by_type
+
+    print(rooms_sperated)
+
     room = {
         'A': {
             'detail': 'BRAHHHHHHHHH',
@@ -27,8 +37,8 @@ def reserve(request):
     }
 
     return render(request, 'occupant/reserve.html', {
-        'room_status': True,
-        'room': room,
+        'room_status': False,
+        'room': rooms,
         'header': 'Summary of Reservation'
     })
 
@@ -47,7 +57,7 @@ def create_reserve(request, room_type):
             'detail': 'BRAHHHHHHHH',
             'type': room_type
         },
-        'room_status': True,
+        'room_status': False,
         'header': 'Summary of Reservation'
     }
     return render(request, 'occupant/result_reserve.html', detail)
@@ -60,7 +70,7 @@ def get_reserve(request):
     room = {
         'detail': 'BRAHHHHHHHH',
         'header': 'List of Reservation',
-        'room_status': True,
+        'room_status': False,
     }
 
     if room is not None:
@@ -71,14 +81,14 @@ def delete_reserve(request, reserve_id):
     # check reserve_id if valid, delete and return home page
     # else return 404 not found
     return render(request, 'occupant/index.html', {
-        'room_status': True
+        'room_status': False
     })
 
 def report(request):
     # if did not login return login detail
     # else return report form
     return render(request, 'occupant/report.html', {
-        'room_status': True
+        'room_status': False
     })
 
 def create_report(request):
@@ -98,7 +108,7 @@ def create_report(request):
                 'Tel': '0644153591',
                 'Job': 'Housekeeper'
             },
-            'room_status': True,
+            'room_status': False,
             'header': 'Summary of Reporting'
         }
         return render(request, 'occupant/result_report.html', detail)
@@ -121,7 +131,7 @@ def get_report(request, report_id):
             'Tel': '0644153591',
             'Job': 'Housekeeper'
         },
-        'room_status': True,
+        'room_status': False,
         'header': 'Summary of Reporting'
     }
 
@@ -137,7 +147,7 @@ def list_report(request):
             'date': datetime.date.today(),
         },
         'header': 'List of Report',
-        'room_status': True,
+        'room_status': False,
     }
 
     return render(request, 'occupant/list_report.html', lists)
@@ -147,5 +157,5 @@ def delete_report(request, report_id):
     # check report_id if valid, delete and return home page
     # else return 404 not found
     return render(request, 'occupant/index.html', {
-        'room_status': True
+        'room_status': False
     })
