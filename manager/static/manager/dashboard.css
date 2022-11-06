@@ -1,25 +1,59 @@
+:root {
+    --height-box: 150px;
+    --padding-box: 50px 0;
+    --border-radius-box: 5px;
+}
+
 section.manager-stat {
     text-align: center;
     font-size: 20px;
     /* padding: 5px 0; */
     overflow: auto;
 }
+section.listing {
+    text-align: left;
+    font-size: 20px;
+    overflow: auto;
+}
 .available-box {
     background-color: #78e08f;
-    height: 150px;
-    border-radius: 5px;
-    padding: 50px 0;
-    /* vertical-align: middle; */
+    height: var(--height-box);
+    border-radius: var(--border-radius-box);
+    padding: var(--padding-box);
 }
 .reserve-box {
     background-color: #fad390;
-    height: 150px;
-    border-radius: 5px;
-    padding: 50px 0;
+    height: var(--height-box);
+    border-radius: var(--border-radius-box);
+    padding: var(--padding-box);
 }
 .unavailable-box {
-    background-color: #ff6348;
-    height: 150px;
-    border-radius: 5px;
-    padding: 50px 0;
+    background-color: lightgray;
+    height: var(--height-box);
+    border-radius: var(--border-radius-box);
+    padding: var(--padding-box);
+}
+
+.report-log-box {
+    /* background-color: #ff5252; */
+    height: var(--height-box);
+    border-radius: var(--border-radius-box);
+    padding: var(--padding-box);
+    border: 1px solid black;
+}
+
+.employee-list-box {
+    /* background-color: lightblue; */
+    height: var(--height-box);
+    border-radius: var(--border-radius-box);
+    padding: var(--padding-box);
+    border: 1px solid black;
+}
+
+.occupant-list-box {
+    height: var(--height-box);
+    /* background-color: #9CF384; */
+    border-radius: var(--border-radius-box);
+    padding: var(--padding-box);
+    border: 1px solid black;
 }

@@ -65,7 +65,7 @@
                 Manger
               </a>
               {% elif request.user.is_authenticated %}
-
+              <a class="btn btn-danger" href="{% url 'users:logout'%}" role=" button">Sign Out</a>
               {% else %}
               <a href="users/register" class="text-dark mx-4">Sign Up</a>
               <a class="btn btn-primary" href="{% url 'users:login'%}" role=" button">Sign In</a>
