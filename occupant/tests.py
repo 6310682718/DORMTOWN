@@ -157,12 +157,12 @@ class TestViews(TestCase):
         )
 
         self.index_url = reverse('occupant:index')
+        self.edit_profile_url = reverse('occupant:edit_profile')
+        self.update_profile_url = reverse('occupant:update_profile')
         self.reserve_url = reverse('occupant:reserve')
-        self.create_reserve_url = reverse(
-            'occupant:create_reserve', args=[self.room_type.id])
+        self.create_reserve_url = reverse('occupant:create_reserve', args=[self.room_type.id])
         self.detail_reserve_url = reverse('occupant:get_reserve')
-        self.delete_reserve_url = reverse(
-            'occupant:delete_reserve', args=[self.reserve1.id])
+        self.delete_reserve_url = reverse('occupant:delete_reserve', args=[self.reserve1.id])
         self.report_url = reverse('occupant:report')
         self.create_report_url = reverse('occupant:create_report')
         self.detail_report_url = reverse('occupant:get_report', args=[1])
@@ -182,11 +182,63 @@ class TestViews(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'occupant/index.html')
-
+    
     def test_index_occupant(self):
         self.client.login(username=self.username1, password=self.password1)
 
         response = self.client.get(self.index_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/index.html')
+
+    def test_edit_profile_without_login(self):
+        response = self.client.get(self.edit_profile_url)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertTemplateUsed(response, 'users/login.html')
+
+    def test_edit_profile_outside(self):
+        self.client.login(username=self.username, password=self.password)
+
+        response = self.client.get(self.edit_profile_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/edit_profile.html')
+
+    def test_edit_profile_occupate(self):
+        self.client.login(username=self.username1, password=self.password1)
+
+        response = self.client.get(self.edit_profile_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/edit_profile.html')
+
+    def test_update_profile_without_login(self):
+        response = self.client.get(self.update_profile_url)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertTemplateUsed(response, 'users/login.html')
+
+    def test_update_profile_get(self):
+        self.client.login(username=self.username, password=self.password)
+
+        response = self.client.get(self.update_profile_url)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertTemplateUsed(response, 'rooms/index.html')
+
+    def test_update_profile_post_outside(self):
+        self.client.login(username=self.username, password=self.password)
+
+        response = self.client.post(self.update_profile_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/index.html')
+
+    def test_update_profile_post_occupant(self):
+        self.client.login(username=self.username1, password=self.password1)
+
+        response = self.client.post(self.update_profile_url)
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'occupant/index.html')

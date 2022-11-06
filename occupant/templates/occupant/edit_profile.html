@@ -1,0 +1,69 @@
+{% extends 'occupant/layout.html' %} {% block body %}
+<section class="about-header-section">
+  <div class="text-center mt-4">
+    <p class="header">Edit Profile</p>
+    <div class="description">
+      <p>
+        Let's update your profile !
+      </p>
+    </div>
+    {% if message %}
+    <div class="{{ message_tag }}" role="alert">
+        {{ message }}
+    </div>
+    {% endif %}
+    <div class="container w-50">
+      <form class="mt-5" action="{% url 'occupant:update_profile' %}" method="POST">
+        {% csrf_token %}
+        <div class="form-row text-left">
+          <div class="form-group col-md-6">
+            <label for="inputEmail4">First Name</label>
+            <input required type="text" class="form-control" id="firstname" name="firstname" value="{{ user.first_name }}">
+          </div>
+          <div class="form-group col-md-6">
+            <label for="inputPassword4">Last Name</label>
+            <input required type="text" class="form-control" id="lastname" name="lastname" value="{{ user.last_name }}">
+          </div>
+        </div>
+        <div class="form-group text-left">
+          <label for="inputAddress">Email</label>
+          <input disabled type="email" class="form-control" id="email" name="email" value="{{ user.email }}">
+        </div>
+        <div class="form-group text-left">
+          <label for="inputAddress2">Phone Number</label>
+          <input required type="text" class="form-control" id="phoneNumber" name="phoneNumber" value="{{ user_info.phone_number }}">
+        </div>
+        <div class="form-row text-left">
+          <div class="form-group col-md-6">
+            <label for="inputAddress">Address</label>
+            <input type="text" class="form-control" name="address" value="{{ user_info.address }}">
+          </div>
+          <div class="form-group col-md-6">
+            <label for="inputAddress2">Street</label>
+            <input type="text" class="form-control" name="street" value="{{ user_info.street }}">
+          </div>
+        </div>
+        <div class="form-row text-left">
+          <div class="form-group col-md-3">
+            <label for="inputCity">City</label>
+            <input type="text" class="form-control" name="city" value="{{ user_info.city }}">
+          </div>
+          <div class="form-group col-md-3">
+            <label for="inputState">State</label>
+            <input type="text" class="form-control" name="state" value="{{ user_info.state }}">
+          </div>
+          <div class="form-group col-md-4">
+            <label for="inputZip">Country</label>
+            <input type="text" class="form-control" name="country" value="{{ user_info.country }}">
+          </div>
+          <div class="form-group col-md-2">
+            <label for="inputZip">Zip</label>
+            <input type="text" class="form-control" name="zip" value="{{ user_info.zip_code }}">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Update</button>
+      </form> 
+    </div>
+  </div>
+</section>
+{% endblock %}
