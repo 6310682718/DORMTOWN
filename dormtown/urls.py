@@ -18,8 +18,10 @@ from django.urls import path, include
 from rooms import views
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("", views.index),
+    path("", include('rooms.urls')),
+    path("occupant/", include('occupant.urls')),
     path("chat", include('chat.urls')),
     path("manager", include("manager.urls")),
-    path("employee", include("employee.urls"))
+    path("employee", include("employee.urls")),
+    path('users/', include("users.urls")),
 ]

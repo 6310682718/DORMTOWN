@@ -11,60 +11,59 @@
   {% load static %}
   <link href="{% static 'fontawesomefree/css/all.min.css' %}" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" href="{% static 'rooms/styles.css' %}" />
+  <link rel="stylesheet" href="{% static 'rooms/styles.css' %}" />
   <link rel="stylesheet" href="{% static 'chat/chat.css' %}" />
+  <link rel="stylesheet" href="{% static 'manager/dashboard.css' %}" />
+
+  <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
+  <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
+  <script src="{% static 'fontawesomefree/js/fontawesome.js' %}"></script>
+  <script src="{% static 'fontawesomefree/js/solid.js' %}"></script>
+  <script src="{% static 'fontawesomefree/js/brands.js' %}"></script>
+  <script src="{% static 'fontawesomefree/js/all.min.js' %}"></script>
+  <link href="{% static 'fontawesomefree/css/all.min.css' %}" rel="stylesheet" type="text/css">
 </head>
 
 <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-light mb-2">
-    <a class="navbar-brand" href="#"><i class="fa-duotone fa-apartment"></i>DormTown</a>
+    <a class="navbar-brand" href="{% url 'rooms:index' %}">
+      <i class="fa-solid fa-building-user"></i>
+      DormTown
+    </a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
-        {% comment %}
-        <li class="nav-item active">
-          <a class="nav-link" href="#">About <span class="sr-only">(current)</span></a>
-        </li>
-        {% endcomment %} {% comment %}
-        <li class="nav-item">
-          <a class="nav-link" href="#">Link</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Dropdown
-          </a>
-          <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-            <a class="dropdown-item" href="#">Action</a>
-            <a class="dropdown-item" href="#">Another action</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Something else here</a>
-          </div>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" href="#">Disabled</a>
-        </li>
-        {% endcomment %}
       </ul>
       <div class="position-relative">
         <div class="position-absulute justify-content-center mx-2 display-flex">
-          <a href="#" class="text-bold text-dark mx-2">About us</a>
+          </ul>
+          <div class="position-relative">
+            <div class="position-absulute justify-content-center mx-2 display-flex">
+              <a href="/" class="text-dark mx-4">
+                <i class="fa-solid fa-circle-info"></i>
+                About us
+              </a>
+              <a href="#" class="text-dark mx-4">Service</a>
+              <a href="#" class="text-dark mx-4">Our teams</a>
+              <a href="#" class="text-dark mx-4">Location</a>
+              <a href="users/register" class="text-dark mx-4">Sign Up</a>
+              <a class="btn btn-primary" href="{% url 'users:login'%}" role=" button">Sign In</a>
+            </div>
+          </div>
           {% comment %}
-          <a href="#" class="text-bold text-dark mx-2">About us</a>
-          <a href="#" class="text-bold text-dark mx-2">About us</a> {%
-            endcomment %}
+          <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
+              Search
+            </button>
+          </form>
+          {% endcomment %}
         </div>
       </div>
-      {% comment %}
-      <form class="form-inline my-2 my-lg-0">
-        <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
-        <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
-          Search
-        </button>
-      </form>
-      {% endcomment %}
-    </div>
   </nav>
 
   <div class="container-fluid">{% block body %} {% endblock %}</div>
@@ -74,6 +73,7 @@
         <div class="col-7" class="font-mid p-4">
           <p> let's making our dormitory</p>
           <p> a dream place!</p>
+          <a class="btn btn-secondary" href="/chat">Chat</a>
         </div>
         <div class="col">
           <p class="ml-1">Contact us</p>
@@ -91,6 +91,7 @@
         </dib>
       </div>
     </div>
+  </div>
 </body>
 
 </html>

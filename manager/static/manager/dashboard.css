@@ -1,0 +1,25 @@
+section.manager-stat {
+    text-align: center;
+    font-size: 20px;
+    /* padding: 5px 0; */
+    overflow: auto;
+}
+.available-box {
+    background-color: #78e08f;
+    height: 150px;
+    border-radius: 5px;
+    padding: 50px 0;
+    /* vertical-align: middle; */
+}
+.reserve-box {
+    background-color: #fad390;
+    height: 150px;
+    border-radius: 5px;
+    padding: 50px 0;
+}
+.unavailable-box {
+    background-color: #ff6348;
+    height: 150px;
+    border-radius: 5px;
+    padding: 50px 0;
+}
