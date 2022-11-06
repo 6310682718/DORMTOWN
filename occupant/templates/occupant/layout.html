@@ -49,11 +49,11 @@
           </a>
           {% else %}
           <a href="{% url 'occupant:get_reserve' %}" class="text-dark mx-4">
-            <i class="fa-solid fa-screwdriver-wrench"></i>
+            <i class="fa-solid fa-circle-info"></i>
             List of Reservation
           </a>
           {% endif %}
-          <a href="#" class="text-bold text-dark mx-2">Change Password</a>
+          <a href="{% url 'users:change_password' %}" class="text-bold text-dark mx-2">Change Password</a>
           <a href="{% url 'users:logout'%}" class="text-bold text-dark mx-2">Sign Out</a>
         </div>
       </div>
