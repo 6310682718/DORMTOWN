@@ -9,6 +9,7 @@ class Role(models.Model):
     def __str__(self):
         return f'{ self.role_name }'
 
+
 class RoomType(models.Model):
     class_level = models.CharField(max_length=5)
     price = models.IntegerField()
@@ -36,7 +37,7 @@ class UserInfo(models.Model):
     user_id = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="user_id", default="1")
     role_id = models.ForeignKey(
-        Role, on_delete=models.CASCADE, related_name="role_id", default="5")
+        Role, on_delete=models.CASCADE, related_name="role_id")
     room_id = models.ForeignKey(
         Room, on_delete=models.CASCADE, related_name="room_id", default="1")
     phone_number = models.CharField(max_length=10)
@@ -63,7 +64,7 @@ class Reserve(models.Model):
     user_id = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name="reserved_user_id", default="1")
     room_type = models.ForeignKey(
-        RoomType, on_delete=models.CASCADE, related_name="reserved_room_type", default="1")
+        RoomType, on_delete=models.CASCADE, related_name="reserved_room_type")
     due_date = models.DateField()
     create_at = models.DateTimeField()
     status_type = models.ForeignKey(
@@ -71,6 +72,7 @@ class Reserve(models.Model):
 
     def __str__(self):
         return f'Class { self.room_type.class_level } { self.status_type }'
+
 
 class ProblemType(models.Model):
     problem_name = models.CharField(max_length=30)
