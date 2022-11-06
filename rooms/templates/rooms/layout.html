@@ -91,7 +91,7 @@
         <div class="col-7" class="font-mid p-4">
           <p> let's making our dormitory</p>
           <p> a dream place!</p>
-          {% if request.user.is_superuser %}
+          {% if request.user.is_superuser == False %}
           <a class="btn btn-secondary" href="/chat">
             Chat
             <i class="fa-solid fa-comment"></i>
