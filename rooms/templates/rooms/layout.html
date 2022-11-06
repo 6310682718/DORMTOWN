@@ -47,11 +47,29 @@
                 <i class="fa-solid fa-circle-info"></i>
                 About us
               </a>
-              <a href="#" class="text-dark mx-4">Service</a>
-              <a href="#" class="text-dark mx-4">Our teams</a>
-              <a href="#" class="text-dark mx-4">Location</a>
+              <a href="#" class="text-dark mx-4">
+                <i class="fa-solid fa-screwdriver-wrench"></i>
+                Service
+              </a>
+              <a href="#" class="text-dark mx-4">
+                <i class="fa-solid fa-people-group"></i>
+                Our teams
+              </a>
+              <a href="#" class="text-dark mx-4">
+                <i class="fa-solid fa-location-dot"></i>
+                Location
+              </a>
+              {% if request.user.is_authenticated and request.user.is_superuser %}
+              <a href="/manager" class="text-dark mx-4">
+                <i class="fa-solid fa-user-tie"></i>
+                Manger
+              </a>
+              {% elif request.user.is_authenticated %}
+
+              {% else %}
               <a href="users/register" class="text-dark mx-4">Sign Up</a>
               <a class="btn btn-primary" href="{% url 'users:login'%}" role=" button">Sign In</a>
+              {% endif %}
             </div>
           </div>
           {% comment %}
@@ -73,14 +91,28 @@
         <div class="col-7" class="font-mid p-4">
           <p> let's making our dormitory</p>
           <p> a dream place!</p>
-          <a class="btn btn-secondary" href="/chat">Chat</a>
+          <a class="btn btn-secondary" href="/chat">
+            Chat
+            <i class="fa-solid fa-comment"></i>
+          </a>
         </div>
         <div class="col">
-          <p class="ml-1">Contact us</p>
-          <p class="detail">GitHub : <a href="https://github.com/6310682718/DORMTOWN">our git</a>
+          <p class="ml-1">
+            <i class="fa-solid fa-address-book"></i>
+            Contact us
+          </p>
+          <p class="detail">
+            <i class="fa-brands fa-github"></i>
+            GitHub : <a href="https://github.com/6310682718/DORMTOWN">our git</a>
           <p>
-          <p class="detail">Privotal tracker : <a href="https://www.pivotaltracker.com/n/projects/2606927">our privotal</a> </p>
-          <p class="ml-1 mt-2">Member list</p>
+          <p class="detail">
+            <i class="fa-solid fa-check"></i>
+            Privotal tracker : <a href="https://www.pivotaltracker.com/n/projects/2606927">our privotal</a>
+          </p>
+          <p class="ml-1 mt-2">
+            <i class="fa-solid fa-people-group"></i>
+            Member list
+          </p>
           <ul class="list-group list-group-flush footer-list">
             <li class="list-group-item">6310682635 Natnicha Faksang </li>
             <li class="list-group-item">6310682718 Pongsakorn Parsoppornpiboon </li>
