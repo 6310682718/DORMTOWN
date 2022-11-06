@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from occupant.models import *
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
+from django.contrib.auth.hashers import make_password
 
 
 def login(req):
@@ -9,19 +10,21 @@ def login(req):
         username = req.POST.get("username", False)
         password = req.POST.get("password", False)
         user = authenticate(req, username=username, password=password)
-        login_user = User.objects.get(username=username)
-        user_info = UserInfo.objects.get(user_id=login_user.id)
-
-        # find role and return to right path plz
-
-        if (user is not None):
-            auth_login(req, user)
-            if (user_info.role_id.role_name == "Outside" or user_info.role_id.role_name == "Occupant"):
-                return redirect("/occupant/")
-            if (user_info.role_id == "Manager"):
-                return redirect("/manager/dashboard")
-        else:
-            return render(req, "users/login.html", {"message": "Invalid credential"}, status=400)
+        try:
+            # find role and return to right path plz
+            if (user is not None):
+                auth_login(req, user)
+                login_user = User.objects.get(username=username)
+                user_info = UserInfo.objects.get(user_id=login_user.id)
+                if (user_info.role_id.role_name == "Outside" or user_info.role_id.role_name == "Occupant"):
+                    return redirect("/occupant/")
+                if (user_info.role_id == "Manager"):
+                    return redirect("/manager/dashboard")
+            else:
+                return render(req, "users/login.html", {"message": "Invalid credential"}, status=400)
+        except Exception as e:
+            print("<- Log fail ->", e)
+            pass
     return render(req, "users/login.html")
 
 
@@ -79,4 +82,16 @@ def register(req):
 
 
 def change_pass(req):
-    pass
+    if (req.user.is_authenticated == False):
+        return redirect("/")
+    if (req.method == "POST"):
+        old_pass, new_password, con_password = req.POST[
+            'old_pass'], req.POST['new_password'], req.POST['con_password']
+        user = User.objects.get(pk=req.user.id)
+        print(user.password)
+        print(make_password(old_pass))
+        if (user.password == old_pass):
+            print("Pass")
+        else:
+            print("Not pass")
+    return render(req, "users/changepass.html", status=200)
