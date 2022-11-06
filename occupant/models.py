@@ -25,7 +25,7 @@ class Room(models.Model):
 class UserInfo(models.Model):
     user_id = models.ForeignKey(User, on_delete=models.CASCADE, related_name="user_id", default="1")
     role_id = models.ForeignKey(Role, on_delete=models.CASCADE, related_name="role_id", default="5")
-    room_id = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="room_id", default="1")
+    room_id = models.ForeignKey(Room, on_delete=models.CASCADE, related_name="room_id", default="None")
     phone_number = models.CharField(max_length=10)
     address = models.CharField(max_length=100)
     street = models.CharField(max_length=50)
