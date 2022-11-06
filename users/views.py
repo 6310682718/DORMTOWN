@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from occupant.models import *
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 
+
 def login(req):
     if (req.method == "POST"):
         username = req.POST.get("username", False)
@@ -10,14 +11,12 @@ def login(req):
         user = authenticate(req, username=username, password=password)
         login_user = User.objects.get(username=username)
         user_info = UserInfo.objects.get(user_id=login_user.id)
-        print(user_info.role_id)
 
         # find role and return to right path plz
 
         if (user is not None):
             auth_login(req, user)
-            if (user_info.role_id == "Outside" or user_info.role_id == "Occupant"):
-                print("++++++++++")
+            if (user_info.role_id.role_name == "Outside" or user_info.role_id.role_name == "Occupant"):
                 return redirect("/occupant/")
             if (user_info.role_id == "Manager"):
                 return redirect("/manager/dashboard")
@@ -25,9 +24,11 @@ def login(req):
             return render(req, "users/login.html", {"message": "Invalid credential"}, status=400)
     return render(req, "users/login.html")
 
+
 def logout(req):
     auth_logout(req)
     return render(req, "users/login.html", {"message": "Logged out"})
+
 
 def register(req):
     obj = {
