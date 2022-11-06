@@ -9,4 +9,3 @@ tornado==6.2
 django-heroku
 psycopg2
 gunicorn
-django-livereload-server
