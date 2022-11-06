@@ -34,7 +34,6 @@ ALLOWED_HOSTS = ['https://git.heroku.com/dormtownproj.git']
 INSTALLED_APPS = [
     "rooms",
     "dormtown",
-    'livereload',
     'fontawesomefree',
     "django.contrib.admin",
     "django.contrib.auth",
@@ -52,7 +51,6 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
-    'livereload.middleware.LiveReloadScript',
 ]
 
 ROOT_URLCONF = "dormtown.urls"
