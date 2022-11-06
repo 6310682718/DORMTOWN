@@ -6,6 +6,9 @@ app_name = 'occupant'
 urlpatterns = [
     path('', views.index, name='index'),
 
+    path('edit_profile', views.edit_profile, name='edit_profile'),
+    path('update_profile', views.update_profile, name='update_profile'),
+
     path('reserve', views.reserve, name='reserve'),
     path('reserve/create/<int:room_type>', views.create_reserve, name='create_reserve'),
     path('reserve/detail', views.get_reserve, name='get_reserve'),
