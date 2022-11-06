@@ -1,22 +1,25 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from occupant.models import *
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 
 
 def login(req):
-    print(req.POST)
     if (req.method == "POST"):
         username = req.POST.get("username", False)
         password = req.POST.get("password", False)
         user = authenticate(req, username=username, password=password)
-        print(username, password, user)
+        login_user = User.objects.get(username=username)
+        user_info = UserInfo.objects.get(user_id=login_user.id)
 
         # find role and return to right path plz
 
         if (user is not None):
             auth_login(req, user)
-            return render(req, "rooms/index.html", status=200)
+            if (user_info.role_id.role_name == "Outside" or user_info.role_id.role_name == "Occupant"):
+                return redirect("/occupant/")
+            if (user_info.role_id == "Manager"):
+                return redirect("/manager/dashboard")
         else:
             return render(req, "users/login.html", {"message": "Invalid credential"}, status=400)
     return render(req, "users/login.html")
