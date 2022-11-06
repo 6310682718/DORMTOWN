@@ -5,13 +5,20 @@ from .views import *
 
 
 class TestUrl(SimpleTestCase):
+    def setUp(self):
+        self.urls = {
+            "dashboard": reverse("manager:dashboard")
+        }
+
     def test_dashboard(self):
-        url = reverse("manager:dashboard")
-        self.assertEqual(resolve(url).func, index)
+        self.assertEqual(resolve(self.urls['dashboard']).func, index)
 
 
 class TestViews(TestCase):
     def setUp(self):
+        self.urls = {
+            "dashboard": reverse("manager:dashboard")
+        }
         self.client = Client()
 
         # initial account
@@ -24,3 +31,11 @@ class TestViews(TestCase):
         }
 
         self.new_user = User.objects.create_superuser(**account1)
+
+    def test_dashboard(self):
+        response_fail = self.client.get(self.urls['dashboard'])
+        self.assertEqual(response_fail.status_code, 302)  # require login
+        self.client.login(username="admin", password="admin")
+        response = self.client.get(self.urls["dashboard"])
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, "manager/dashboard.html")
