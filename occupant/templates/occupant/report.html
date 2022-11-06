@@ -1,0 +1,33 @@
+{% extends 'occupant/layout.html' %}
+{% block body %}
+<div class="text-center mt-4">
+    <h1>Report a Problem</h1>
+</div>
+
+<div class="container">
+    <div class="py-3"></div>
+    <div class="row">
+        <div class="col-lg-10 card" style="margin: auto">
+            <div class="card-body">
+                <form action="{% url 'occupant:create_report' %}" method="POST">
+                    {% csrf_token %}
+                    <div class="form-outline">
+                        <label class="form-label" for="form2Example17" >Title</label>
+                        <input type="text" name="title" class="form-control form-control-lg"/>
+                    </div>
+                    <div class="form-outline">
+                        <label class="form-label" for="form2Example27">Due date</label>
+                        <input type="date" name="due_date" class="form-control form-control-lg"/>
+                    </div>
+                    <div class="form-outline">
+                        <label class="form-label" for="form2Example27">Note</label>
+                        <input type="test" name="due_date" class="form-control form-control-lg"/>
+                    </div>
+                    <br>
+                    <input class="btn btn-danger btn-lg btn-block center" type="submit"></input>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>    
+{% endblock %}

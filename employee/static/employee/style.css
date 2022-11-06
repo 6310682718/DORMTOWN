@@ -1,0 +1,126 @@
+.description {
+    line-height: 50%;
+    margin-top: 40px;
+}
+
+.header {
+    font-weight: bolder;
+    font-size: 70px;
+}
+
+.header-2 {
+    font-weight: bold;
+    font-size: 40px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.text-bold {
+    font-weight: bolder;
+}
+
+.line {
+    height: 20px;
+    width: 500px;
+    border-bottom: 2px solid black;
+    position: absolute;
+    margin-left: 10px;
+}
+
+
+.about-service-section {
+    margin-top: 100px;
+}
+
+.image-center {
+    display: flex;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: fit-content;
+}
+
+.image {
+    display: block;
+    margin: auto;
+    max-width: 100%;
+    height: 100%;
+}
+
+.font-mid {
+    font-size: 35px;
+    line-height: 20px;
+    margin-left: 0;
+}
+
+
+.footer {
+    bottom: 0;
+    font-size: 15px;
+    background-color: #192e80;
+    color: white;
+    font-weight: bolder;
+    margin-top: 30px;
+    padding: 15px;
+}
+
+.footer-list {
+    border-top: 1px solid white;
+    line-height: 5px;
+    padding-top: 10px;
+}
+.list-group-item {
+    background: transparent;
+    /* background-color: #1e3799; */
+}
+.detail {
+    font-size: 13px;
+    margin-left: 15px;
+    line-height: 7px;
+}
+
+.bg-main {
+    background-color: #192e80;
+    max-height: 1000px;
+    display: block;
+    box-sizing: border-box;
+}
+
+.banner{
+    padding-top: 40px;
+}
+.banner p.sub {
+    font-size: 20px;
+    color: #ffff;
+    text-align: center;
+    line-height: 8px;
+}
+
+.score-text {
+    font-size: 50px;
+    color: #ffff;
+    margin-top: 90px;
+    margin-bottom: 20px;
+}
+
+.profile-image {
+    max-width: 80px;
+    margin: 10px;
+}
+
+.card-profile {
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 10px;
+    margin-top: 30px;
+    margin: auto;
+    
+}
+
+.p {
+    font-size: 14px;
+    left: 25;
+}
+
+.b {
+    background-color: #2C3878;
+}
