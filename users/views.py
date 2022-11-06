@@ -58,7 +58,7 @@ def register(req):
             user = User.objects.create_user(
                 username=username, password=password, email=email, first_name=firstname, last_name=lastname)
             user_info = UserInfo.objects.create(
-                phone_number=phone, address=address, street=street, state=state, city=city, country=country, zip_code=zip
+                user_id=user, phone_number=phone, address=address, street=street, state=state, city=city, country=country, zip_code=zip
             )
             return render(req, "users/register.html", {"status": True, "message": obj["message"]}, status=200)
         else:
