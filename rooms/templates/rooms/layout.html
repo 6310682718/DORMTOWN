@@ -26,14 +26,8 @@
 </head>
 
 <body>
-  <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light mb-2">
-    <a class="text-bold navbar-brand" href=""><i class="fa-duotone fa-apartment"></i>DormTown</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button> -->
-
   <nav class="navbar navbar-expand-lg navbar-light bg-light mb-2">
-    <a class="navbar-brand" href="/">
+    <a class="navbar-brand" href="{% url 'index' %}">
       <i class="fa-solid fa-house-chimney"></i>
       DormTown
     </a>
@@ -49,7 +43,7 @@
           </ul>
           <div class="position-relative">
             <div class="position-absulute justify-content-center mx-2 display-flex">
-              <a href="#" class="text-dark mx-4">
+              <a href="/" class="text-dark mx-4">
                 <i class="fa-solid fa-circle-info"></i>
                 About us
               </a>
@@ -58,11 +52,6 @@
               <a href="#" class="text-dark mx-4">Location</a>
               <a href="users/register" class="text-dark mx-4">Sign Up</a>
               <a class="btn btn-primary" href="{% url 'login'%}" role=" button">Sign In</a>
-
-              {% comment %}
-              <a href="#" class="text-bold text-dark mx-2">About us</a>
-              <a href="#" class="text-bold text-dark mx-2">About us</a> {%
-            endcomment %}
             </div>
           </div>
           {% comment %}
