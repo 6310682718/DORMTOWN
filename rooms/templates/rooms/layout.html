@@ -34,9 +34,7 @@
   </head>
   <body>
     <nav class="navbar navbar-expand-lg navbar-light bg-light mb-2">
-      <a class="text-bold navbar-brand" href=""
-        ><i class="fa-duotone fa-apartment"></i>DormTown</a
-      >
+      <a class="text-bold navbar-brand" href="{% url 'rooms:index' %}"><i class="fa-duotone fa-apartment"></i>DormTown</a>
       <button
         class="navbar-toggler"
         type="button"
@@ -51,70 +49,19 @@
 
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-          {% comment %}
-          <li class="nav-item active">
-            <a class="nav-link" href="#"
-              >About <span class="sr-only">(current)</span></a
-            >
-          </li>
-          {% endcomment %} {% comment %}
-          <li class="nav-item">
-            <a class="nav-link" href="#">Link</a>
-          </li>
-          <li class="nav-item dropdown">
-            <a
-              class="nav-link dropdown-toggle"
-              href="#"
-              id="navbarDropdown"
-              role="button"
-              data-toggle="dropdown"
-              aria-haspopup="true"
-              aria-expanded="false"
-            >
-              Dropdown
-            </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="#">Action</a>
-              <a class="dropdown-item" href="#">Another action</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#">Something else here</a>
-            </div>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link disabled" href="#">Disabled</a>
-          </li>
-          {% endcomment %}
+      
         </ul>
         <div class="position-relative">
           <div
-            class="position-absulute justify-content-center mx-2 display-flex"
-          >
-            <a href="#" class="text-dark mx-4">About us</a>
-            <a href="#" class="text-dark mx-4">Service</a>
-            <a href="#" class="text-dark mx-4">Our teams</a>
-            <a href="#" class="text-dark mx-4">Location</a>
-            <a href="users/register" class="text-dark mx-4">Sign Up</a>
-            <a class="btn btn-primary" href="{% url "login"%}"" role="button">Sign In</a>
-      
-            {% comment %}
-            <a href="#" class="text-bold text-dark mx-2">About us</a>
-            <a href="#" class="text-bold text-dark mx-2">About us</a> {%
-            endcomment %}
+            class="position-absulute justify-content-center mx-2 display-flex">
+            <a href="#about_us" class="text-dark mx-4">About us</a>
+            <a href="#service" class="text-dark mx-4">Service</a>
+            <a href="#our_teams" class="text-dark mx-4">Our teams</a>
+            <a href="#location" class="text-dark mx-4">Location</a>
+            <a href="{% url 'users:register' %}" class="text-dark mx-4">Sign Up</a>
+            <a class="btn btn-primary" href="{% url "users:login" %}" role="button">Sign In</a>
           </div>
         </div>
-        {% comment %}
-        <form class="form-inline my-2 my-lg-0">
-          <input
-            class="form-control mr-sm-2"
-            type="search"
-            placeholder="Search"
-            aria-label="Search"
-          />
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
-            Search
-          </button>
-        </form>
-        {% endcomment %}
       </div>
     </nav>
 
