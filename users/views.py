@@ -70,10 +70,11 @@ def register(req):
         # Register Process
         if (obj["status"]):
             obj['message'] = "Register successfully"
+            role = Role.objects.get(pk=5)
             user = User.objects.create_user(
                 username=username, password=password, email=email, first_name=firstname, last_name=lastname)
             user_info = UserInfo.objects.create(
-                user_id=user, phone_number=phone, address=address, street=street, state=state, city=city, country=country, zip_code=zip
+                user_id=user, phone_number=phone, address=address, street=street, state=state, city=city, country=country, zip_code=zip, role_id=role
             )
             return render(req, "users/login.html", {"status": True, "message": obj["message"]}, status=200)
         else:
