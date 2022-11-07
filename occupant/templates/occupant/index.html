@@ -52,16 +52,16 @@
         <div class="col-lg-10 card" style="margin: auto">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center py-3">
-                    <h2 class="h5 mb-0">Room #2211</h2>
+                    <h2 class="h5 mb-0">Room #{{ user_info.room_id.room_number }}</h2>
                 </div>
                 <table class="table table-borderless">
                     <tr>
                         <td colspan="2">Class:</td>
-                        <td class="text-end">A</td>
+                        <td class="text-end">{{ user_info.room_id.room_type.class_level }}</td>
                     </tr>
                     <tr>
                         <td colspan="2">Cost per month:</td>
-                        <td class="text-end">6500</td>
+                        <td class="text-end">{{ user_info.room_id.room_type.price }}</td>
                     </tr>
                     <tr>                    
                         <td colspan="2"></td>

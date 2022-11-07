@@ -53,7 +53,7 @@ class UserInfo(models.Model):
 
 
 class StatusType(models.Model):
-    # 1 -> idle 2 -> Doing 3 -> Done
+    # 1 -> Idle 2 -> Doing 3 -> Done
     status_name = models.CharField(max_length=10)
 
     def __str__(self):
@@ -91,9 +91,9 @@ class Report(models.Model):
     status_id = models.ForeignKey(
         StatusType, on_delete=models.CASCADE, related_name="status_id", default="1")
     assign_to_id = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="assign_to_id", default="1")
+        User, on_delete=models.CASCADE, related_name="assign_to_id", null=True)
     role_id = models.ForeignKey(
-        Role, on_delete=models.CASCADE, related_name="reported_role_id", default="1")
+        Role, on_delete=models.CASCADE, related_name="reported_role_id", null=True)
 
     def __str__(self):
-        return f'{ self.from_user_id.username } assign { self.problem_type_id.problem_name } to { self.assign_to_id.username }'
+        return f'{ self.from_user_id } report { self.problem_type_id }'
