@@ -20,8 +20,10 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include('rooms.urls')),
     path("occupant/", include('occupant.urls')),
-    path("chat", include('chat.urls')),
-    path("manager", include("manager.urls")),
-    path("employee", include("employee.urls")),
+    path("chat/", include('chat.urls')),
+    path("manager/", include("manager.urls")),
+    path("employee/", include("employee.urls")),
     path('users/', include("users.urls")),
 ]
+handler404 = 'rooms.views.handler404'
+handler500 = 'rooms.views.handler500'

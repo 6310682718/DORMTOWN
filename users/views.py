@@ -1,51 +1,97 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from occupant.models import *
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
+from django.contrib.auth.hashers import make_password
+
 
 def login(req):
-    return render(req, "users/login.html", {})
+    if (req.method == "POST"):
+        username = req.POST.get("username", False)
+        password = req.POST.get("password", False)
+        user = authenticate(req, username=username, password=password)
+        try:
+            # find role and return to right path plz
+            if (user is not None):
+                auth_login(req, user)
+                login_user = User.objects.get(username=username)
+                user_info = UserInfo.objects.get(user_id=login_user.id)
+                if (user_info.role_id.role_name == "Outside" or user_info.role_id.role_name == "Occupant"):
+                    return redirect("/occupant/")
+                if (user_info.role_id == "Manager"):
+                    return redirect("/manager/dashboard")
+            else:
+                return render(req, "users/login.html", {"message": "Invalid credential"}, status=400)
+        except Exception as e:
+            print("<- Log fail ->", e)
+            pass
+    return render(req, "users/login.html")
+
+
+def logout(req):
+    auth_logout(req)
+    return render(req, "users/login.html", {"message": "Logged out"})
+
 
 def register(req):
-    return render(req, "users/register.html", {})
+    obj = {
+        "status": True,
+        "message": ""
+    }
+    if req.method == "POST":
+        username = req.POST["email"]
+        firstname = req.POST["firstname"]
+        lastname = req.POST["lastname"]
+        password = req.POST["password"]
+        email = req.POST["email"]
+        con_password = req.POST.get("confirmPassword", False)
+        phone = req.POST.get("phoneNumber", False)
+        address = req.POST.get("address", False)
+        street = req.POST.get("street", False)
+        city = req.POST.get("city", False)
+        state = req.POST.get("state", False)
+        country = req.POST.get("country", False)
+        zip = req.POST.get("zip", False)
+        try:
+            _user = User.objects.get(email=email)
+            return render(req, "users/register.html", {"status": False, "message": "Username already used"}, status=400)
+        except:
+            pass
+            # print("<--- User not found (Can register) --->")
+        if (con_password != password):
+            obj['status'] = False
+            obj["message"] = "Confirm password fail"
+        if (username == "" or len(username) == 0 or firstname == "" or lastname == "" or password == "" or con_password == "" or email == ""):
+            obj["status"] = False
+            obj["message"] = "Enter your information"
 
-def regist(request):
-    if request.method == 'POST':
-        first = request.POST['firstname']
-        last = request.POST['lastname']
-        email = request.POST['email']
-        tel = request.POST['phoneNumber']
-        password = request.POST['password']
-        con_pass = request.POST['confirmPassword']
+            # when regist new user user info did not create anything
 
-        if password != con_pass:
-            return render(request, "users/register.html", {
-                'message': 'Password is invalid.',
-                'message_tag': "alert alert-danger"
-            })
+        # Register Process
+        if (obj["status"]):
+            obj['message'] = "Register successfully"
+            user = User.objects.create_user(
+                username=username, password=password, email=email, first_name=firstname, last_name=lastname)
+            user_info = UserInfo.objects.create(
+                user_id=user, phone_number=phone, address=address, street=street, state=state, city=city, country=country, zip_code=zip
+            )
+            return render(req, "users/login.html", {"status": True, "message": obj["message"]}, status=200)
+        else:
+            return render(req, "users/register.html", {"status": False, "message": obj["message"]}, status=400)
+    return render(req, "users/register.html", obj, status=200)
 
-        check_email = User.objects.filter(email=email).first()
-        if check_email is not None:
-            return render(request, "users/register.html", {
-                'message': 'Email in invalid.',
-                'message_tag': "alert alert-danger"
-            })
 
-        check_tel = UserInfo.objects.filter(phone_number=tel).first()
-        if check_tel is not None:
-            return render(request, "users/register.html", {
-                'message': 'Phon number in invalid.',
-                'message_tag': "alert alert-danger"
-            })  
-
-        new_user = User.objects.create(
-            username = tel,
-            first_name = first,
-            last_name = last,
-            email = email
-        )
-
-        # UserInfo.objects.create(
-        #     user_id = new_user
-        # )
-
-        return render(request, "users/login.html", {})
+def change_pass(req):
+    if (req.user.is_authenticated == False):
+        return redirect("/")
+    if (req.method == "POST"):
+        old_pass, new_password, con_password = req.POST[
+            'old_pass'], req.POST['new_password'], req.POST['con_password']
+        user = User.objects.get(pk=req.user.id)
+        print(user.password)
+        print(make_password(old_pass))
+        if (user.password == old_pass):
+            print("Pass")
+        else:
+            print("Not pass")
+    return render(req, "users/changepass.html", status=200)

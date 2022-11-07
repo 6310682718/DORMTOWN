@@ -47,15 +47,15 @@
                 <i class="fa-solid fa-circle-info"></i>
                 About us
               </a>
-              <a href="#" class="text-dark mx-4">
+              <a href="#service-section" class="text-dark mx-4">
                 <i class="fa-solid fa-screwdriver-wrench"></i>
                 Service
               </a>
-              <a href="#" class="text-dark mx-4">
+              <a href="#ourteams-section" class="text-dark mx-4">
                 <i class="fa-solid fa-people-group"></i>
                 Our teams
               </a>
-              <a href="#" class="text-dark mx-4">
+              <a href="#location-section" class="text-dark mx-4">
                 <i class="fa-solid fa-location-dot"></i>
                 Location
               </a>
@@ -65,10 +65,10 @@
                 Manger
               </a>
               {% elif request.user.is_authenticated %}
-
+              <a class="btn btn-danger" href="{% url 'users:logout'%}" role=" button">Sign Out</a>
               {% else %}
               <a href="users/register" class="text-dark mx-4">Sign Up</a>
-              <a class="btn btn-primary" href="{% url 'users:login'%}" role=" button">Sign In</a>
+              <a class="text-dark" href="{% url 'users:login'%}" role=" button">Sign In</a>
               {% endif %}
             </div>
           </div>
@@ -91,10 +91,12 @@
         <div class="col-7" class="font-mid p-4">
           <p> let's making our dormitory</p>
           <p> a dream place!</p>
+          {% if request.user.is_superuser == False %}
           <a class="btn btn-secondary" href="/chat">
             Chat
             <i class="fa-solid fa-comment"></i>
           </a>
+          {% endif %}
         </div>
         <div class="col">
           <p class="ml-1">
