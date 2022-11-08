@@ -45,7 +45,7 @@
             <i class="fa-solid fa-user-tie"></i>
             Occupant
           </a>
-          {% if room_status %}
+          {% if user_info.role_id.role_name == 'Occupant' %}
           <a href="{% url 'occupant:list_report' %}" class="text-dark mx-4">
             <i class="fa-solid fa-screwdriver-wrench"></i>
             List of Reporting
