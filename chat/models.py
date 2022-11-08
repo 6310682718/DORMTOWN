@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from occupant.models import Room
 class ChatRoom(models.Model):
-    user =  models.ForeignKey(User, related_name='chat_room', on_delete=models.CASCADE)
+    room_name = models.CharField(max_length=10, default="all-rooms")
 
 
 class Message(models.Model):
@@ -12,4 +12,4 @@ class Message(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
 
 class Meta:
-        ordering = ('date_added',)
+    ordering = ('date_added',)
