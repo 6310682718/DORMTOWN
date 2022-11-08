@@ -7,89 +7,64 @@ import datetime
 
 class TestUrl(SimpleTestCase):
     def test_index_is_resolved(self):
+        # test occupant index url use index method for homepage of user (occupant and outside role)
         url = reverse("occupant:index")
         self.assertEqual(resolve(url).func, index)
 
     def test_reserve_is_resolved(self):
+        # test occupant reserve url use reserve method for reservation page
         url = reverse("occupant:reserve")
         self.assertEqual(resolve(url).func, reserve)
 
     def test_create_reserve_is_resolved(self):
+        # test occupant create reserve url use create reserve method for creating reservation
         url = reverse("occupant:create_reserve", args=[1])
         self.assertEqual(resolve(url).func, create_reserve)
 
     def test_detail_reserve_is_resolved(self):
+        # test occupant get reserve url use get reserve method for detail of reservation
         url = reverse("occupant:get_reserve")
         self.assertEqual(resolve(url).func, get_reserve)
 
     def test_delete_reserve_is_resolved(self):
+        # test occupant delete reserve url use delete reserve method for deleting reservation
         url = reverse("occupant:delete_reserve", args=[1])
         self.assertEqual(resolve(url).func, delete_reserve)
 
     def test_report_is_resolved(self):
+        # test occupant report url use report method for report problem page
         url = reverse("occupant:report")
         self.assertEqual(resolve(url).func, report)
 
     def test_create_report_is_resolved(self):
+        # test occupant create report url use create report method for creating reporting
         url = reverse("occupant:create_report")
         self.assertEqual(resolve(url).func, create_report)
 
     def test_detail_report_is_resolved(self):
+        # test occupant get report url use get report method for detail of reporting
         url = reverse("occupant:get_report", args=[1])
         self.assertEqual(resolve(url).func, get_report)
 
     def test_all_report_is_resolved(self):
+        # test occupant list report url use get list method for all of occpant's reporting
         url = reverse("occupant:list_report")
         self.assertEqual(resolve(url).func, list_report)
 
     def test_delete_report_is_resolved(self):
+        # test occupant delete report url use delete report method for deleting reporting
         url = reverse("occupant:delete_report", args=[1])
         self.assertEqual(resolve(url).func, delete_report)
 
 class TestViews(TestCase):
     def setUp(self):
         self.client = Client()
+        
+        self.role_outside = Role.objects.create(role_name='Outside')
+        self.role_occupant = Role.objects.create(role_name='Occupant')
+        self.role_manager = Role.objects.create(role_name='Manager')
 
-        self.username = 'newuser'
-        self.password = 'newuserpass'
-        self.email = 'newuser@dormtown.com'
-        self.first = 'New'
-        self.last = 'User'
-        self.credentials = {
-            'username': self.username,
-            'password': self.password,
-            'email': self.email,
-            'first_name': self.first,
-            'last_name': self.last}
-        self.new_user = User.objects.create_user(**self.credentials)
-
-        self.username1 = 'newuser1'
-        self.password1 = 'newuserpass1'
-        self.email1 = 'newuser1@dormtown.com'
-        self.first1 = 'New1'
-        self.last1 = 'User1'
-        self.credentials1 = {
-            'username': self.username1,
-            'password': self.password1,
-            'email': self.email1,
-            'first_name': self.first1,
-            'last_name': self.last1}
-        self.new_user1 = User.objects.create_user(**self.credentials1)
-
-        self.outsite_role = Role.objects.create(role_name='Outside')
-        self.occupant_role = Role.objects.create(role_name='Occupant')
-
-        self.phone = '0987654321'
-        self.address = '123/123'
-        self.street = 'SomeRoad'
-        self.city = 'Pakkret'
-        self.state = 'Nonthaburi'
-        self.country = 'Thailand'
-        self.zip = '12345'
-
-        self.phone1 = '0987654320'
-
-        self.room_type = RoomType.objects.create(
+        self.room_type_s = RoomType.objects.create(
             class_level='S',
             price=6500,
             room_service=2,
@@ -97,6 +72,101 @@ class TestViews(TestCase):
             wardrobe=True,
             water_heater=True
         )
+        self.room_type_a = RoomType.objects.create(
+            class_level='A',
+            price=4500,
+            room_service=1,
+            tv_fridge=False,
+            wardrobe=True,
+            water_heater=True
+        )
+
+        self.room_available = Room.objects.create(
+            room_number='101',
+            room_type=self.room_type_s,
+            status=True
+        )
+        self.room_unavailable = Room.objects.create(
+            room_number='102',
+            room_type=self.room_type_a,
+            status=False
+        )
+
+        self.outside_username = 'outside'
+        self.outside_password = 'password'
+        self.credentials = {
+            'username': self.outside_username,
+            'password': self.outside_password,
+            'email': 'outside@dormtown.com',
+            'first_name': 'Outside',
+            'last_name': 'Dormtown'}
+        self.outside_user = User.objects.create_user(**self.credentials)
+        self.outside_userinfo = UserInfo.objects.create(
+            user_id=self.outside_user,
+            role_id=self.role_outside,
+            room_id=None,
+            phone_number='0987654321',
+            address='123/45',
+            street='Changwattana',
+            city='Pakkret',
+            state='Nonthabuti',
+            country='Thailand',
+            zip_code='12345',
+        )
+
+        self.occupant_username = 'occupant'
+        self.occupant_password = 'password'
+        self.credentials = {
+            'username': self.occupant_username,
+            'password': self.occupant_password,
+            'email': 'occupant@dormtown.com',
+            'first_name': 'Occupant',
+            'last_name': 'Dormtown'}
+        self.occupant_user = User.objects.create_user(**self.credentials)
+        self.occupant_userinfo = UserInfo.objects.create(
+            user_id=self.occupant_user,
+            role_id=self.role_occupant,
+            room_id=self.room_unavailable,
+            phone_number='0987654322',
+            address='123/45',
+            street='Changwattana',
+            city='Pakkret',
+            state='Nonthabuti',
+            country='Thailand',
+            zip_code='12345',
+        )
+
+        self.manager_username = 'manager'
+        self.manager_password = 'password'
+        self.credentials = {
+            'username': self.manager_username,
+            'password': self.manager_password,
+            'email': 'occupant@dormtown.com',
+            'first_name': 'Occupant',
+            'last_name': 'Dormtown'}
+        self.manager_user = User.objects.create_user(**self.credentials)
+        self.manager_userinfo = UserInfo.objects.create(
+            user_id=self.manager_user,
+            role_id=self.role_manager,
+            room_id=None,
+            phone_number='0987654323',
+            address='123/45',
+            street='Changwattana',
+            city='Pakkret',
+            state='Nonthabuti',
+            country='Thailand',
+            zip_code='12345',
+        )
+
+        self.temp_username = 'temp'
+        self.temp_password = 'password'
+        self.credentials = {
+            'username': self.temp_username,
+            'password': self.temp_password,
+            'email': 'temp@dormtown.com',
+            'first_name': 'Temp',
+            'last_name': 'Dormtown'}
+        self.temp_user = User.objects.create_user(**self.credentials)
 
         self.status_idle = StatusType.objects.create(
             status_name='Idle'
@@ -108,226 +178,236 @@ class TestViews(TestCase):
             status_name='Done'
         )
 
-        self.reserve1 = Reserve.objects.create(
-            user_id=self.new_user1,
-            room_type=self.room_type,
+        self.occupant_reserve = Reserve.objects.create(
+            user_id=self.occupant_user,
+            room_type=self.room_type_a,
             due_date=datetime.datetime.today(),
             create_at=datetime.datetime.now(),
             status_type=self.status_done
         )
 
-        self.room_available = Room.objects.create(
-            room_number='101',
-            room_type=self.room_type,
-            status=True
-        )
-
-        self.room_unavailable = Room.objects.create(
-            room_number='102',
-            room_type=self.room_type,
-            status=False
-        )
-
-        self.user_info = UserInfo.objects.create(
-            user_id=self.new_user,
-            role_id=self.outsite_role,
-            room_id=self.room_available,
-            phone_number=self.phone,
-            address=self.address,
-            street=self.street,
-            city=self.city,
-            state=self.state,
-            country=self.country,
-            zip_code=self.zip,
-        )
-
-        self.user_info1 = UserInfo.objects.create(
-            user_id=self.new_user1,
-            role_id=self.occupant_role,
-            room_id=self.room_unavailable,
-            phone_number=self.phone1,
-            address=self.address,
-            street=self.street,
-            city=self.city,
-            state=self.state,
-            country=self.country,
-            zip_code=self.zip,
+        self.problem_type = ProblemType.objects.create(
+            problem_name='Cleaning service'
         )
 
         self.index_url = reverse('occupant:index')
         self.edit_profile_url = reverse('occupant:edit_profile')
         self.update_profile_url = reverse('occupant:update_profile')
         self.reserve_url = reverse('occupant:reserve')
-        self.create_reserve_url = reverse('occupant:create_reserve', args=[self.room_type.id])
+        self.create_reserve_url = reverse('occupant:create_reserve', args=[self.room_type_s.id])
         self.detail_reserve_url = reverse('occupant:get_reserve')
-        self.delete_reserve_url = reverse('occupant:delete_reserve', args=[self.reserve1.id])
+        self.delete_reserve_url = reverse('occupant:delete_reserve', args=[self.occupant_reserve.id])
         self.report_url = reverse('occupant:report')
         self.create_report_url = reverse('occupant:create_report')
         self.detail_report_url = reverse('occupant:get_report', args=[1])
         self.list_report_url = reverse('occupant:list_report')
         self.delete_report_url = reverse('occupant:delete_report', args=[1])
 
-    # def test_index_without_login(self):
-    #     response = self.client.get(self.index_url)
+    def test_index_without_login(self):
+        # serch occupant homepage without authorization, return login page with 401 Unauthorized
+        response = self.client.get(self.index_url)
 
-    #     self.assertEqual(response.status_code, 400)
-    #     self.assertTemplateUsed(response, 'users/login.html')
+        self.assertEqual(response.status_code, 403)
+        self.assertTemplateUsed(response, 'users/login.html')
 
-    # def test_index_outside(self):
-    #     self.client.login(username=self.username, password=self.password)
+    def test_index_error_userinfo(self):
+        # serch occupant homepage with authorization but do not have userinfo data, return 500.html with 500 Internal Server Error
+        self.client.login(username=self.temp_username, password=self.temp_password)
 
-    #     response = self.client.get(self.index_url)
+        response = self.client.get(self.index_url)
 
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, 'occupant/index.html')
-    
-    # def test_index_occupant(self):
-    #     self.client.login(username=self.username1, password=self.password1)
+        self.assertEqual(response.status_code, 500)
+        self.assertTemplateUsed(response, 'rooms/500.html')
 
-    #     response = self.client.get(self.index_url)
+    def test_index(self):
+        # authorize for occupant homepage with user and userinfo model, return the page with 200 OK
+        self.client.login(username=self.occupant_username, password=self.occupant_password)
 
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, 'occupant/index.html')
+        response = self.client.get(self.index_url)
 
-    # def test_edit_profile_without_login(self):
-    #     response = self.client.get(self.edit_profile_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/index.html')
 
-    #     self.assertEqual(response.status_code, 400)
-    #     self.assertTemplateUsed(response, 'users/login.html')
+    def test_edit_profile_without_login(self):
+        # edit profile without authorization, return login page with 403 Forbidden
+        response = self.client.get(self.edit_profile_url)
 
-    # def test_edit_profile_outside(self):
-    #     self.client.login(username=self.username, password=self.password)
+        self.assertEqual(response.status_code, 403)
+        self.assertTemplateUsed(response, 'users/login.html')
 
-    #     response = self.client.get(self.edit_profile_url)
+    def test_edit_profile_error_userinfo(self):
+        # edit profile with authorization but do not have userinfo model, return 500.html with 500 Internal Server Error
+        self.client.login(username=self.temp_username, password=self.temp_password)
 
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, 'occupant/edit_profile.html')
+        response = self.client.get(self.edit_profile_url)
 
-    # def test_edit_profile_occupate(self):
-    #     self.client.login(username=self.username1, password=self.password1)
+        self.assertEqual(response.status_code, 500)
+        self.assertTemplateUsed(response, 'rooms/500.html')
 
-    #     response = self.client.get(self.edit_profile_url)
+    def test_edit_profile(self):
+        # authorize for editing profile with user and userinfo data, return the page with 200 OK
+        self.client.login(username=self.occupant_username, password=self.occupant_password)
 
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, 'occupant/edit_profile.html')
+        response = self.client.get(self.edit_profile_url)
 
-    # def test_update_profile_without_login(self):
-    #     response = self.client.get(self.update_profile_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/edit_profile.html')
 
-    #     self.assertEqual(response.status_code, 400)
-    #     self.assertTemplateUsed(response, 'users/login.html')
+    def test_update_profile_without_login(self):
+        # update profile to model without authorization, return login page with 403 Forbidden
+        response = self.client.get(self.update_profile_url)
 
-    # def test_update_profile_get(self):
-    #     self.client.login(username=self.username, password=self.password)
+        self.assertEqual(response.status_code, 403)
+        self.assertTemplateUsed(response, 'users/login.html')
 
-    #     response = self.client.get(self.update_profile_url)
+    def test_update_profile_get(self):
+        # update profile to model with get method, return 404.html with 404 Not Found
+        self.client.login(username=self.temp_username, password=self.temp_password)
 
-    #     self.assertEqual(response.status_code, 400)
-    #     self.assertTemplateUsed(response, 'rooms/index.html')
+        response = self.client.get(self.update_profile_url)
 
-    # def test_update_profile_post_outside(self):
-    #     self.client.login(username=self.username, password=self.password)
+        self.assertEqual(response.status_code, 404)
+        self.assertTemplateUsed(response, 'rooms/404.html')
 
-    #     response = self.client.post(self.update_profile_url)
+    def test_update_profile_error_userinfo(self):
+        # update profile to model with authorization but do not have userinfo data, return 500.html with 500 Internal Server Error
+        self.client.login(username=self.temp_username, password=self.temp_password)
 
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, 'occupant/index.html')
+        response = self.client.post(self.update_profile_url)
 
-    # def test_update_profile_post_occupant(self):
-    #     self.client.login(username=self.username1, password=self.password1)
+        self.assertEqual(response.status_code, 500)
+        self.assertTemplateUsed(response, 'rooms/500.html')
 
-    #     response = self.client.post(self.update_profile_url)
+    def test_update_profile(self):
+        # authorize for updating profile to model with userinfo model and post method, redirect to occupant:index
+        self.client.login(username=self.occupant_username, password=self.occupant_password)
 
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, 'occupant/index.html')
+        response = self.client.post(self.update_profile_url)
 
-    # def test_reserve_without_login(self):
-    #     response = self.client.get(self.reserve_url)
+        self.assertRedirects(response, '/occupant/', status_code=302, target_status_code=200, fetch_redirect_response=True)
 
-    #     self.assertEqual(response.status_code, 400)
-    #     self.assertTemplateUsed(response, 'users/login.html')
+    def test_reserve_without_login(self):
+        # serch reservation page without authorization, return login page with 403 Forbidden
+        response = self.client.get(self.reserve_url)
 
-    # def test_reserve_outside(self):
-    #     self.client.login(username=self.username, password=self.password)
+        self.assertEqual(response.status_code, 403)
+        self.assertTemplateUsed(response, 'users/login.html')
 
-    #     response = self.client.get(self.reserve_url)
+    def test_reserve_error_userinfo(self):
+        # serch reservation page with authorization but do not have userinfo data, return 500.html with 500 Internal Server Error
+        self.client.login(username=self.temp_username, password=self.temp_password)
 
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, 'occupant/reserve.html')
+        response = self.client.get(self.reserve_url)
 
-    # def test_reserve_occupant(self):
-    #     self.client.login(username=self.username1, password=self.password1)
+        self.assertEqual(response.status_code, 500)
+        self.assertTemplateUsed(response, 'rooms/500.html')
 
-    #     response = self.client.get(self.reserve_url)
+    def test_reserve_outside(self):
+        # outside role search reservation page with authorization, return the page with 200 OK
+        self.client.login(username=self.outside_username, password=self.outside_password)
 
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, 'occupant/result_reserve.html')
+        response = self.client.get(self.reserve_url)
 
-    # def test_create_reserve_without_login(self):
-    #     response = self.client.get(self.create_reserve_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/reserve.html')
 
-    #     self.assertEqual(response.status_code, 400)
-    #     self.assertTemplateUsed(response, 'users/login.html')
+    def test_reserve_occupant(self):
+        # occupant role search reservation page with authorization (already reserved), return result of seservation path with 200 OK
+        self.client.login(username=self.occupant_username, password=self.occupant_password)
 
-    # def test_create_reserve_outside(self):
-    #     self.client.login(username=self.username, password=self.password)
+        response = self.client.get(self.reserve_url)
 
-    #     response = self.client.get(self.create_reserve_url)
+        self.assertRedirects(response, '/occupant/reserve/detail', status_code=302, target_status_code=200, fetch_redirect_response=True)
 
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, 'occupant/result_reserve.html')
+    def test_create_reserve_without_login(self):
+        # create reservation without authorization, return login page with 403 Forbidden
+        response = self.client.get(self.create_reserve_url)
 
-    # def test_create_reserve_occupant(self):
-    #     self.client.login(username=self.username1, password=self.password1)
+        self.assertEqual(response.status_code, 403)
+        self.assertTemplateUsed(response, 'users/login.html')
 
-    #     response = self.client.get(self.create_reserve_url)
+    def test_create_reserve_error_userinfo(self):
+        # create reservation with authorization but do not have userinfo data, return 500.html with 500 Internal Server Error
+        self.client.login(username=self.temp_username, password=self.temp_password)
 
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, 'occupant/result_reserve.html')
+        response = self.client.get(self.create_reserve_url)
 
-    # def test_detail_reserve_without_login(self):
-    #     response = self.client.get(self.detail_reserve_url)
+        self.assertEqual(response.status_code, 500)
+        self.assertTemplateUsed(response, 'rooms/500.html')
 
-    #     self.assertEqual(response.status_code, 400)
-    #     self.assertTemplateUsed(response, 'users/login.html')
+    def test_create_reserve_outside(self):
+        # create reservation with authorization by outside role, return result of reservation with 200 OK
+        self.client.login(username=self.outside_username, password=self.outside_password)
 
-    # def test_detail_reserve_outside(self):
-    #     self.client.login(username=self.username, password=self.password)
+        response = self.client.get(self.create_reserve_url)
 
-    #     response = self.client.get(self.detail_reserve_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/result_reserve.html')
 
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, 'occupant/reserve.html')
+    def test_create_reserve_occupant(self):
+        # create reservation with authorization by occupant role, return result of reservation without creating new reservation with 200 OK
+        self.client.login(username=self.occupant_username, password=self.occupant_password)
 
-    # def test_detail_reserve_occupant(self):
-    #     self.client.login(username=self.username1, password=self.password1)
+        response = self.client.get(self.create_reserve_url)
 
-    #     response = self.client.get(self.detail_reserve_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/result_reserve.html')
 
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, 'occupant/result_reserve.html')
+    def test_detail_reserve_without_login(self):
+        # get detail of reservation without authorization, return login page with 403 Forbidden
+        response = self.client.get(self.detail_reserve_url)
 
-    # def test_delete_reserve_without_login(self):
-    #     response = self.client.get(self.delete_reserve_url)
+        self.assertEqual(response.status_code, 403)
+        self.assertTemplateUsed(response, 'users/login.html')
 
-    #     self.assertEqual(response.status_code, 400)
-    #     self.assertTemplateUsed(response, 'users/login.html')
+    def test_detail_reserve_error_userinfo(self):
+        # get detail of reservation with authorization but do not have userinfo data, return 500.html with 500 Internal Server Error
+        self.client.login(username=self.temp_username, password=self.temp_password)
 
-    # def test_delete_reserve_outside(self):
-    #     self.client.login(username=self.username, password=self.password)
+        response = self.client.get(self.detail_reserve_url)
 
-    #     response = self.client.get(self.delete_reserve_url)
+        self.assertEqual(response.status_code, 500)
+        self.assertTemplateUsed(response, 'rooms/500.html')
 
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, 'occupant/index.html')
+    def test_detail_reserve_outside(self):
+        # outside role get detail of reservation but have no reservation, redirct to occupant:reserve
+        self.client.login(username=self.outside_username, password=self.outside_password)
 
-    # def test_delete_reserve_occupant(self):
-    #     self.client.login(username=self.username1, password=self.password1)
+        response = self.client.get(self.detail_reserve_url)
 
-    #     response = self.client.get(self.delete_reserve_url)
+        self.assertRedirects(response, '/occupant/reserve', status_code=302, target_status_code=200, fetch_redirect_response=True)
 
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, 'occupant/index.html')
+    def test_detail_reserve_occupant(self):
+        # occupant role (or outside role who has reserved already) get detail of reservation with authorization, return the page with 200 OK
+        self.client.login(username=self.occupant_username, password=self.occupant_password)
+
+        response = self.client.get(self.detail_reserve_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/result_reserve.html')
+
+    def test_delete_reserve_without_login(self):
+        # delete reservation without authorization, return login page with 403 Forbidden
+        response = self.client.get(self.delete_reserve_url)
+
+        self.assertEqual(response.status_code, 403)
+        self.assertTemplateUsed(response, 'users/login.html')
+
+    def test_delete_reserve_outside(self):
+        # outside role delete reservation but have no reservation, redirct to occupant:index
+        self.client.login(username=self.outside_username, password=self.outside_password)
+
+        response = self.client.get(self.delete_reserve_url)
+
+        self.assertRedirects(response, '/occupant/', status_code=302, target_status_code=200, fetch_redirect_response=True)
+
+    def test_delete_reserve_occupant(self):
+        # occupant role (or outside role who has reserved already) delete reservation, delete reservation and redirct to occupant:index
+        self.client.login(username=self.occupant_username, password=self.occupant_password)
+
+        response = self.client.get(self.delete_reserve_url)
+
+        self.assertRedirects(response, '/occupant/', status_code=302, target_status_code=200, fetch_redirect_response=True)
 
     # def test_report(self):
     #     response = self.client.get(self.report_url)
