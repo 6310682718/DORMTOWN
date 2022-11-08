@@ -3,7 +3,7 @@ from django.http import HttpResponse
 import datetime
 from django.contrib.auth.models import User
 # from ..occupant.models import *
-from occupant.models import UserInfo,Report, StatusType
+from occupant.models import UserInfo,Report
 
 # Create your views here.
 
@@ -14,9 +14,7 @@ def index(request):
         user = User.objects.filter(pk=request.user.id).first()
         user_info = UserInfo.objects.filter(user_id=request.user.id).first()
         role_name = user_info.role_id.role_name
-        #status_type, status_type_created = StatusType.objects.get_or_create(status_name="idle")
         report = Report.objects.filter(assign_to_id=request.user)
-
         print("Reports : ", report)
         if role_name == 'Technician' or 'Housekeeper':
             print("can_access = true")
