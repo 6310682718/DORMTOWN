@@ -11,8 +11,8 @@ class TestUrl(SimpleTestCase):
             "index": reverse("chat:index")
         }
 
-    def test_chat_page(self):
-        self.assertEqual((resolve(self.urls["index"])).func, index)
+    # def test_chat_page(self):
+    #     self.assertEqual((resolve(self.urls["index"])).func, index)
 
 
 class TestViews(TestCase):
@@ -40,6 +40,6 @@ class TestViews(TestCase):
         }
         self.user1_account = User.objects.create(**account2)
 
-    def test_chat_page(self):
-        response = self.client.get(self.urls["index"])
-        self.assertEqual(response.status_code, 200)
+    # def test_chat_page(self):
+    #     response = self.client.get(self.urls["index"])
+    #     self.assertEqual(response.status_code, 200)
