@@ -1,72 +1,65 @@
 {% extends 'employee/layout.html' %}
 {% block body %}
 
-<!--demo-->
-<div class="text-center mt-4">
-  <h1>Housekeeper</h1>
-</div>
-<!-- {% comment %}
-{% if role_id=Housekeeper %}
+{% if role_name == "Housekeeper" %}
 <div class="text-center mt-4">
     <h1>Housekeeper</h1>
 </div>
-{% else %}
+{% elif role_name == "Technician" %}
 <div class="text-center mt-4">
     <h1>Technician</h1>
-{% endcomment %} -->
+</div>
+{% else %}
+<div class="text-center mt-4">
+  <h1>Who am i?</h1>
+</div>
+{% endif %}
+
 
 <!--PROFILE DETAIL-->
-<div class="d-flex justify-content-center">
+<div class="d-flex justify-content-around">
   <div class="container">
-    <div class="py-2"></div>
-    <div class="d-flex justify-content-between align-items-center py-3">
-      <h2 class="h5 mb-0">Myjob</h2>
-
+    <div class="py-3"></div>
+    <div class="row">
+        <div class="col-lg-10 card" style="margin: auto">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center py-3">
+                    <h2 class="h5 mb-0">Profile</h2>
+                </div>
+                <table class="table table-borderless">
+                    <tr>
+                        <td colspan="2">Name:</td>
+                        <td class="text-end">{{ user.first_name }} {{ user.last_name }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Contact:</td>
+                        <td class="text-end">{{ user_info.phone_number }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Address:</td>
+                        <td class="text-end">{{ user_info.address }}, {{ user_info.street }}, {{ user_info.state }}, {{ user_info.city }}, {{ user_info.country }}, {{ user_info.zip_code }} </td>
+                    </tr>
+                    <tr>
+                        {% if room_status %}
+                            <td colspan="2"></td>
+                            <td colspan="2" align="right"><a class="btn btn-dark text-white" href="{% url 'occupant:edit_profile' %}">Edit</a></td>
+                        {% else %}
+                            <td colspan="2"></td>
+                            <td class="text-end" align="right">
+                                <a class="btn btn-dark text-white" href="{% url 'occupant:edit_profile' %}">Edit</a>
+                            </td>
+                        {% endif %}
+                    </tr>
+                </table>
+            </div>
+        </div>
     </div>
-    <table class="table table-bordered text-center">
-      <thead>
-        <tr>
-          <th scope="col">Name</th>
-          <th scope="col">Room</th>
-          <th scope="col">Duedate</th>
-          <th scope="col">Action</th>
-        </tr>
-      <tbody>
-        <tr>
-          <td colspan="2">Name:</td>
-          <td class="text-end">Kantapat</td>
-        </tr>
-        <tr>
-          <td colspan="2">Contact:</td>
-          <td class="text-end">0897827356</td>
-        </tr>
-        <tr>
-          <td colspan="2">Address:</td>
-          <td class="text-end">9330 W Lake Dr ## A, Eagle River, Alaska 99577, USA</td>
-        </tr>
-        <tr>
-        <tr>
-          <td>Move out</td>
-          <td>7510</td>
-          <td>13/2/2023</td>
-          <td><a class="btn btn-dark" href="#"></a></td>
-        </tr>
-        <tr>
-          </thead>
-    </table>
-    </dev>
-    <!--All of job-->
-    <dev class="container">
-      <div class="py-3"></div>
-      <div class="col card"></div>
-      <div class="py-2"></div>
-      <div class="d-flex justify-content-between align-items-center py-3">
-        <h2 class="h5 mb-0">All of Job</h2>
-      </div>
-  </div>
+  </div>    
+
+
   <!--Working Small Detail-->
   <div class="container">
-    <div class="py-2"></div>
+    <div class="py-3"></div>
     <div class="row">
       <div class="col card">
         <div class="card-body">
@@ -95,7 +88,7 @@
   <div class="col card"></div>
   <div class="py-2"></div>
   <div class="d-flex justify-content-between align-items-center py-3">
-    <h2 class="h5 mb-0">All of Job</h2>
+    <h2 class="h5 mb-0">MY Job</h2>
 
   </div>
   <table class="table table-bordered text-center">
