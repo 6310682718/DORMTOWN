@@ -58,10 +58,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
     @sync_to_async
     def save_message(self, username, room, message):
         user = User.objects.get(username=username)
-        # room = Room.objects.get(room_number=room)
         try:
-            chat_room = ChatRoom.objects.get_or_create(user=user)[0]
-            print(chat_room)
+            chat_room, is_created = ChatRoom.objects.get_or_create(room_name=room)
             Message.objects.create(user=user, room=chat_room, content=message)
         except Exception as e:
             print("E : ", e)
