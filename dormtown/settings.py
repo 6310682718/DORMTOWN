@@ -28,10 +28,15 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/'
+LOGIN_URL = '/login/'
+
 
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     "rooms",
     "users",
     "dormtown",
@@ -77,6 +82,14 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "dormtown.wsgi.application"
+ASGI_APPLICATION = "dormtown.asgi.application"
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer'
+    }
+}
+
 
 
 # Database
