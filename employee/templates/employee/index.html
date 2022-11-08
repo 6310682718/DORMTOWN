@@ -99,35 +99,17 @@
         <th scope="col">Duedate</th>
         <th scope="col">Action</th>
       </tr>
-    <tbody>
-      <tr>
-        <td>Cleanning Service</td>
-        <td>2202</td>
-        <td>20/2/2023</td>
-        <td><a class="btn btn-dark" href="#"></a></td>
-      </tr>
-      <tr>
-      <tr>
-        <td>Cleanning Service</td>
-        <td>2202</td>
-        <td>20/2/2023</td>
-        <td><a class="btn btn-dark" href="#"></a></td>
-      </tr>
-      <tr>
-        <td>Cleanning Service</td>
-        <td>1501</td>
-        <td>23/2/2023</td>
-        <td><a class="btn btn-dark" href="#"></a></td>
-      </tr>
-      <tr>
-      <tr>
-        <td>Move out</td>
-        <td>7510</td>
-        <td>13/2/2023</td>
-        <td><a class="btn btn-dark" href="#"></a></td>
-      </tr>
-      <tr>
-        </thead>
+      <tbody>
+        {% for i in report %}
+          <tr>
+            <td>{{i.problem_type_id}}</td>
+            <td>{{i.from_user_id}}</td>
+            <td>{{i.due_date}}</td>
+            <td><a class="btn btn-dark" href="#"></a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </thead>      
   </table>
 </dev>
 <!--All of job-->
