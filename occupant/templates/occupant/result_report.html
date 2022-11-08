@@ -1,0 +1,64 @@
+{% extends 'occupant/layout.html' %}
+{% block body %}
+<div class="text-center mt-4">
+    <p class="header">{{ header }}</p>
+</div>
+
+<!--REPORT DETAIL-->
+<div class="container">
+    <div class="py-3"></div>
+    <div class="row">
+        <div class="col-lg-10 card" style="margin: auto">
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <td colspan="2">Service:</td>
+                        <td class="text-end">room service</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Room:</td>
+                        <td class="text-end">2211</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Due date:</td>
+                        <td class="text-end">{{ report.date }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td colspan="2" align="right"><a class="btn btn-danger text-white" href="{% url 'occupant:delete_report' 1 %}">Delete</a></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>    
+
+<!--CONTACT DETAIL-->
+<div class="container">
+    <div class="py-3"></div>
+    <div class="row">
+        <div class="col-lg-10 card" style="margin: auto">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center py-3">
+                    <h2 class="h5 mb-0">Contact</h2>
+                </div>
+                <table class="table table-borderless">
+                    <tr>
+                        <td colspan="2">Name:</td>
+                        <td class="text-end">Natnicha Faksang</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Contact:</td>
+                        <td class="text-end">0644153591</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Job:</td>
+                        <td class="text-end">Housekeeper</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div> 
+
+{% endblock %}
