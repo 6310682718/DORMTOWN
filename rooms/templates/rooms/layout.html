@@ -68,7 +68,7 @@
               <a class="btn btn-danger" href="{% url 'users:logout'%}" role=" button">Sign Out</a>
               {% else %}
               <a href="users/register" class="text-dark mx-4">Sign Up</a>
-              <a class="text-dark" href="{% url 'users:login'%}" role=" button">Sign In</a>
+              <a class="btn text-light" href="{% url 'users:login' %}" role="button" style="background-color: #192e80;">Sign In</a>
               {% endif %}
             </div>
           </div>
