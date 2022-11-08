@@ -49,7 +49,11 @@
                         <p class="sub">Rent cost per month</p>
                         <br>
                         <br>
-                        <a class="btn btn-success btn-lg btn-block center" href="{% url 'occupant:create_reserve' room.id %}">Reserve a Room</a>
+                        {% if room.available %}
+                            <a class="btn btn-success btn-lg btn-block center" href="{% url 'occupant:create_reserve' room.id %}">Reserve a Room</a>
+                        {% else %}
+                            <a class="btn btn-success btn-lg btn-block center" href="{% url 'occupant:create_reserve' room.id %}" disable>Reserve a Room</a>
+                        {% endif %}
                     </div>
                 </div>
             </div>

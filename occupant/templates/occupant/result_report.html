@@ -30,9 +30,23 @@
                     </tr>
                     {% endif %}
                     <tr>
-                        <td colspan="2"></td>
-                        <td colspan="2" align="right"><a class="btn btn-danger text-white" href="{% url 'occupant:delete_report' 1 %}">Delete</a></td>
+                        <td colspan="2">Status:</td>
+                        <td class="text-end">
+                            {% if report.status_id == 'Done' %}
+                            <i class="fa-solid fa-circle-check"></i>
+                            {% endif %}
+                            {{ report.status_id }}
+                        </td>
                     </tr>
+                    {% if report.status_id != 'Idle' %}
+                    <tr>
+                        <td colspan="2"></td>
+                        <td colspan="2" align="right">
+                            <a class="btn btn-dark text-white" href="{% url 'occupant:edit_report' report.id %}">Edit</a>
+                            <a class="btn btn-danger text-white" href="{% url 'occupant:delete_report' report.id %}">Remove</a>
+                        </td>
+                    </tr>
+                    {% endif %}
                 </table>
             </div>
         </div>
