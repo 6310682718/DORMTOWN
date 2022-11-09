@@ -54,7 +54,6 @@ class UserInfo(models.Model):
 class StatusType(models.Model):
     # 1 -> Idle 2 -> Doing 3 -> Done
     status_name = models.CharField(max_length=10)
-
     def __str__(self):
         return f'{ self.status_name }'
 
@@ -68,7 +67,7 @@ class Reserve(models.Model):
     create_at = models.DateTimeField()
     status_type = models.ForeignKey(
         StatusType, on_delete=models.CASCADE, related_name="status_type")
-
+    
     def __str__(self):
         return f'Class { self.room_type.class_level } { self.status_type }'
 
