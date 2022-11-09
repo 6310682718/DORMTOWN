@@ -59,8 +59,6 @@
 <script>
   const username = $("#username").val()
   const userId = $("#userId").val()
-  const pathName = window.location.pathname.split("/")
-  const reply_to_id = pathName[pathName.length - 1]
   $("#sendMsg").click(() => sendMessage());
   $("#msgText").keyup((e) => {
     if (e.keyCode === 13) {
@@ -72,7 +70,7 @@
     'ws://' +
     window.location.host +
     '/ws/' +
-    `room-${reply_to_id}` +
+    `room-${userId}` +
     '/'
   );
   chatSocket.onclose = function(e) {
@@ -92,7 +90,7 @@
     const objMessage = {
       "message": text,
       "username": username,
-      "room": `room-${reply_to_id}`
+      "room": `room-${userId}`,
     }
     chatSocket.send(JSON.stringify(objMessage))
     $("#msgText").val("")
@@ -100,11 +98,11 @@
 
   function responseMessage(text, username) {
     $(".chat-history").append(`
-      <div class="destination-text text">
-        <i class="fa-solid fa-user-gear"></i>
-          ${username} :
-          ${text}
-      </div>
+    <div class="destination-text text">
+      <i class="fa-solid fa-user-gear"></i>
+        ${username} :
+        ${text}
+    </div>
     `);
   }
 
