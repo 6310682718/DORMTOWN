@@ -59,8 +59,7 @@
 </div>
 <script>
   const username = "{{ request.user.username }}"
-  const fullPath = window.location.pathname.split("/")
-  const replyId = fullPath[fullPath.length - 1]
+  const replyId = "{{ request.user.id }}"
   $(document).ready(function() {
     let objDiv = document.getElementById("chat");
     objDiv.scrollTop = objDiv.scrollHeight;
