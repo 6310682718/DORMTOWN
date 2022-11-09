@@ -8,6 +8,8 @@ dormtown/settings.py
 
 # C extensions
 *.so
+*/migrations/
+*/__pycache__/
 
 # Distribution / packaging
 .Python
