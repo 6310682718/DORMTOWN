@@ -280,7 +280,7 @@ def list_report(request):
 
     user = User.objects.filter(pk=request.user.id).first()
     user_info = UserInfo.objects.filter(user_id=user).first()
-    reports = Report.objects.filter(from_user_id=user).order_by('creation_time')
+    reports = Report.objects.filter(from_user_id=user).order_by('due_date')
 
     return render(request, 'occupant/list_report.html', {
         'header': 'List of Report',

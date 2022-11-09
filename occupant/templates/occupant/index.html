@@ -27,7 +27,7 @@
                         <td class="text-end">{{ user_info.address }}, {{ user_info.street }}, {{ user_info.state }}, {{ user_info.city }}, {{ user_info.country }}, {{ user_info.zip_code }} </td>
                     </tr>
                     <tr>
-                        {% if room_status %}
+                        {% if user_info.role_id.role_name == 'Occupant' %}
                             <td colspan="2"></td>
                             <td colspan="2" align="right"><a class="btn btn-dark text-white" href="{% url 'occupant:edit_profile' %}">Edit</a></td>
                         {% else %}
@@ -45,7 +45,7 @@
 </div>    
 
 <!--ROOM DETAIL-->
-{% if room_status %}
+{% if user_info.role_id.role_name == 'Occupant' %}
 <div class="container">
     <div class="py-3"></div>
     <div class="row">
