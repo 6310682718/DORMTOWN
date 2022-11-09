@@ -3,50 +3,40 @@
 <div class="text-center mt-4">
     <p class="header">List of Reporting</p>
 </div>
-<section class="vh-100">
-    <div class="container">
-        <div class="py-3"></div>
-        <div class="row card">
-            <div class="card-body">
-                {% if report %}
-                <table class="table table-hover table-striped" style="text-align: center;">
-                    <tr>
-                        <th>#</th>
-                        <th>Title</th>
-                        <th>Assign to</th>
-                        <th>Due date</th>
-                        <th>status</th>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>Cleaning Service</td>
-                        <td>Natnicha Faksang</td>
-                        <td>{{ report.date }}</td>
-                        <td><a class="btn btn-dark text-white" href="{% url 'occupant:get_report' 1 %}">Detail</a></td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Fix door</td>
-                        <td>Natnicha Faksang</td>
-                        <td>{{ report.date }}</td>
-                        <td><a class="btn btn-dark text-white" href="{% url 'occupant:get_report' 2 %}">Detail</a></td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>Fix shower</td>
-                        <td>Natnicha Faksang</td>
-                        <td>{{ report.date }}</td>
-                        <td><a class="btn btn-dark text-white" href="{% url 'occupant:get_report' 3 %}">Detail</a></td>
-                    </tr>
-                </table>
-                {% else %}
-                <div class="alert alert-danger" role="alert">
-                    You have not reported yet.
-                </div>
-                {% endif %}
+<div class="container">
+    <div class="py-3"></div>
+    <div class="row card">
+        <div class="card-body">
+            {% if reports %}
+            <table class="table table-hover table-striped" style="text-align: center;">
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Assign to</th>
+                    <th>Due date</th>
+                    <th>status</th>
+                </tr>
+                {% for report in reports %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ report.problem_type_id }}</td>
+                    {% if report.assign_to_id %}
+                        <td>{{ report.assign_to_id.first_name }} {{ report.assign_to_id.last_name }}</td>
+                    {% else %}
+                        <td>-</td>
+                    {% endif %}
+                    <td>{{ report.due_date }}</td>
+                    <td><a class="btn btn-dark text-white" href="{% url 'occupant:get_report' report.id %}">Detail</a></td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% else %}
+            <div class="alert alert-danger" role="alert">
+                You have not reported yet.
             </div>
+            {% endif %}
         </div>
     </div>
-</section>
+</div>
 
 {% endblock %}

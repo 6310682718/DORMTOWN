@@ -12,7 +12,9 @@ def index(req):
     chat_room, is_created = ChatRoom.objects.get_or_create(room_name=f"room-{req.user.id}")
     messages = Message.objects.filter(room=chat_room)
     print("Messages : ", messages)
-    return render(req, "chat/index.html", {"messages": messages})
+    return render(req, "chat/index.html", {
+        "messages": messages
+    })
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)
@@ -22,11 +24,36 @@ def chat_list(req, user_id):
         room_name = f"room-{user_id}"
         chat_room, is_created = ChatRoom.objects.get_or_create(room_name=room_name)
         messages = Message.objects.filter(room=chat_room)
-        print("Messages chat list : ", messages)
-        return render(req, "chat/chat_list.html", {"messages": messages})
+        text_to_admin = Message.objects.order_by().values('user').distinct()
+        only_texter = Message.objects.filter(user__in=text_to_admin)
+        for i in only_texter:
+            print(f"USER : {i}")
+        return render(req, "chat/chat_list.html", {"messages": messages, "only_texter" : only_texter})
     except Exception as e:
         print(f"<-- ERROR {e} -->")
 
+@login_required
+@user_passes_test(lambda u: u.is_superuser)
+def chat_log(req, user_id):
+    try:
+        room_name = f"room-{user_id}"
+        chat_room, is_created = ChatRoom.objects.get_or_create(room_name=room_name)
+        messages = Message.objects.filter(room=chat_room)
+        text_to_admin = Message.objects.order_by().values_list('user', flat=True).distinct()
+        text_to = User.objects.get(id=user_id)
+        text_arr = []
+        for i in text_to_admin:
+            user = User.objects.get(id=i)
+            if(user.is_superuser == False):
+                text_arr.append(user)
+        return render(req, "chat/chat_log.html", {
+            "text_to": text_to,
+            "messages": messages,
+            "only_texter" : text_arr,
+            "message_count": len(messages)
+        })
+    except Exception as e:
+        print(f"<-- ERROR {e} -->")
 # def rooms(request):
 #     rooms = Room.objects.all()
 

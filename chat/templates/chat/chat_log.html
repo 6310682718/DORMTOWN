@@ -1,6 +1,25 @@
 {% extends 'rooms/layout.html' %} {% block body %}
 <div id="container">
-  <main>
+  <aside>
+    <!-- <header>
+      <input type="text" placeholder="search">
+    </header> -->
+    <ul>
+      {% for i in only_texter %}
+      <a href="/chat/user/{{ i.id }}">
+        <li>
+          <img class="avatar" src="https://png.pngitem.com/pimgs/s/522-5220445_anonymous-profile-grey-person-sticker-glitch-empty-profile.png" alt="">
+          <div>
+            <h2>
+              {{ i.username }}
+            </h2>
+          </div>
+        </li>
+      </a>
+      {% endfor %}
+    </ul>
+  </aside>
+  <main class="chat-box">
     <header>
       <div>
         <h2>Chat with
@@ -12,7 +31,7 @@
       </div>
       <!-- <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/ico_star.png" alt=""> -->
     </header>
-    <ul id="chat" class="w-100">
+    <ul id="chat">
       {% for m in messages %}
       {% if m.user.id != request.user.id %}
       <li class="you">
@@ -59,7 +78,8 @@
 </div>
 <script>
   const username = "{{ request.user.username }}"
-  const replyId = "{{ request.user.id }}"
+  const fullPath = window.location.pathname.split("/")
+  const replyId = fullPath[fullPath.length - 1]
   $(document).ready(function() {
     let objDiv = document.getElementById("chat");
     objDiv.scrollTop = objDiv.scrollHeight;

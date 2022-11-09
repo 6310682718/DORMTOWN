@@ -1,64 +1,63 @@
-from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 import datetime
 from .models import *
 
 def index(request):
     if not request.user.is_authenticated:
-        return render(request, 'users/login.html', status=400)
+        return render(request, 'users/login.html', status=403)
 
-    user = User.objects.filter(pk=request.user.id).first()
-    user_info = UserInfo.objects.filter(user_id=request.user.id).first()
-
-    if user_info.role_id.role_name == 'Occupant':
-        room_status = True
-    else:
-        room_status = False
+    try:
+        user = User.objects.get(pk=request.user.id)
+        user_info = get_object_or_404(UserInfo, user_id=request.user.id)
+    except:
+        return render(request, 'rooms/500.html', status=500)
 
     return render(request, 'occupant/index.html', {
-        'room_status': room_status,
         'user': user,
         'user_info': user_info,
     })
 
 def edit_profile(request):
     if not request.user.is_authenticated:
-        return render(request, 'users/login.html', status=400)
+        return render(request, 'users/login.html', status=403)
 
-    user = User.objects.filter(pk=request.user.id).first()
-    user_info = UserInfo.objects.filter(user_id=request.user.id).first()
-
-    if user_info.role_id.role_name == 'Occupant':
-        room_status = True
-    else:
-        room_status = False
+    try:
+        user = User.objects.get(pk=request.user.id)
+        user_info = get_object_or_404(UserInfo, user_id=request.user.id)
+    except:
+        return render(request, 'rooms/500.html', status=500)
 
     return render(request, 'occupant/edit_profile.html', {
-        'room_status': room_status,
         'user': user,
         'user_info': user_info,
     })
 
 def update_profile(request):
     if not request.user.is_authenticated:
-        return render(request, 'users/login.html', status=400)
+        return render(request, 'users/login.html', status=403)
 
     if request.method == 'POST':
-        first = request.POST.get('firstname', False)
-        last = request.POST.get('lastname', False)
-        tel = request.POST.get('phoneNumber', False)
-        address = request.POST.get('address', False)
-        street = request.POST.get('street', False)
-        state = request.POST.get('state', False)
-        city = request.POST.get('city', False)
-        country = request.POST.get('country', False)
-        zip_code = request.POST.get('zip', False)
+        try:
+            user = User.objects.get(pk=request.user.id)
+            user_info = get_object_or_404(UserInfo, user_id=request.user.id)
+        except:
+            return render(request, 'rooms/500.html', status=500)
+
+        first = request.POST.get('firstname', user.first_name)
+        last = request.POST.get('lastname', user.last_name)
+        tel = request.POST.get('phoneNumber', user_info.phone_number)
+        address = request.POST.get('address', user_info.address)
+        street = request.POST.get('street', user_info.street)
+        state = request.POST.get('state', user_info.state)
+        city = request.POST.get('city', user_info.city)
+        country = request.POST.get('country', user_info.country)
+        zip_code = request.POST.get('zip', user_info.zip_code)
 
         User.objects.filter(pk=request.user.id).update(
             first_name =  first,
             last_name = last,
         )
-        user = User.objects.filter(pk=request.user.id).first()
 
         UserInfo.objects.filter(user_id=user).update(
             phone_number = tel,
@@ -69,65 +68,46 @@ def update_profile(request):
             country = country,
             zip_code = zip_code
         )
-        user_info = UserInfo.objects.filter(user_id=user).first()
 
-        if user_info.role_id.role_name == 'Occupant':
-            room_status = True
-        else:
-            room_status = False
-
-        return render(request, 'occupant/index.html', {
-            'room_status': room_status,
-            'user': user,
-            'user_info': user_info,
-        })
+        return redirect(reverse('occupant:index'))
     else:
-        return render(request, 'rooms/index.html', status=400)
+        return render(request, 'rooms/404.html', status=404)
 
 def reserve(request):
     if not request.user.is_authenticated:
-        return render(request, 'users/login.html', status=400)
+        return render(request, 'users/login.html', status=403)
 
     rooms = RoomType.objects.all()
-    rooms_sperated = list()
     for room in rooms:
         rooms_by_type = Room.objects.filter(room_type=room, status=True)
+        room.available = (rooms_by_type.count() > 0)
 
-        rooms_sperated.append({
-            'room': room,
-            'available': (rooms_by_type.count() > 0)
-        })
-
-    user = User.objects.filter(email=request.user.email).first()
-    reserve = Reserve.objects.filter(user_id=user).first()
-    room_status = False
+    try:
+        user = User.objects.get(pk=request.user.id)
+        user_info = get_object_or_404(UserInfo, user_id=request.user.id)
+        reserve = Reserve.objects.filter(user_id=user).first()
+    except:
+        return render(request, 'rooms/500.html', status=500)
 
     if reserve is None:
         return render(request, 'occupant/reserve.html', {
-            'room_status': room_status,
-            'rooms': rooms,
+            'user_info': user_info,
+            'rooms': rooms
         })
     else:
-        return render(request, 'occupant/result_reserve.html', {
-            'room_status': room_status,
-            'room': reserve.room_type,
-            'header': 'List of Reservation',
-            "reserve_id": reserve.id
-        })
+        return redirect(reverse('occupant:get_reserve'))
 
 def create_reserve(request, room_type):
     if not request.user.is_authenticated:
-        return render(request, 'users/login.html', status=400)
+        return render(request, 'users/login.html', status=403)
 
-    user = User.objects.filter(email=request.user.email).first()
-    user_info = UserInfo.objects.filter(user_id=request.user.id).first()
+    try:
+        user = User.objects.filter(pk=request.user.id).first()
+        user_info = get_object_or_404(UserInfo, user_id=request.user.id)
+        reserve = Reserve.objects.filter(user_id=user).first()
+    except:
+        return render(request, 'rooms/500.html', status=500)
 
-    if user_info.role_id.role_name == 'Occupant':
-        room_status = True
-    else:
-        room_status = False
-
-    reserve = Reserve.objects.filter(user_id=user).first()
     if reserve is None:
         room_type = RoomType.objects.filter(pk=room_type).first()
         status_type = StatusType.objects.filter(pk=1).first()
@@ -140,133 +120,184 @@ def create_reserve(request, room_type):
             status_type=status_type
         )
 
+    role = Role.objects.get(role_name='Manager')
+    managers = UserInfo.objects.filter(role_id=role)
+
     return render(request, 'occupant/result_reserve.html', {
-        'room_status': room_status,
+        'user_info': user_info,
         'room': reserve.room_type,
         'reserve_id': reserve.id,
-        'header': 'Summary of Reservation'
+        'header': 'Summary of Reservation',
+        'managers': managers
     })
 
 def get_reserve(request):
     if not request.user.is_authenticated:
-        return render(request, 'users/login.html', status=400)
+        return render(request, 'users/login.html', status=403)
 
-    user = User.objects.filter(email=request.user.email).first()
-    user_info = UserInfo.objects.filter(user_id=request.user.id).first()
+    try:
+        user = User.objects.get(pk=request.user.id)
+        user_info = get_object_or_404(UserInfo, user_id=request.user.id)
+        reserve = Reserve.objects.filter(user_id=user).first()
+    except:
+        return render(request, 'rooms/500.html', status=500)
 
-    if user_info.role_id.role_name == 'Occupant':
-        room_status = True
-    else:
-        room_status = False
-
-    reserve = Reserve.objects.filter(user_id=user).first()
+    role = Role.objects.get(role_name='Manager')
+    managers = UserInfo.objects.filter(role_id=role)
 
     if reserve is not None:
         return render(request, 'occupant/result_reserve.html', {
-            'room_status': room_status,
+            'user_info': user_info,
             'room': reserve.room_type,
             'reserve_id': reserve.id,
-            'header': 'List of Reservation'
+            'header': 'List of Reservation',
+            'managers': managers
         })
     else:
-        rooms = RoomType.objects.all()
-        rooms_sperated = list()
-        for room in rooms:
-            rooms_by_type = Room.objects.filter(room_type=room, status=True)
-
-            rooms_sperated.append({
-                'room': room,
-                'available': (rooms_by_type.count() > 0)
-            })
-
-        return render(request, 'occupant/reserve.html', {
-            'room_status': room_status,
-            'rooms': rooms,
-        })
+        return redirect(reverse('occupant:reserve'))
 
 def delete_reserve(request, reserve_id):
     if not request.user.is_authenticated:
-        return render(request, 'users/login.html', status=400)
+        return render(request, 'users/login.html', status=403)
 
-    reserve = Reserve.objects.filter(pk=reserve_id, user_id=request.user)
+    reserve = Reserve.objects.filter(pk=reserve_id, user_id=request.user).first()
 
     if reserve is not None:
         reserve.delete()
 
-    return index(request)
+    return redirect(reverse('occupant:index'))
 
 def report(request):
-    # if did not login return login detail
-    # else return report form
+    if not request.user.is_authenticated:
+        return render(request, 'users/login.html', status=403)
+
+    try:
+        problem_type = ProblemType.objects.all()
+        user_info = get_object_or_404(UserInfo, user_id=request.user.id)
+    except:
+        return render(request, 'rooms/500.html', status=500)
+
     return render(request, 'occupant/report.html', {
-        'room_status': False
+        'user_info': user_info,
+        'problems': problem_type
     })
 
 def create_report(request):
-    # if did not login return login detail
-    # else check report form
-    # if it is post then go to report detail
-    # else return to create report page
+    if not request.user.is_authenticated:
+        return render(request, 'users/login.html', status=403)
+
     if request.method == 'POST':
-        detail = {
-            'report': {
-                'problem': 'room service',
-                'date': datetime.date.today(),
-                'note': 'Do not stole my stuff'
-            },
-            'employee': {
-                'name': 'Natnicha Faksang',
-                'Tel': '0644153591',
-                'Job': 'Housekeeper'
-            },
-            'room_status': False,
-            'header': 'Summary of Reporting'
-        }
-        return render(request, 'occupant/result_report.html', detail)
+        if request.POST.get('problem', None) is None:
+            return redirect(reverse('occupant:report'))
+
+        problem = request.POST.get('problem', None)
+        due_date = request.POST.get('due_date', datetime.datetime.today())
+        note = request.POST.get('note', None)
+
+        user = User.objects.filter(id=request.user.id).first()
+        problem_type = ProblemType.objects.filter(problem_name=problem).first()
+        status = StatusType.objects.filter(status_name='Idle').first()
+
+        report = Report.objects.create(
+            from_user_id=user,
+            problem_type_id=problem_type,
+            due_date=due_date,
+            note=note,
+            status_id=status,
+            assign_to_id=None,
+            role_id=None
+        )
+
+        return redirect(reverse('occupant:get_report', args=[report.id]))
     else:
-        return render(request, 'occupant/index.html', status=400)
+        return render(request, 'rooms/404.html', status=404)
+
+def edit_report(request, report_id):
+    if not request.user.is_authenticated:
+        return render(request, 'users/login.html', status=403)
+
+    user = User.objects.filter(pk=request.user.id).first()
+    report = get_object_or_404(Report, pk=report_id, from_user_id=user)
+    report.due_date = report.due_date.strftime(("%Y-%m-%d"))
+
+    if report is None:
+        return redirect(reverse('occupant:index'))
+
+    user_info = UserInfo.objects.filter(user_id=user).first()
+    problem_type = ProblemType.objects.all()
+
+    return render(request, 'occupant/edit_report.html', {
+        'report': report,
+        'user_info': user_info,
+        'problems': problem_type
+    })
+    
+
+def update_report(request, report_id):
+    if not request.user.is_authenticated:
+        return render(request, 'users/login.html', status=403)
+
+    if request.method == 'POST':
+        if request.POST.get('problem', None) is None:
+            return redirect(reverse('occupant:report'))
+
+        user = get_object_or_404(User, pk=request.user.id)
+        report = get_object_or_404(Report, pk=report_id, from_user_id=user)
+
+        problem = request.POST.get('problem', report.problem_type_id.problem_name)
+        due_date = request.POST.get('due_date', report.due_date)
+        note = request.POST.get('note', report.note)
+
+        problem_type = ProblemType.objects.filter(problem_name=problem).first()
+
+        Report.objects.filter(pk=report_id, from_user_id=user).update(
+            problem_type_id=problem_type,
+            due_date=due_date,
+            note=note
+        )
+
+        return redirect(reverse('occupant:list_report'))
+    else:
+        return redirect(reverse('occupant:index'))
 
 def get_report(request, report_id):
-    # if did not login return login detail
-    # else extract data from db
-    # if already report get report id then go to result_report.html
-    # else return 404 not found
-    detail = {
-        'report': {
-            'problem': 'room service',
-            'date': datetime.date.today(),
-            'note': 'Do not stole my stuff'
-        },
-        'employee': {
-            'name': 'Natnicha Faksang',
-            'Tel': '0644153591',
-            'Job': 'Housekeeper'
-        },
-        'room_status': False,
-        'header': 'Summary of Reporting'
-    }
+    if not request.user.is_authenticated:
+        return render(request, 'users/login.html', status=403)
 
-    return render(request, 'occupant/result_report.html', detail)
+    user = User.objects.get(pk=request.user.id)
+    user_info = UserInfo.objects.filter(user_id=user).first()
+    report = Report.objects.filter(pk=report_id, from_user_id=user).first()
+
+    return render(request, 'occupant/result_report.html', {
+        'report': report,
+        'header': 'Summary of Reporting',
+        'user_info': user_info
+    })
 
 def list_report(request):
-    # if did not login return login detail
-    # else extract all report of the usert from db then return list report page
-    lists = {
-        'report': {
-            'id': 1,
-            'title': 'assign_to',
-            'date': datetime.date.today(),
-        },
-        'header': 'List of Report',
-        'room_status': False,
-    }
+    if not request.user.is_authenticated:
+        return render(request, 'users/login.html', status=403)
 
-    return render(request, 'occupant/list_report.html', lists)
+    user = User.objects.filter(pk=request.user.id).first()
+    user_info = UserInfo.objects.filter(user_id=user).first()
+    reports = Report.objects.filter(from_user_id=user).order_by('due_date')
+
+    return render(request, 'occupant/list_report.html', {
+        'header': 'List of Report',
+        'user_info': user_info,
+        'reports': reports
+    })
 
 def delete_report(request, report_id):
-    # if did not login return login detail
-    # check report_id if valid, delete and return home page
-    # else return 404 not found
-    return render(request, 'occupant/index.html', {
-        'room_status': False
-    })
+    if not request.user.is_authenticated:
+        return render(request, 'users/login.html', status=403)
+
+    user = User.objects.get(pk=request.user.id)
+    report = Report.objects.filter(pk=report_id, from_user_id=user).first()
+
+    if report is None:
+        return redirect(reverse('occupant:index'))
+
+    report.delete()
+    
+    return redirect(reverse('occupant:list_report'))

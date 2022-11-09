@@ -49,7 +49,7 @@
                         <p class="sub">Rent cost per month</p>
                         <br>
                         <br>
-                        <a class="btn btn-danger btn-lg btn-block center" href="{% url 'occupant:delete_reserve' reserve_id %}">Delete</a>
+                        <a class="btn btn-danger btn-lg btn-block center" href="{% url 'occupant:delete_reserve' reserve_id %}">Remove</a>
                     </div>
                 </div>
             </div>
@@ -58,6 +58,7 @@
 </div>    
 
 <!--CONTACT DETAIL-->
+{% for manager in managers %}
 <div class="container">
     <div class="py-3"></div>
     <div class="row">
@@ -69,11 +70,11 @@
                 <table class="table table-borderless">
                     <tr>
                         <td colspan="2">Name:</td>
-                        <td class="text-end">Natnicha Faksang</td>
+                        <td class="text-end">{{ manager.user_id.first_name }} {{ manager.user_id.last_name }}</td>
                     </tr>
                     <tr>
                         <td colspan="2">Contact:</td>
-                        <td class="text-end">0644153591</td>
+                        <td class="text-end">{{ manager.phone_number }}</td>
                     </tr>
                     <tr>
                         <td colspan="2">Job:</td>
@@ -84,5 +85,5 @@
         </div>
     </div>
 </div> 
-
+{% endfor %}
 {% endblock %}

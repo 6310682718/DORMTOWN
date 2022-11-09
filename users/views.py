@@ -62,17 +62,17 @@ def register(req):
         return render(req, "users/register.html", status=200)
 
 
-# def change_pass(req):
-#     if (req.user.is_authenticated == False):
-#         return redirect("/")
-#     if (req.method == "POST"):
-#         old_pass, new_password, con_password = req.POST[
-#             'old_pass'], req.POST['new_password'], req.POST['con_password']
-#         user = User.objects.get(pk=req.user.id)
-#         print(user.password)
-#         print(make_password(old_pass))
-#         if (user.password == old_pass):
-#             print("Pass")
-#         else:
-#             print("Not pass")
-#     return render(req, "users/changepass.html", status=200)
+def change_pass(req):
+    if (req.user.is_authenticated == False):
+        return redirect("/")
+    if (req.method == "POST"):
+        old_pass, new_password, con_password = req.POST[
+            'old_pass'], req.POST['new_password'], req.POST['con_password']
+        user = User.objects.get(pk=req.user.id)
+        print(user.password)
+        print(make_password(old_pass))
+        if (user.password == old_pass):
+            print("Pass")
+        else:
+            print("Not pass")
+    return render(req, "users/changepass.html", status=200)
