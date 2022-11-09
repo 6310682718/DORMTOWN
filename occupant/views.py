@@ -171,16 +171,14 @@ def report(request):
     if not request.user.is_authenticated:
         return render(request, 'users/login.html', status=403)
 
-    problem_type = ProblemType.objects.all()
-
-    user_info = UserInfo.objects.filter(user_id=request.user.id).first()
-    if user_info.role_id.role_name == 'Occupant':
-        room_status = True
-    else:
-        room_status = False
+    try:
+        problem_type = ProblemType.objects.all()
+        user_info = get_object_or_404(UserInfo, user_id=request.user.id)
+    except:
+        return render(request, 'rooms/500.html', status=500)
 
     return render(request, 'occupant/report.html', {
-        'room_status': room_status,
+        'user_info': user_info,
         'problems': problem_type
     })
 
@@ -226,16 +224,11 @@ def edit_report(request, report_id):
         return redirect(reverse('occupant:index'))
 
     user_info = UserInfo.objects.filter(user_id=user).first()
-    if user_info.role_id.role_name == 'Occupant':
-        room_status = True
-    else:
-        room_status = False
-
     problem_type = ProblemType.objects.all()
 
     return render(request, 'occupant/edit_report.html', {
         'report': report,
-        'room_status': room_status,
+        'user_info': user_info,
         'problems': problem_type
     })
     
@@ -275,14 +268,8 @@ def get_report(request, report_id):
     user_info = UserInfo.objects.filter(user_id=user).first()
     report = Report.objects.filter(pk=report_id, from_user_id=user).first()
 
-    if user_info.role_id.role_name == 'Occupant':
-        room_status = True
-    else:
-        room_status = False
-
     return render(request, 'occupant/result_report.html', {
         'report': report,
-        'room_status': room_status,
         'header': 'Summary of Reporting',
         'user_info': user_info
     })
@@ -295,14 +282,9 @@ def list_report(request):
     user_info = UserInfo.objects.filter(user_id=user).first()
     reports = Report.objects.filter(from_user_id=user).order_by('creation_time')
 
-    if user_info.role_id.role_name == 'Occupant':
-        room_status = True
-    else:
-        room_status = False
-
     return render(request, 'occupant/list_report.html', {
         'header': 'List of Report',
-        'room_status': room_status,
+        'user_info': user_info,
         'reports': reports
     })
 
