@@ -1,5 +1,4 @@
 asgiref==3.5.2
-beautifulsoup4==4.11.1
 Django==4.1.2
 fontawesomefree==6.2.0
 six==1.16.0
