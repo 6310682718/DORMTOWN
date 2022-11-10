@@ -1,1 +1,1 @@
-web: gunicorn dormtown.asgi --log-file -
+web: gunicorn dormtown.wsgi --log-file -
