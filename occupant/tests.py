@@ -190,6 +190,14 @@ class TestViews(TestCase):
             problem_name='Cleaning service'
         )
 
+        self.report = Report.objects.create(
+            from_user_id=self.occupant_user,
+            problem_type_id=self.problem_type,
+            due_date=datetime.datetime.today(),
+            note='',
+            status_id=self.status_idle,
+        )
+
         self.index_url = reverse('occupant:index')
         self.edit_profile_url = reverse('occupant:edit_profile')
         self.update_profile_url = reverse('occupant:update_profile')
@@ -199,12 +207,14 @@ class TestViews(TestCase):
         self.delete_reserve_url = reverse('occupant:delete_reserve', args=[self.occupant_reserve.id])
         self.report_url = reverse('occupant:report')
         self.create_report_url = reverse('occupant:create_report')
-        self.detail_report_url = reverse('occupant:get_report', args=[1])
+        self.detail_report_url = reverse('occupant:get_report', args=[self.report.id])
         self.list_report_url = reverse('occupant:list_report')
-        self.delete_report_url = reverse('occupant:delete_report', args=[1])
+        self.delete_report_url = reverse('occupant:delete_report', args=[self.report.id])
+        self.edit_report_url = reverse('occupant:edit_report', args=[self.report.id])
+        self.update_report_url = reverse('occupant:update_report', args=[self.report.id])
 
     def test_index_without_login(self):
-        # serch occupant homepage without authorization, return login page with 401 Unauthorized
+        # serch occupant homepage without authorization, return login page with 403 Forbidden
         response = self.client.get(self.index_url)
 
         self.assertEqual(response.status_code, 403)
@@ -409,41 +419,217 @@ class TestViews(TestCase):
 
         self.assertRedirects(response, '/occupant/', status_code=302, target_status_code=200, fetch_redirect_response=True)
 
-    # def test_report(self):
-    #     response = self.client.get(self.report_url)
+    def test_report_without_login(self):
+        # serch reservation page without authorization, return login page with 403 Forbidden
+        response = self.client.get(self.report_url)
 
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, 'occupant/report.html')
+        self.assertEqual(response.status_code, 403)
+        self.assertTemplateUsed(response, 'users/login.html')
 
-    # def test_create_report_post(self):
-    #     response = self.client.post(self.create_report_url)
+    def test_report_error_userinfo(self):
+        # serch report page with authorization but do not have userinfo data, return 500.html with 500 Internal Server Error
+        self.client.login(username=self.temp_username, password=self.temp_password)
 
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, 'occupant/result_report.html')
+        response = self.client.get(self.report_url)
 
-    # def test_create_report_get(self):
-    #     response = self.client.get(self.create_report_url)
+        self.assertEqual(response.status_code, 500)
+        self.assertTemplateUsed(response, 'rooms/500.html')
 
-    #     self.assertEqual(response.status_code, 400)
-    #     self.assertTemplateUsed(response, 'occupant/index.html')
+    def test_report(self):
+        # authorize for report page with user and userinfo model, return the page with 200 OK
+        self.client.login(username=self.occupant_username, password=self.temp_password)
 
-    # def test_detail_report(self):
-    #     response = self.client.get(self.detail_report_url)
+        response = self.client.get(self.report_url)
 
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, 'occupant/result_report.html')
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/report.html')
 
-    # def test_list_report(self):
-    #     response = self.client.get(self.list_report_url)
+    def test_create_report_without_login(self):
+        # create reporting without authorization, return login page with 403 Forbidden
+        response = self.client.get(self.create_report_url)
 
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, 'occupant/list_report.html')
+        self.assertEqual(response.status_code, 403)
+        self.assertTemplateUsed(response, 'users/login.html')
 
-    # def test_delete_report(self):
-    #     response = self.client.get(self.delete_report_url)
+    def test_create_report_get(self):
+        # create reporting with get method, return 404.html with 404 Not Found
+        self.client.login(username=self.occupant_username, password=self.occupant_password)
 
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, 'occupant/index.html')
+        response = self.client.get(self.create_report_url)
+
+        self.assertEqual(response.status_code, 404)
+        self.assertTemplateUsed(response, 'rooms/404.html')
+
+    def test_create_report_post_without_data(self):
+        # occupant create reporting with post method without data, redirect to occupant:report
+        self.client.login(username=self.occupant_username, password=self.occupant_password)
+        
+        response = self.client.post(self.create_report_url)
+
+        self.assertRedirects(response, '/occupant/report/', status_code=302, target_status_code=200, fetch_redirect_response=True)
+
+    def test_create_report_post(self):
+        # occupant create reporting with post method, return result of reporting with 200 OK
+        self.client.login(username=self.occupant_username, password=self.occupant_password)
+        
+        response = self.client.post(self.create_report_url, {
+            'problem': self.problem_type,
+            'due_date': datetime.datetime.today().strftime(("%Y-%m-%d")),
+            'note': ''
+        })
+
+        self.assertRedirects(response, '/occupant/report/detail/2', status_code=302, target_status_code=200, fetch_redirect_response=True)
+
+    def test_edit_report_without_login(self):
+        # edit reporing without authorization, return login page with 403 Forbidden
+        response = self.client.get(self.edit_report_url)
+
+        self.assertEqual(response.status_code, 403)
+        self.assertTemplateUsed(response, 'users/login.html')
+
+    def test_edit_report_without_report(self):
+        # athorize to edit reporing without report data, return 404.html with 404 Not Found
+        self.client.login(username=self.occupant_username, password=self.occupant_password)
+
+        url = reverse('occupant:edit_report', args=[2])
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 404)
+        self.assertTemplateUsed(response, 'rooms/404.html')
+
+    def test_edit_report(self):
+        # athorize to edit reporing, return the page with 200 OK
+        self.client.login(username=self.occupant_username, password=self.occupant_password)
+
+        response = self.client.get(self.edit_report_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/edit_report.html')
+
+    def test_update_report_without_login(self):
+        # update reporing without authorization, return login page with 403 Forbidden
+        response = self.client.get(self.update_report_url)
+
+        self.assertEqual(response.status_code, 403)
+        self.assertTemplateUsed(response, 'users/login.html')
+
+    def test_update_report_get(self):
+        # update reporting with get method, return 404.html with 404 Not Found
+        self.client.login(username=self.occupant_username, password=self.occupant_password)
+
+        response = self.client.get(self.update_report_url)
+
+        self.assertEqual(response.status_code, 404)
+        self.assertTemplateUsed(response, 'rooms/404.html')
+
+    def test_update_report_post_without_data(self):
+        # occupant create reporting with post method without data, redirect to occupant:report
+        self.client.login(username=self.occupant_username, password=self.occupant_password)
+        
+        response = self.client.post(self.update_report_url)
+
+        self.assertRedirects(response, '/occupant/report/', status_code=302, target_status_code=200, fetch_redirect_response=True)
+
+    def test_update_report_post_error_data(self):
+        # occupant create reporting with post method without wrong data, return 404.html with 404 Not Found
+        self.client.login(username=self.occupant_username, password=self.occupant_password)
+        
+        url = url = reverse('occupant:update_report', args=[2])
+        response = self.client.post(url, {
+            'problem': self.problem_type,
+            'due_date': datetime.datetime.today().strftime(("%Y-%m-%d")),
+            'note': 'do not steal my stuff'
+        })
+
+        self.assertEqual(response.status_code, 404)
+        self.assertTemplateUsed(response, 'rooms/404.html')
+
+    def test_update_report_post(self):
+        # occupant create reporting with post method without data, redirect to occupant:report
+        self.client.login(username=self.occupant_username, password=self.occupant_password)
+        
+        response = self.client.post(self.update_report_url, {
+            'problem': self.problem_type,
+            'due_date': datetime.datetime.today().strftime(("%Y-%m-%d")),
+            'note': ''
+        })
+
+        self.assertRedirects(response, '/occupant/report/all', status_code=302, target_status_code=200, fetch_redirect_response=True)
+
+    def test_detail_report_without_login(self):
+        # get detail of report without authorization, return login page with 403 Forbidden
+        response = self.client.get(self.detail_report_url)
+
+        self.assertEqual(response.status_code, 403)
+        self.assertTemplateUsed(response, 'users/login.html')
+
+    def test_detail_report_error_userinfo(self):
+        # serch detail of report with authorization but do not have userinfo data, return 500.html with 500 Internal Server Error
+        self.client.login(username=self.temp_username, password=self.temp_password)
+
+        response = self.client.get(self.detail_report_url)
+
+        self.assertEqual(response.status_code, 500)
+        self.assertTemplateUsed(response, 'rooms/500.html')
+
+    def test_detail_report(self):
+        # serch detail of report with authorization, return the page with 200 OK
+        self.client.login(username=self.occupant_username, password=self.occupant_password)
+
+        response = self.client.get(self.detail_report_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/result_report.html')
+
+    def test_list_report_without_login(self):
+        # get list of report without authorization, return login page with 403 Forbidden
+        response = self.client.get(self.list_report_url)
+
+        self.assertEqual(response.status_code, 403)
+        self.assertTemplateUsed(response, 'users/login.html')
+
+    def test_list_report_error_userinfo(self):
+        # serch list of report with authorization but do not have userinfo data, return 500.html with 500 Internal Server Error
+        self.client.login(username=self.temp_username, password=self.temp_password)
+
+        response = self.client.get(self.list_report_url)
+
+        self.assertEqual(response.status_code, 500)
+        self.assertTemplateUsed(response, 'rooms/500.html')
+
+    def test_list_report(self):
+        # serch list of report with authorization, return the page with 200 OK
+        self.client.login(username=self.occupant_username, password=self.occupant_password)
+
+        response = self.client.get(self.list_report_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'occupant/list_report.html')
+
+    def test_delete_report_without_login(self):
+        # delete report without authorization, return login page with 403 Forbidden
+        response = self.client.get(self.delete_report_url)
+
+        self.assertEqual(response.status_code, 403)
+        self.assertTemplateUsed(response, 'users/login.html')
+
+    def test_update_report_without_data(self):
+        # occupant create reporting with authorization without data, return 404.html with 404 Not Found
+        self.client.login(username=self.occupant_username, password=self.occupant_password)
+        
+        url = url = reverse('occupant:delete_report', args=[2])
+        response = self.client.post(url)
+
+        self.assertEqual(response.status_code, 404)
+        self.assertTemplateUsed(response, 'rooms/404.html')
+    
+    def test_update_report(self):
+        # occupant create reporting with authorization and data, redirect occupant:list_report
+        self.client.login(username=self.occupant_username, password=self.occupant_password)
+    
+        response = self.client.post(self.delete_report_url)
+
+        self.assertRedirects(response, '/occupant/report/all', status_code=302, target_status_code=200, fetch_redirect_response=True)
 
 class TestModel(TestCase):
     def setUp(self):
