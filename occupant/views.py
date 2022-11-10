@@ -116,7 +116,6 @@ def create_reserve(request, room_type):
             user_id=user,
             room_type=room_type,
             due_date=datetime.datetime.today(),
-            create_at=datetime.datetime.now(),
             status_type=status_type
         )
 

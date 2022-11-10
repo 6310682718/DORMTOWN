@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+import datetime
 
 class Role(models.Model):
     # 1 -> Manager 2 -> Housekeeper 3 -> Technician 4 -> Occupant 5 -> Outside
@@ -64,7 +65,7 @@ class Reserve(models.Model):
     room_type = models.ForeignKey(
         RoomType, on_delete=models.CASCADE, related_name="reserved_room_type")
     due_date = models.DateField()
-    create_at = models.DateTimeField()
+    create_at = models.DateTimeField(default=datetime.datetime.now())
     status_type = models.ForeignKey(
         StatusType, on_delete=models.CASCADE, related_name="status_type")
     
