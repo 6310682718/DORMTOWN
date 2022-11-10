@@ -1,19 +1,9 @@
 {% extends 'employee/layout.html' %}
 {% block body %}
 
-<!--demo-->
 <div class="text-center mt-4">
-    <h1>Cleanning Service</h1>
+    <h1>{{report.problem_type_id}}</h1>
 </div>
-{% comment %}
-{% if problem_type_id=Cleanning Servicer %}
-<div class="text-center mt-4">
-    <h1>Cleanning Service</h1>
-</div>
-{% else %}
-<div class="text-center mt-4">
-    <h1>Moveout</h1>
-{% endcomment %}
 
 <!--PROFILE DETAIL--> 
 <div class="container" >
@@ -22,26 +12,26 @@
         <div class="col card">
             <div class="card-body">
                 <table class="table table-borderless">
-                    <tr>
-                        <td colspan="1">Room:</td>
-                        <td class="text-end">3401</td>
-                    </tr>
-                    <tr>
-                        <td colspan="1">Contact:</td>
-                        <td class="text-end">0812345678</td>
-                    </tr>
-                    <tr>
-                        <td colspan="1">Due date:</td>
-                        <td class="text-end" >02/22/2022</td>
-                    </tr>
-                    <tr>
-                        <td colspan="1">Responsible person:</td>
-                        <td class="text-end">Liam Bacardi</td>
-                    </tr>
-                    <tr>
-                        <td align="left"><a class="btn btn-secondary text-white" href="#">Back</a></td>
-                        <td align="right"><a class="btn btn-success text-white" href="#">Submit</a></td>
-                    </tr>
+                        <tr>
+                            <td colspan="1">Room:</td>
+                            <td class="text-end">{{reporter_room}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="1">Contact:</td>
+                            <td class="text-end">{{reporter_contact}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="1">Due date:</td>
+                            <td class="text-end" >{{due_date}}</td>
+                        </tr>
+                        <tr>
+                            <td colspan="1">Responsible person:</td>
+                            <td class="text-end">{{assign_to}}</td>
+                        </tr>
+                        <tr>
+                            <td align="left"><a class="btn btn-secondary text-white" href="{% url 'employee:index' %}">Back</a></td>
+                            <td align="right"><a class="btn btn-success text-white" href="{% url 'employee:get_submit' report.id %}">Submit</a></td>
+                        </tr>
                 </table>
             </div>
         </div>

@@ -40,15 +40,10 @@
                         <td class="text-end">{{ user_info.address }}, {{ user_info.street }}, {{ user_info.state }}, {{ user_info.city }}, {{ user_info.country }}, {{ user_info.zip_code }} </td>
                     </tr>
                     <tr>
-                        {% if room_status %}
-                            <td colspan="2"></td>
-                            <td colspan="2" align="right"><a class="btn btn-dark text-white" href="{% url 'occupant:edit_profile' %}">Edit</a></td>
-                        {% else %}
-                            <td colspan="2"></td>
-                            <td class="text-end" align="right">
-                                <a class="btn btn-dark text-white" href="{% url 'occupant:edit_profile' %}">Edit</a>
-                            </td>
-                        {% endif %}
+                        <td colspan="2"></td>
+                        <td class="text-end" align="right">
+                          <a class="btn btn-dark text-white" href="{% url 'employee:edit_profile' %}">Edit</a>
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -64,17 +59,26 @@
       <div class="col card">
         <div class="card-body">
           <table class="table table-borderless">
-            <tr>
-              <td colspan="2">Cleaning Service:</td>
-              <td>2</td>
-            </tr>
+            {% if role_name == "Housekeeper" %}
+              <tr>
+                <td colspan="2">Cleaning Service:</td>
+                <td>{{clean}}</td>
+              </tr>
+            {% endif %}
+            {% if role_name == "Technician" %}
+              <tr>
+                <td colspan="2">Fix electric equipment:</td>
+                <td>{{fix}}</td>
+              </tr>
+            {% endif %}
             <tr>
               <td colspan="2">Move out:</td>
-              <td>3</td>
+              <td>{{move}}</td>
             </tr>
+
             <tr>
               <td colspan="2">Due date work:</td>
-              <td> 1</td>
+              <td>ยังดึงไม่เป็น</td>
             </tr>
           </table>
         </div>
@@ -88,7 +92,7 @@
   <div class="col card"></div>
   <div class="py-2"></div>
   <div class="d-flex justify-content-between align-items-center py-3">
-    <h2 class="h5 mb-0">MY Job</h2>
+    <h2 class="h5 mb-0">My Job</h2>
 
   </div>
   <table class="table table-bordered text-center">
@@ -103,9 +107,13 @@
         {% for i in report_a %}
           <tr>
             <td>{{i.problem_type_id}}</td>
-            <td>{{i.from_user_id}}</td>
+              {% for key,value in rooms_reporter_a.items %}
+                {% if key == i.from_user_id %}
+                  <td>{{value}}</td>
+              {% endif %}
+              {% endfor %} 
             <td>{{i.due_date}}</td>
-            <td><a class="btn btn-dark" href="#"></a></td>
+            <td><a class="btn btn-dark" href="{% url 'employee:submit' i.id %}"></a></td>
           </tr>
         {% endfor %}
       </tbody>
@@ -130,12 +138,16 @@
       </tr>
     </thead>
     <tbody>
-      {% for j in report_na %}
+      {% for i in report_na %}
           <tr>
-            <td>{{j.problem_type_id}}</td>
-            <td>{{j.from_user_id}}</td>
-            <td>{{j.due_date}}</td>
-            <td><a class="btn btn-dark" href="#"></a></td>
+            <td>{{i.problem_type_id}}</td>
+            {% for key,value in rooms_reporter_na.items %}
+              {% if key == i.from_user_id %}
+                <td>{{value}}</td>
+              {% endif %}
+              {% endfor %} 
+            <td>{{i.due_date}}</td>
+            <td><a class="btn btn-dark" href="{% url 'employee:assign' i.id %}"></a></td>
           </tr>
         {% endfor %}
     </tbody>
