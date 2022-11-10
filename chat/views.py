@@ -16,21 +16,21 @@ def index(req):
         "messages": messages
     })
 
-@login_required
-@user_passes_test(lambda u: u.is_superuser)
-def chat_list(req, user_id):
-    # For admin only
-    try:
-        room_name = f"room-{user_id}"
-        chat_room, is_created = ChatRoom.objects.get_or_create(room_name=room_name)
-        messages = Message.objects.filter(room=chat_room)
-        text_to_admin = Message.objects.order_by().values('user').distinct()
-        only_texter = Message.objects.filter(user__in=text_to_admin)
-        for i in only_texter:
-            print(f"USER : {i}")
-        return render(req, "chat/chat_list.html", {"messages": messages, "only_texter" : only_texter})
-    except Exception as e:
-        print(f"<-- ERROR {e} -->")
+# @login_required
+# @user_passes_test(lambda u: u.is_superuser)
+# def chat_list(req, user_id):
+#     # For admin only
+#     try:
+#         room_name = f"room-{user_id}"
+#         chat_room, is_created = ChatRoom.objects.get_or_create(room_name=room_name)
+#         messages = Message.objects.filter(room=chat_room)
+#         text_to_admin = Message.objects.order_by().values('user').distinct()
+#         only_texter = Message.objects.filter(user__in=text_to_admin)
+#         for i in only_texter:
+#             print(f"USER : {i}")
+#         return render(req, "chat/chat_list.html", {"messages": messages, "only_texter" : only_texter})
+#     except Exception as e:
+#         print(f"<-- ERROR {e} -->")
 
 @login_required
 @user_passes_test(lambda u: u.is_superuser)

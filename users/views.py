@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect
+from django.urls import reverse
 from django.contrib.auth.models import User
 from occupant.models import *
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
@@ -13,9 +14,9 @@ def login(req):
         try:
             # find role and return to right path plz
             if (user is not None):
+                user_info = UserInfo.objects.get(user_id=user)
                 auth_login(req, user)
-                login_user = User.objects.get(username=username)
-                user_info = UserInfo.objects.get(user_id=login_user.id)
+                return redirect(reverse('rooms:index'))
             else:
                 return render(req, "users/login.html", {"message": "Invalid credential"}, status=400)
         except Exception as e:
@@ -51,13 +52,13 @@ def register(req):
             # print("<--- User not found (Can register) --->")
         if (con_password != password):
             return render(req, "users/register.html", {"status": False, "message": "Confirm password fail"}, status=400)
-        elif (username == "" or len(username) == 0 or firstname == "" or lastname == "" or password == "" or con_password == "" or email == ""):
+        if (username == "" or len(username) == 0 or firstname == "" or lastname == "" or password == "" or con_password == "" or email == ""):
             return render(req, "users/register.html", {"status": False, "message": "Enter your information"}, status=400)
-        else:
-            role = Role.objects.get(role_name="Outside")
-            user = User.objects.create_user(username=username, password=password, email=email, first_name=firstname, last_name=lastname)
-            user_info = UserInfo.objects.create(user_id=user, phone_number=phone, address=address, street=street, state=state, city=city, country=country, zip_code=zip, role_id=role)
-            return render(req, "users/login.html", {"status": True, "message": "Register Success"}, status=200)
+        role = Role.objects.get(role_name="Outside")
+        rooms = Room.objects.first()
+        user = User.objects.create_user(username=username, password=password, email=email, first_name=firstname, last_name=lastname)
+        user_info = UserInfo.objects.create(user_id=user, phone_number=phone, address=address, street=street, state=state, city=city, country=country, zip_code=zip, role_id=role, room_id=rooms)
+        return render(req, "users/login.html", {"status": True, "message": "Register Success"}, status=200)
     else:
         return render(req, "users/register.html", status=200)
 
