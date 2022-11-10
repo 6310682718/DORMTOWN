@@ -5,7 +5,7 @@ app_name = 'employee'
 
 urlpatterns = [
     path("", views.index, name='index'),
-    path("submit", views.submit, name='submit'),
-    path("assign", views.assign, name='assign'),
+    # path("submit", views.submit, name='submit'),
+    # path("assign", views.assign, name='assign'),
 
 ]

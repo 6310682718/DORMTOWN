@@ -12,21 +12,41 @@
             <div class="card-body">
                 <table class="table table-borderless">
                     <tr>
-                        <td colspan="2">Service:</td>
-                        <td class="text-end">room service</td>
+                        <td colspan="2">Report:</td>
+                        <td class="text-end">{{ report.problem_type_id.problem_name }}</td>
                     </tr>
                     <tr>
                         <td colspan="2">Room:</td>
-                        <td class="text-end">2211</td>
+                        <td class="text-end">{{ user_info.room_id.room_number }}</td>
                     </tr>
                     <tr>
                         <td colspan="2">Due date:</td>
-                        <td class="text-end">{{ report.date }}</td>
+                        <td class="text-end">{{ report.due_date }}</td>
                     </tr>
+                    {% if report.note %}
+                    <tr>
+                        <td colspan="2">Note:</td>
+                        <td class="text-end">{{ report.note }}</td>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <td colspan="2">Status:</td>
+                        <td class="text-end">
+                            {% if report.status_id == 'Done' %}
+                            <i class="fa-solid fa-circle-check"></i>
+                            {% endif %}
+                            {{ report.status_id }}
+                        </td>
+                    </tr>
+                    {% if report.status_id != 'Idle' %}
                     <tr>
                         <td colspan="2"></td>
-                        <td colspan="2" align="right"><a class="btn btn-danger text-white" href="{% url 'occupant:delete_report' 1 %}">Delete</a></td>
+                        <td colspan="2" align="right">
+                            <a class="btn btn-dark text-white" href="{% url 'occupant:edit_report' report.id %}">Edit</a>
+                            <a class="btn btn-danger text-white" href="{% url 'occupant:delete_report' report.id %}">Remove</a>
+                        </td>
                     </tr>
+                    {% endif %}
                 </table>
             </div>
         </div>

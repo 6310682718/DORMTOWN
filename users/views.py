@@ -16,14 +16,9 @@ def login(req):
                 auth_login(req, user)
                 login_user = User.objects.get(username=username)
                 user_info = UserInfo.objects.get(user_id=login_user.id)
-                if (user_info.role_id.role_name == "Outside" or user_info.role_id.role_name == "Occupant"):
-                    return redirect("/occupant/")
-                if (user_info.role_id == "Manager"):
-                    return redirect("/manager/dashboard")
             else:
                 return render(req, "users/login.html", {"message": "Invalid credential"}, status=400)
         except Exception as e:
-            print("<- Log fail ->", e)
             pass
     return render(req, "users/login.html")
 
@@ -34,10 +29,6 @@ def logout(req):
 
 
 def register(req):
-    obj = {
-        "status": True,
-        "message": ""
-    }
     if req.method == "POST":
         username = req.POST["email"]
         firstname = req.POST["firstname"]
@@ -59,26 +50,16 @@ def register(req):
             pass
             # print("<--- User not found (Can register) --->")
         if (con_password != password):
-            obj['status'] = False
-            obj["message"] = "Confirm password fail"
-        if (username == "" or len(username) == 0 or firstname == "" or lastname == "" or password == "" or con_password == "" or email == ""):
-            obj["status"] = False
-            obj["message"] = "Enter your information"
-
-            # when regist new user user info did not create anything
-
-        # Register Process
-        if (obj["status"]):
-            obj['message'] = "Register successfully"
-            user = User.objects.create_user(
-                username=username, password=password, email=email, first_name=firstname, last_name=lastname)
-            user_info = UserInfo.objects.create(
-                user_id=user, phone_number=phone, address=address, street=street, state=state, city=city, country=country, zip_code=zip
-            )
-            return render(req, "users/login.html", {"status": True, "message": obj["message"]}, status=200)
+            return render(req, "users/register.html", {"status": False, "message": "Confirm password fail"}, status=400)
+        elif (username == "" or len(username) == 0 or firstname == "" or lastname == "" or password == "" or con_password == "" or email == ""):
+            return render(req, "users/register.html", {"status": False, "message": "Enter your information"}, status=400)
         else:
-            return render(req, "users/register.html", {"status": False, "message": obj["message"]}, status=400)
-    return render(req, "users/register.html", obj, status=200)
+            role = Role.objects.get(role_name="Outside")
+            user = User.objects.create_user(username=username, password=password, email=email, first_name=firstname, last_name=lastname)
+            user_info = UserInfo.objects.create(user_id=user, phone_number=phone, address=address, street=street, state=state, city=city, country=country, zip_code=zip, role_id=role)
+            return render(req, "users/login.html", {"status": True, "message": "Register Success"}, status=200)
+    else:
+        return render(req, "users/register.html", status=200)
 
 
 def change_pass(req):

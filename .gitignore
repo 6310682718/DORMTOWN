@@ -8,6 +8,8 @@ dormtown/settings.py
 
 # C extensions
 *.so
+*/migrations/
+*/__pycache__/
 
 # Distribution / packaging
 .Python
@@ -106,7 +108,7 @@ celerybeat.pid
 
 # Environments
 .env
-# .venv
+.venv
 env/
 # venv/
 ENV/

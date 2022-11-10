@@ -1,167 +1,160 @@
 {% extends 'employee/layout.html' %}
 {% block body %}
 
-<!--demo-->
+{% if role_name == "Housekeeper" %}
 <div class="text-center mt-4">
     <h1>Housekeeper</h1>
 </div>
-<!-- {% comment %}
-{% if role_id=Housekeeper %}
+{% elif role_name == "Technician" %}
 <div class="text-center mt-4">
-    <h1>Housekeeper</h1>
+    <h1>Technician</h1>
 </div>
 {% else %}
 <div class="text-center mt-4">
-    <h1>Technician</h1>
-{% endcomment %} -->
+  <h1>Who am i?</h1>
+</div>
+{% endif %}
 
-<!--PROFILE DETAIL--> 
-<div class="d-flex justify-content-center">
-    <div class="container" >
-        <div class="py-2"></div>
-        <div class="row">
-            <div class="col card">
-                <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center py-3">
-                        <h2 class="h5 mb-0">Profile</h2>
-                    </div>
-                    <table class="table table-borderless">
-                        <tr>
-                            <td colspan="2">Name:</td>
-                            <td class="text-end">Kantapat</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">Contact:</td>
-                            <td class="text-end">0897827356</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">Address:</td>
-                            <td class="text-end">9330 W Lake Dr ## A, Eagle River, Alaska 99577, USA</td>
-                        </tr>
-                        <tr>
-                            <td><td colspan="2" align="right"><a class="btn btn-dark text-white" href="#">Edit</a></td></td>
-                        </tr>
-                    </table>
+
+<!--PROFILE DETAIL-->
+<div class="d-flex justify-content-around">
+  <div class="container">
+    <div class="py-3"></div>
+    <div class="row">
+        <div class="col-lg-10 card" style="margin: auto">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center py-3">
+                    <h2 class="h5 mb-0">Profile</h2>
                 </div>
+                <table class="table table-borderless">
+                    <tr>
+                        <td colspan="2">Name:</td>
+                        <td class="text-end">{{ user.first_name }} {{ user.last_name }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Contact:</td>
+                        <td class="text-end">{{ user_info.phone_number }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Address:</td>
+                        <td class="text-end">{{ user_info.address }}, {{ user_info.street }}, {{ user_info.state }}, {{ user_info.city }}, {{ user_info.country }}, {{ user_info.zip_code }} </td>
+                    </tr>
+                    <tr>
+                        {% if room_status %}
+                            <td colspan="2"></td>
+                            <td colspan="2" align="right"><a class="btn btn-dark text-white" href="{% url 'occupant:edit_profile' %}">Edit</a></td>
+                        {% else %}
+                            <td colspan="2"></td>
+                            <td class="text-end" align="right">
+                                <a class="btn btn-dark text-white" href="{% url 'occupant:edit_profile' %}">Edit</a>
+                            </td>
+                        {% endif %}
+                    </tr>
+                </table>
             </div>
         </div>
     </div>
-    <!--Working Small Detail-->    
-    <div class="container" >
-        <div class="py-2"></div>
-        <div class="row">
-            <div class="col card">
-                <div class="card-body">
-                    <table class="table table-borderless">
-                        <tr>
-                            <td colspan="2">Cleaning Service:</td>
-                            <td>2</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">Move out:</td>
-                            <td>3</td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">Due date work:</td>
-                            <td> 1</td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
+  </div>    
+
+
+  <!--Working Small Detail-->
+  <div class="container">
+    <div class="py-3"></div>
+    <div class="row">
+      <div class="col card">
+        <div class="card-body">
+          <table class="table table-borderless">
+            <tr>
+              <td colspan="2">Cleaning Service:</td>
+              <td>2</td>
+            </tr>
+            <tr>
+              <td colspan="2">Move out:</td>
+              <td>3</td>
+            </tr>
+            <tr>
+              <td colspan="2">Due date work:</td>
+              <td> 1</td>
+            </tr>
+          </table>
         </div>
+      </div>
     </div>
+  </div>
 </div>
 <!--My job-->
 <dev class="container">
-    <div class="py-3"></div>
-    <div class="col card"></div>
-    <div class="py-2"></div>
-    <div class="d-flex justify-content-between align-items-center py-3">
-        <h2 class="h5 mb-0">All of Job</h2>
-        
-    </div>
-    <table class="table table-bordered text-center">
-        <thead>
+  <div class="py-3"></div>
+  <div class="col card"></div>
+  <div class="py-2"></div>
+  <div class="d-flex justify-content-between align-items-center py-3">
+    <h2 class="h5 mb-0">MY Job</h2>
+
+  </div>
+  <table class="table table-bordered text-center">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Room</th>
+        <th scope="col">Duedate</th>
+        <th scope="col">Action</th>
+      </tr>
+      <tbody>
+        {% for i in report %}
           <tr>
-            <th scope ="col">Name</th>
-            <th scope="col">Room</th>
-            <th scope="col">Duedate</th>
-            <th scope="col">Action</th>
+            <td>{{i.problem_type_id}}</td>
+            <td>{{i.from_user_id}}</td>
+            <td>{{i.due_date}}</td>
+            <td><a class="btn btn-dark" href="#"></a></td>
           </tr>
-          <tbody>
-            <tr>
-              <td>Cleanning Service</td>
-              <td>2202</td>
-              <td>20/2/2023</td>
-              <td><a class="btn btn-dark" href="#"></a></td>
-            </tr>
-            <tr>
-                <tr>
-              <td>Cleanning Service</td>
-              <td>2202</td>
-              <td>20/2/2023</td>
-              <td><a class="btn btn-dark" href="#"></a></td>
-            </tr>
-            <tr>
-                <td>Cleanning Service</td>
-                <td>1501</td>
-                <td>23/2/2023</td>
-                <td><a class="btn btn-dark" href="#"></a></td>
-            </tr>
-            <tr>
-                <tr>
-                    <td>Move out</td>
-                    <td>7510</td>
-                    <td>13/2/2023</td>
-                    <td><a class="btn btn-dark" href="#"></a></td>
-                </tr>
-            <tr>
-        </thead>
+        {% endfor %}
+      </tbody>
+    </thead>      
+  </table>
 </dev>
 <!--All of job-->
 <dev class="container">
-    <div class="py-3"></div>
-    <div class="col card"></div>
-    <div class="py-2"></div>
-    <div class="d-flex justify-content-between align-items-center py-3">
-        <h2 class="h5 mb-0">All of Job</h2>
-    </div>
-    <table class="table table-bordered text-center">
-        <thead>
-          <tr>
-            <th scope ="col">Name</th>
-            <th scope="col">Room</th>
-            <th scope="col">Duedate</th>
-            <th scope="col">Action</th>
-          </tr>
-          <tbody>
-            <tr>
-              <td>Cleanning Service</td>
-              <td>3301</td>
-              <td>27/2/2023</td>
-              <td><a class="btn btn-dark" href="#"></a></td>
-            </tr>
-            <tr>
-                <tr>
-              <td>Cleanning Service</td>
-              <td>4103</td>
-              <td>1/2/2023</td>
-              <td><a class="btn btn-dark" href="#"></a></td>
-            </tr>
-            <tr>
-                <td>Move out</td>
-                <td>1503</td>
-                <td>29/2/2023</td>
-                <td><a class="btn btn-dark" href="#"></a></td>
-            </tr>
-            <tr>
-                <tr>
-                    <td>Move out</td>
-                    <td>3402</td>
-                    <td>14/2/2023</td>
-                    <td><a class="btn btn-dark" href="#"></a></td>
-                </tr>
-            <tr>
-        </thead>
+  <div class="py-3"></div>
+  <div class="col card"></div>
+  <div class="py-2"></div>
+  <div class="d-flex justify-content-between align-items-center py-3">
+    <h2 class="h5 mb-0">All of Job</h2>
+  </div>
+  <table class="table table-bordered text-center">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Room</th>
+        <th scope="col">Duedate</th>
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Cleanning Service</td>
+        <td>3301</td>
+        <td>27/2/2023</td>
+        <td><a class="btn btn-dark" href="#"></a></td>
+      </tr>
+      <tr>
+        <td>Cleanning Service</td>
+        <td>4103</td>
+        <td>1/2/2023</td>
+        <td><a class="btn btn-dark" href="#"></a></td>
+      </tr>
+      <tr>
+        <td>Move out</td>
+        <td>1503</td>
+        <td>29/2/2023</td>
+        <td><a class="btn btn-dark" href="#"></a></td>
+      </tr>
+      <tr>
+        <td>Move out</td>
+        <td>3402</td>
+        <td>14/2/2023</td>
+        <td><a class="btn btn-dark" href="#"></a></td>
+      </tr>
+    </tbody>
+  </table>
 </dev>
 {% endblock %}

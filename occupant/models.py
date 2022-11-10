@@ -1,13 +1,13 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-
 class Role(models.Model):
     # 1 -> Manager 2 -> Housekeeper 3 -> Technician 4 -> Occupant 5 -> Outside
     role_name = models.CharField(max_length=20)
 
     def __str__(self):
         return f'{ self.role_name }'
+
 
 class RoomType(models.Model):
     class_level = models.CharField(max_length=5)
@@ -24,7 +24,7 @@ class RoomType(models.Model):
 class Room(models.Model):
     room_number = models.CharField(max_length=3)
     room_type = models.ForeignKey(
-        RoomType, on_delete=models.CASCADE, related_name="room_type", default="1")
+        RoomType, on_delete=models.CASCADE, related_name="room_type")
     # True -> Available for reservation False -> Unavailable for reservation
     status = models.BooleanField()
 
@@ -34,11 +34,11 @@ class Room(models.Model):
 
 class UserInfo(models.Model):
     user_id = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="user_id", default="1")
+        User, on_delete=models.CASCADE, related_name="user_id")
     role_id = models.ForeignKey(
-        Role, on_delete=models.CASCADE, related_name="role_id", default="5")
+        Role, on_delete=models.CASCADE, related_name="role_id")
     room_id = models.ForeignKey(
-        Room, on_delete=models.CASCADE, related_name="room_id", default="1")
+        Room, on_delete=models.CASCADE, related_name="room_id", null=True)
     phone_number = models.CharField(max_length=10)
     address = models.CharField(max_length=100)
     street = models.CharField(max_length=50)
@@ -52,25 +52,25 @@ class UserInfo(models.Model):
 
 
 class StatusType(models.Model):
-    # 1 -> idle 2 -> Doing 3 -> Done
+    # 1 -> Idle 2 -> Doing 3 -> Done
     status_name = models.CharField(max_length=10)
-
     def __str__(self):
         return f'{ self.status_name }'
 
 
 class Reserve(models.Model):
     user_id = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="reserved_user_id", default="1")
+        User, on_delete=models.CASCADE, related_name="reserved_user_id")
     room_type = models.ForeignKey(
-        RoomType, on_delete=models.CASCADE, related_name="reserved_room_type", default="1")
+        RoomType, on_delete=models.CASCADE, related_name="reserved_room_type")
     due_date = models.DateField()
     create_at = models.DateTimeField()
     status_type = models.ForeignKey(
         StatusType, on_delete=models.CASCADE, related_name="status_type")
-
+    
     def __str__(self):
         return f'Class { self.room_type.class_level } { self.status_type }'
+
 
 class ProblemType(models.Model):
     problem_name = models.CharField(max_length=30)
@@ -81,17 +81,17 @@ class ProblemType(models.Model):
 
 class Report(models.Model):
     from_user_id = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="from_user_id", default="1")
+        User, on_delete=models.CASCADE, related_name="from_user_id")
     problem_type_id = models.ForeignKey(
-        ProblemType, on_delete=models.CASCADE, related_name="problem_type_id", default="1")
+        ProblemType, on_delete=models.CASCADE, related_name="problem_type_id")
     due_date = models.DateField()
     note = models.CharField(max_length=150)
     status_id = models.ForeignKey(
-        StatusType, on_delete=models.CASCADE, related_name="status_id", default="1")
+        StatusType, on_delete=models.CASCADE, related_name="status_id")
     assign_to_id = models.ForeignKey(
-        User, on_delete=models.CASCADE, related_name="assign_to_id", default="1")
+        User, on_delete=models.CASCADE, related_name="assign_to_id", null=True)
     role_id = models.ForeignKey(
-        Role, on_delete=models.CASCADE, related_name="reported_role_id", default="1")
+        Role, on_delete=models.CASCADE, related_name="reported_role_id", null=True)
 
     def __str__(self):
-        return f'{ self.from_user_id.username } assign { self.problem_type_id.problem_name } to { self.assign_to_id.username }'
+        return f'{ self.from_user_id } report { self.problem_type_id }'
