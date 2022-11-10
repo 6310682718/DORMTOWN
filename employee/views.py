@@ -25,12 +25,12 @@ def index(request):
             rooms_reporter_a.update({report.from_user_id:reporter_room})
 
         rooms_reporter_na = {}
-        for report in report_a:
+        for report in report_na:
             Object_reporter = UserInfo.objects.get(user_id=report.from_user_id.id)
             reporter_room = Object_reporter.room_id
             rooms_reporter_na.update({report.from_user_id:reporter_room})
         
-        
+        iri=0
         fix=0
         clean=0
         move=0
@@ -43,6 +43,8 @@ def index(request):
                 fix +=1
             elif str(i.problem_type_id) == "Cleaning Service":
                 clean +=1
+            elif str(i.problem_type_id) == "Irrigation problem":
+                iri +=1
             elif str(i.problem_type_id) == "Move Out":
                 move +=1
         print(fix)
