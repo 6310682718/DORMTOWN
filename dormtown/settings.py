@@ -36,7 +36,6 @@ LOGIN_URL = '/login/'
 # Application definition
 
 INSTALLED_APPS = [
-    'daphne',
     'channels',
     "rooms",
     "users",
