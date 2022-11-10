@@ -8,11 +8,15 @@ from .views import *
 class TestUrl(SimpleTestCase):
     def setUp(self):
         self.urls = {
-            "index": reverse("chat:index")
+            "index": reverse("chat:chat_to_admin"),
+            "chat_to_user": reverse("chat:chat_to_user", args=[1]) # user id = 1
         }
 
-    # def test_chat_page(self):
-    #     self.assertEqual((resolve(self.urls["index"])).func, index)
+    def test_chat_to_admin(self):
+        self.assertEqual((resolve(self.urls["index"])).func, index)
+
+    def test_chat_to_user(self):
+        self.assertEqual((resolve(self.urls["chat_to_user"])).func, chat_log)
 
 
 class TestViews(TestCase):
