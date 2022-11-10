@@ -43,7 +43,7 @@
         <div class="position-absulute justify-content-center mx-2 display-flex">
           <a href="/occupant" class="text-dark mx-4">
             <i class="fa-solid fa-user-tie"></i>
-            Occupant
+            {{ user_info.role_id.role_name }}
           </a>
           {% if user_info.role_id.role_name == 'Occupant' %}
           <a href="{% url 'occupant:list_report' %}" class="text-dark mx-4">
@@ -60,7 +60,10 @@
             <i class="fa-solid fa-lock"></i>
             Change Password
           </a>
-          <a class="btn btn-danger" href="{% url 'users:logout'%}" role=" button">Sign Out</a>
+          <a class="text-danger" href="{% url 'users:logout'%}" role=" button">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            Sign Out
+          </a>
         </div>
       </div>
     </div>
