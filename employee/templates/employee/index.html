@@ -100,7 +100,7 @@
         <th scope="col">Action</th>
       </tr>
       <tbody>
-        {% for i in report %}
+        {% for i in report_a %}
           <tr>
             <td>{{i.problem_type_id}}</td>
             <td>{{i.from_user_id}}</td>
@@ -130,30 +130,14 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td>Cleanning Service</td>
-        <td>3301</td>
-        <td>27/2/2023</td>
-        <td><a class="btn btn-dark" href="#"></a></td>
-      </tr>
-      <tr>
-        <td>Cleanning Service</td>
-        <td>4103</td>
-        <td>1/2/2023</td>
-        <td><a class="btn btn-dark" href="#"></a></td>
-      </tr>
-      <tr>
-        <td>Move out</td>
-        <td>1503</td>
-        <td>29/2/2023</td>
-        <td><a class="btn btn-dark" href="#"></a></td>
-      </tr>
-      <tr>
-        <td>Move out</td>
-        <td>3402</td>
-        <td>14/2/2023</td>
-        <td><a class="btn btn-dark" href="#"></a></td>
-      </tr>
+      {% for j in report_na %}
+          <tr>
+            <td>{{j.problem_type_id}}</td>
+            <td>{{j.from_user_id}}</td>
+            <td>{{j.due_date}}</td>
+            <td><a class="btn btn-dark" href="#"></a></td>
+          </tr>
+        {% endfor %}
     </tbody>
   </table>
 </dev>
