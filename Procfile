@@ -1,1 +1,1 @@
-web: gunicorn dormtown.wsgi --log-file -
+web: daphne dormtown.asgi:channel_layer --port $PORT --bind 0.0.0.0 -v2
