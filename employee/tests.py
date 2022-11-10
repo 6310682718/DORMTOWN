@@ -10,13 +10,13 @@ class TestUrl(SimpleTestCase):
         url = reverse("employee:index")
         self.assertEqual(resolve(url).func, index)
 
-    def test_reserve_is_resolved(self):
-        url = reverse("employee:assign")
-        self.assertEqual(resolve(url).func, assign)
+    #def test_reserve_is_resolved(self):
+    #    url = reverse("employee:assign")
+    #    self.assertEqual(resolve(url).func, assign)
 
-    def test_create_reserve_is_resolved(self):
-        url = reverse("employee:submit")
-        self.assertEqual(resolve(url).func, submit)
+    #def test_create_reserve_is_resolved(self):
+    #    url = reverse("employee:submit")
+    #    self.assertEqual(resolve(url).func, submit)
 
 class TestViews(TestCase):
     def setUp(self):
