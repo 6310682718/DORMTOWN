@@ -10,3 +10,4 @@ django-heroku
 psycopg2
 gunicorn
 channels
+daphne
