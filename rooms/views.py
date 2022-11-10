@@ -1,10 +1,14 @@
 from django.shortcuts import render
+from occupant.models import *
 
 # Create your views here.
 
 
 def index(req):
-    # require only admin
+    if req.user.is_authenticated:    
+        user_info = UserInfo.objects.get(user_id=req.user)
+        return render(req, "rooms/index.html", {"user_info": user_info})
+
     return render(req, "rooms/index.html", {})
 
 
