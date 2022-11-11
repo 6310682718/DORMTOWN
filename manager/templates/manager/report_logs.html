@@ -1,0 +1,43 @@
+{% extends 'rooms/layout.html' %} {% block body %}
+<section class="about-header-section">
+    <div class="text-center mt-4">
+        <p id='about_us' class="header">Report Log</p>
+    </div>
+  {% load static %}
+    <div class="container">
+        <table class="table table-bordered text-center table-striped">
+            <thead class="text-light" style="background-color: #192e80;">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">From</th>
+                    <th scope="col">Problem</th>
+                    <th scope="col">Assign to</th>
+                    <th scope="col">Due date</th>
+                    <th scope="col">Note</th>
+                    <th scope="col">Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for report in reports %}
+                <tr>
+                    <th scope="row">{{forloop.counter}}</th>
+                    <td>{{report.from_user_id.first_name}} {{report.from_user_id.last_name}}</td>
+                    <td>{{report.problem_type_id.problem_name}}</td>
+                    {% if report.assign_to_id %}
+                        <td>{{report.assign_to_id.first_name}} {{report.assign_to_id.last_name}}</td>
+                    {% else %}
+                        <td> - </td>
+                    {% endif %}
+                    <td>{{report.due_date}}</td>
+                    {% if report.note %}
+                        <td>{{report.note}}</td>
+                    {% else %}
+                        <td> - </td>
+                    {% endif %}
+                    <td>{{report.status_id.status_name}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}
