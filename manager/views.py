@@ -7,3 +7,6 @@ from django.contrib.auth.decorators import login_required
 @login_required
 def index(req):
     return render(req, "manager/dashboard.html")
+
+def rooms_available(req):
+    return render(req, "manager/available_rooms.html")

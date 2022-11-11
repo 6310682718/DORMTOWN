@@ -31,7 +31,7 @@
         </tr>
       </table>
       <div class="d-flex justify-content-end">
-        <a class="btn btn-dark text-white mx-1" href="#">
+        <a class="btn btn-dark text-white mx-1" href="{% url 'occupant:edit_profile' %}">
           <i class="fa-solid fa-pen-to-square"></i>
           Edit
         </a>
@@ -43,7 +43,7 @@
     </div>
   </section>
   <section class="manager-stat d-flex justify-content-around">
-    <div class="col-4 available-box">
+    <div onclick="location.href='#';" style="cursor: pointer;" class="col-4 available-box">
       <h3><i class="fa-solid fa-bookmark fa-1x"></i> Available</h3>
       <span>50</span>
     </div>
