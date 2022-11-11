@@ -13,7 +13,7 @@ def login(req):
         try:
             # find role and return to right path plz
             if (user is not None):
-                user_info = UserInfo.objects.filter(user_id=user).first()
+                user_info = UserInfo.objects.get(user_id=user)
                 auth_login(req, user)
                 return redirect(reverse('rooms:index'))
             else:
@@ -51,7 +51,7 @@ def register(req):
             return render(req, "users/register.html", {"status": False, "message": "Confirm password fail"}, status=400)
         if (username == "" or len(username) == 0 or firstname == "" or lastname == "" or password == "" or con_password == "" or email == ""):
             return render(req, "users/register.html", {"status": False, "message": "Enter your information"}, status=400)
-        role = Role.objects.get(role_name="Outside")
+        role = Role.objects.filter(role_name="Outside").first()
         rooms = Room.objects.first()
         user = User.objects.create_user(username=username, password=password, email=email, first_name=firstname, last_name=lastname)
         user_info = UserInfo.objects.create(user_id=user, phone_number=phone, address=address, street=street, state=state, city=city, country=country, zip_code=zip, role_id=role, room_id=rooms)
@@ -70,7 +70,7 @@ def change_pass(request):
         return render(request, 'rooms/500.html', status=500)
 
     if (request.method == "POST"):
-        old_password = request.POST['old_pass']
+        old_password = request.POST['old_password']
         new_password = request.POST['new_password']
         con_password = request.POST['con_password']
 
@@ -78,7 +78,7 @@ def change_pass(request):
             return render(request, 'users/changepass.html', {
                 'message': 'Password is invalid.',
                 'message_tag': 'alert alert-danger'
-            })
+            }, status=400)
         
         user.set_password(new_password)
         user.save()
@@ -87,4 +87,4 @@ def change_pass(request):
     else:
         return render(request, "users/changepass.html", {
             'user_info': user_info
-        })
+        }, status=400)
