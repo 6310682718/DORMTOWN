@@ -5,33 +5,28 @@
     </div>
   {% load static %}
     <div class="container">
-        <table class="table table-bordered">
-            <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">First</th>
-                <th scope="col">Last</th>
-                <th scope="col">Handle</th>
-            </tr>
+        <table class="table table-bordered text-center table-striped">
+            <thead class="text-light" style="background-color: #192e80;">
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">ROOM Number</th>
+                    <th scope="col">ROOM Type</th>
+                    <th scope="col">Status</th>
+                </tr>
             </thead>
-            <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-            </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-            </tr>
-            <tr>
-                <th scope="row">3</th>
-                <td colspan="2">Larry the Bird</td>
-                <td>@twitter</td>
-            </tr>
+            <tbody class="text-center">
+                {% for room in rooms %}
+                <tr>
+                    <th scope="row">{{forloop.counter}}</th>
+                    <td>{{room.room_number}}</td>
+                    <td>{{room.room_type}}</td>
+                    {% if room.status == True %}
+                        <td><i class="fa-solid fa-check" style="color: green;"></i></td>
+                    {% elif room.status == False %}
+                        <td><i class="fa-solid fa-xmark" style="color: red;"></i></td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>
