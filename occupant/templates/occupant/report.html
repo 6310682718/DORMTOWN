@@ -14,7 +14,7 @@
         </div>
         {% endif %}
         <div class="container w-50">
-            <form class="mt-5" action="{% url 'occupant:create_report' %}" method="POST">
+            <form class="mt-5" action="{% url 'occupant:report' %}" method="POST">
                 {% csrf_token %}
                 <div class="form-row text-left">
                     <div class="form-group col-md-6">
