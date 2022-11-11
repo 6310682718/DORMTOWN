@@ -116,7 +116,6 @@ def create_reserve(request, room_type):
             user_id=user,
             room_type=room_type,
             due_date=datetime.datetime.today(),
-            create_at=datetime.datetime.now(),
             status_type=status_type
         )
 
@@ -269,7 +268,7 @@ def get_report(request, report_id):
     try:
         user = User.objects.get(pk=request.user.id)
         user_info = get_object_or_404(UserInfo, user_id=user)
-        report = Report.objects.get(pk=report_id)
+        report = Report.objects.get(pk=report_id, from_user_id=user)
     except:
         return render(request, 'rooms/500.html', status=500)
 
@@ -302,7 +301,7 @@ def delete_report(request, report_id):
 
     try:
         user = User.objects.get(pk=request.user.id)
-        report = get_object_or_404(Report, pk=report_id)
+        report = get_object_or_404(Report, pk=report_id, from_user_id=user)
     except:
         return render(request, 'rooms/404.html', status=404)
 
