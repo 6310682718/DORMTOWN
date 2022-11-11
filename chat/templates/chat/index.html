@@ -1,0 +1,145 @@
+{% extends 'rooms/layout.html' %} {% block body %}
+<div id="container">
+  <main>
+    <header>
+      <div>
+        <h2>Chat with
+          {{ text_to.username }}
+        </h2>
+        <h3>already
+          {{ message_count }} messages
+        </h3>
+      </div>
+      <!-- <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/ico_star.png" alt=""> -->
+    </header>
+    <ul id="chat" class="w-100">
+      {% for m in messages %}
+      {% if m.user.id != request.user.id %}
+      <li class="you">
+        <div class="entete">
+          <span class="status green"></span>
+          <h2>
+            {{ m.user.username }}
+          </h2>
+          <h3>
+            {{ m.date_added }}
+          </h3>
+        </div>
+        <div class="triangle"></div>
+        <div class="message">
+          {{ m.content }}
+        </div>
+      </li>
+      {% else %}
+      <li class="me">
+        <div class="entete">
+          <h3>
+            {{ m.date_added }}
+          </h3>
+          <h2>
+            {{ m.user.username }}
+          </h2>
+          <span class="status blue"></span>
+        </div>
+        <div class="triangle"></div>
+        <div class="message">
+          {{ m.content }}
+        </div>
+      </li>
+      {% endif %}
+      {% endfor %}
+    </ul>
+    <footer>
+      <textarea placeholder="Type your message" id="msgText"></textarea>
+      <!-- <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/ico_picture.png" alt="">
+      <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/ico_file.png" alt=""> -->
+      <a href="#" id="sendMsg">Send <i class="fa-solid fa-paper-plane"></i></a>
+    </footer>
+  </main>
+</div>
+<script>
+  const username = "{{ request.user.username }}"
+  const replyId = "{{ request.user.id }}"
+  $(document).ready(function() {
+    let objDiv = document.getElementById("chat");
+    objDiv.scrollTop = objDiv.scrollHeight;
+  });
+  $("#sendMsg").click(() => sendMessage());
+  $("#msgText").keyup((e) => {
+    if (e.keyCode == 13) {
+      $("#sendMsg").click()
+    }
+  });
+  const chatSocket = new WebSocket(
+    'ws://' +
+    window.location.host +
+    '/ws/' +
+    `room-${replyId}` +
+    '/'
+  );
+  chatSocket.onclose = function(e) {
+    console.log("<---- chatSocket Closed ---->")
+  }
+  chatSocket.onmessage = function(e) {
+    const data = JSON.parse(e.data)
+    if (data.username !== username) {
+      responseMessage(data)
+    } else {
+      replyMessage(data)
+    }
+    let objDiv = document.getElementById("chat");
+    objDiv.scrollTop = objDiv.scrollHeight;
+  }
+
+  function sendMessage() {
+    const text = $("#msgText").val();
+    const objMessage = {
+      "message": text,
+      "username": username,
+      "room": `room-${replyId}`
+    }
+    chatSocket.send(JSON.stringify(objMessage))
+    $("#msgText").val("")
+  }
+
+  function responseMessage(data) {
+    $("#chat").append(`
+    <li class="you">
+        <div class="entete">
+          <span class="status green"></span>
+          <h3>
+            Now
+          </h3>
+          <h2>
+            ${data.username}
+          </h2>
+        </div>
+        <div class="triangle"></div>
+        <div class="message">
+          ${data.message}
+        </div>
+    </li>
+    `);
+  }
+
+  function replyMessage(data) {
+    $("#chat").append(`
+    <li class="me">
+        <div class="entete">
+          <span class="status green"></span>
+          <h2>
+            ${data.username}
+          </h2>
+          <h3>
+            Now
+          </h3>
+        </div>
+        <div class="triangle"></div>
+        <div class="message">
+          ${data.message}
+        </div>
+    </li>
+    `)
+  }
+</script>
+{% endblock %}

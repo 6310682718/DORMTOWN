@@ -1,0 +1,42 @@
+{% extends 'occupant/layout.html' %}
+{% block body %}
+<div class="text-center mt-4">
+    <p class="header">List of Reporting</p>
+</div>
+<div class="container">
+    <div class="py-3"></div>
+    <div class="row card">
+        <div class="card-body">
+            {% if reports %}
+            <table class="table table-hover table-striped" style="text-align: center;">
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Assign to</th>
+                    <th>Due date</th>
+                    <th>status</th>
+                </tr>
+                {% for report in reports %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ report.problem_type_id }}</td>
+                    {% if report.assign_to_id %}
+                        <td>{{ report.assign_to_id.first_name }} {{ report.assign_to_id.last_name }}</td>
+                    {% else %}
+                        <td>-</td>
+                    {% endif %}
+                    <td>{{ report.due_date }}</td>
+                    <td><a class="btn btn-dark text-white" href="{% url 'occupant:get_report' report.id %}">Detail</a></td>
+                </tr>
+                {% endfor %}
+            </table>
+            {% else %}
+            <div class="alert alert-danger" role="alert">
+                You have not reported yet.
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}

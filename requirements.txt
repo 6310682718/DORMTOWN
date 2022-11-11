@@ -1,0 +1,10 @@
+asgiref==3.5.2
+Django==4.1.2
+fontawesomefree==6.2.0
+six==1.16.0
+soupsieve==2.3.2.post1
+sqlparse==0.4.3
+tornado==6.2
+gunicorn
+channels==3.0.4
+mysqlclient

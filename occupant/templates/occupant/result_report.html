@@ -1,0 +1,84 @@
+{% extends 'occupant/layout.html' %}
+{% block body %}
+<div class="text-center mt-4">
+    <p class="header">{{ header }}</p>
+</div>
+
+<!--REPORT DETAIL-->
+<div class="container">
+    <div class="py-3"></div>
+    <div class="row">
+        <div class="col-lg-10 card" style="margin: auto">
+            <div class="card-body">
+                <table class="table table-borderless">
+                    <tr>
+                        <td colspan="2">Report:</td>
+                        <td class="text-end">{{ report.problem_type_id.problem_name }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Room:</td>
+                        <td class="text-end">{{ user_info.room_id.room_number }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Due date:</td>
+                        <td class="text-end">{{ report.due_date }}</td>
+                    </tr>
+                    {% if report.note %}
+                    <tr>
+                        <td colspan="2">Note:</td>
+                        <td class="text-end">{{ report.note }}</td>
+                    </tr>
+                    {% endif %}
+                    <tr>
+                        <td colspan="2">Status:</td>
+                        <td class="text-end">
+                            {% if report.status_id == 'Done' %}
+                            <i class="fa-solid fa-circle-check"></i>
+                            {% endif %}
+                            {{ report.status_id }}
+                        </td>
+                    </tr>
+                    {% if report.status_id != 'Idle' %}
+                    <tr>
+                        <td colspan="2"></td>
+                        <td colspan="2" align="right">
+                            <a class="btn btn-dark text-white" href="{% url 'occupant:edit_report' report.id %}">Edit</a>
+                            <a class="btn btn-danger text-white" href="{% url 'occupant:delete_report' report.id %}">Remove</a>
+                        </td>
+                    </tr>
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+    </div>
+</div>    
+
+<!--CONTACT DETAIL-->
+<div class="container">
+    <div class="py-3"></div>
+    <div class="row">
+        <div class="col-lg-10 card" style="margin: auto">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center py-3">
+                    <h2 class="h5 mb-0">Contact</h2>
+                </div>
+                <table class="table table-borderless">
+                    <tr>
+                        <td colspan="2">Name:</td>
+                        <td class="text-end">Natnicha Faksang</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Contact:</td>
+                        <td class="text-end">0644153591</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Job:</td>
+                        <td class="text-end">Housekeeper</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div> 
+
+{% endblock %}

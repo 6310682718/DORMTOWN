@@ -1,0 +1,119 @@
+{% extends 'rooms/layout.html' %} {% block body %}
+<div class="container bg-chat">
+  <div class="type-msg-card">
+    <div class="chat-history">
+      {% for m in messages %}
+      {% if m.user.id != request.user.id %}
+      <div class="destination-text text">
+        <i class="fa-solid fa-user-gear"></i>
+        <span class="text-dark">
+          {{ m.user.username }} : </span>
+        <span>
+          {{ m.content }}</span>
+      </div>
+      {% else %}
+      <div class="sender-text text">
+        <span class="text-dark">
+          <i class="fa-solid fa-user"></i>
+          {{ m.user.username }} : </span>
+        <span>
+          {{ m.content }}</span>
+      </div>
+      {% endif %}
+      {% endfor %}
+      <!-- <div class="destination-text text">
+        <i class="fa-solid fa-user-gear"></i>
+        สวัสดีครับผม
+      </div>
+      <div class="sender-text text">
+        สวัสดีครับ
+        <i class="fa-solid fa-user"></i>
+      </div>
+      <div class="sender-text text">
+        พอดีต้องการสอบถามเรื่องการเช่าหอพัก
+        <i class="fa-solid fa-user"></i>
+      </div>
+      <div class="destination-text text">
+        <i class="fa-solid fa-user-gear"></i>
+        ต้องการสอบถามไหนเรื่องไหนครับ
+      </div>
+      <div class="sender-text text">
+        มีค่ามัดจำในการเช่าหอพักไหมครับ
+        <i class="fa-solid fa-user"></i>
+      </div> -->
+
+    </div>
+    <div class="section-chat input-group pd-0">
+      <input type="text" class="form-control" id="msgText" placeholder="Type message    . . ." aria-label="Recipient's username" aria-describedby="basic-addon2">
+      <input type="hidden" value="{{ request.user.username }}" id="username" />
+      <input type="hidden" value="{{ request.user.id }}" id="userId" />
+      <div class="input-group-append">
+        <button class="btn btn-primary" type="button" id="sendMsg">
+          Send
+          <i class="fa-solid fa-paper-plane"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  const username = $("#username").val()
+  const userId = $("#userId").val()
+  $("#sendMsg").click(() => sendMessage());
+  $("#msgText").keyup((e) => {
+    if (e.keyCode === 13) {
+      $("#sendMsg").click()
+    }
+  })
+  // Chat socket process
+  const chatSocket = new WebSocket(
+    'ws://' +
+    window.location.host +
+    '/ws/' +
+    `room-${userId}` +
+    '/'
+  );
+  chatSocket.onclose = function(e) {
+    console.log("<---- chatSocket Closed ---->")
+  }
+  chatSocket.onmessage = function(e) {
+    const data = JSON.parse(e.data)
+    if (data.username !== username) {
+      responseMessage(data.message, data.username)
+    } else {
+      replyMessage(data.message, data.username)
+    }
+  }
+
+  function sendMessage() {
+    const text = $("#msgText").val();
+    const objMessage = {
+      "message": text,
+      "username": username,
+      "room": `room-${userId}`,
+    }
+    chatSocket.send(JSON.stringify(objMessage))
+    $("#msgText").val("")
+  }
+
+  function responseMessage(text, username) {
+    $(".chat-history").append(`
+    <div class="destination-text text">
+      <i class="fa-solid fa-user-gear"></i>
+        ${username} :
+        ${text}
+    </div>
+    `);
+  }
+
+  function replyMessage(text, username) {
+    $(".chat-history").append(`
+    <div class="sender-text text">
+      <i class="fa-solid fa-user"></i>
+      ${username} :
+      ${text}
+    </div>
+    `);
+  }
+</script>
+{% endblock %}

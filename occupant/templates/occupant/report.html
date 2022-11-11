@@ -1,0 +1,43 @@
+{% extends 'occupant/layout.html' %}
+{% block body %}
+<section class="about-header-section">
+    <div class="text-center mt-4">
+        <p class="header">Report a Problem</p>
+        <div class="description">
+            <p>
+                Do you need HELP ?
+            </p>
+        </div>
+        {% if message %}
+        <div class="{{ message_tag }}" role="alert">
+        {{ message }}
+        </div>
+        {% endif %}
+        <div class="container w-50">
+            <form class="mt-5" action="{% url 'occupant:create_report' %}" method="POST">
+                {% csrf_token %}
+                <div class="form-row text-left">
+                    <div class="form-group col-md-6">
+                        <label for="inputEmail4">Title</label>
+                        <select required class="form-control" id="problem" name="problem">
+                            <option selected disabled>Type of Report</option>
+                            {% for problem in problems %}
+                                <option value="{{ problem.problem_name }}">{{ problem.problem_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="inputPassword4">Due date</label>
+                        <input required type="date" class="form-control" id="due_date" name="due_date">
+                    </div>
+                    <div class="form-group col-md">
+                        <label for="inputAddress">Note</label>
+                        <input type="test" class="form-control" id="note" name="note" placeholder="Note">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-danger">Report</button>
+            </form> 
+        </div>
+    </div>
+</section>
+{% endblock %}
