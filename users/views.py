@@ -5,7 +5,6 @@ from occupant.models import *
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 from django.contrib.auth.hashers import make_password
 
-
 def login(req):
     if (req.method == "POST"):
         username = req.POST.get("username", False)
@@ -14,7 +13,7 @@ def login(req):
         try:
             # find role and return to right path plz
             if (user is not None):
-                user_info = UserInfo.objects.get(user_id=user)
+                user_info = UserInfo.objects.filter(user_id=user).first()
                 auth_login(req, user)
                 return redirect(reverse('rooms:index'))
             else:
@@ -23,11 +22,9 @@ def login(req):
             pass
     return render(req, "users/login.html")
 
-
 def logout(req):
     auth_logout(req)
     return render(req, "users/login.html", {"message": "Logged out"})
-
 
 def register(req):
     if req.method == "POST":
@@ -62,18 +59,32 @@ def register(req):
     else:
         return render(req, "users/register.html", status=200)
 
+def change_pass(request):
+    if not request.user.is_authenticated:
+        return render(request, 'users/login.html', status=403)
 
-def change_pass(req):
-    if (req.user.is_authenticated == False):
-        return redirect("/")
-    if (req.method == "POST"):
-        old_pass, new_password, con_password = req.POST[
-            'old_pass'], req.POST['new_password'], req.POST['con_password']
-        user = User.objects.get(pk=req.user.id)
-        print(user.password)
-        print(make_password(old_pass))
-        if (user.password == old_pass):
-            print("Pass")
-        else:
-            print("Not pass")
-    return render(req, "users/changepass.html", status=200)
+    try:
+        user = User.objects.get(pk=request.user.id)
+        user_info = UserInfo.objects.get(user_id=user)
+    except:
+        return render(request, 'rooms/500.html', status=500)
+
+    if (request.method == "POST"):
+        old_password = request.POST['old_pass']
+        new_password = request.POST['new_password']
+        con_password = request.POST['con_password']
+
+        if (new_password != con_password) or (not user.check_password(old_password)):
+            return render(request, 'users/changepass.html', {
+                'message': 'Password is invalid.',
+                'message_tag': 'alert alert-danger'
+            })
+        
+        user.set_password(new_password)
+        user.save()
+
+        return redirect(reverse('users:login'))
+    else:
+        return render(request, "users/changepass.html", {
+            'user_info': user_info
+        })
