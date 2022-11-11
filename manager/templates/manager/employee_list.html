@@ -9,10 +9,9 @@
             <thead class="text-light" style="background-color: #192e80;">
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">User ID</th>
-                    <th scope="col">Room Number</th>
+                    <th scope="col">User Account</th>
                     <th scope="col">Role</th>
-                    <th scope="col">Handle</th>
+                    <th scope="col">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -20,7 +19,6 @@
                 <tr>
                     <th scope="row">{{forloop.counter}}</th>
                     <td>{{user.user_id}}</td>
-                    <td>{{user.room_id.room_number}}</td>
                     <td>{{user.role_id.role_name}}</td>
                     <td colspan="2">
                         <a class="btn btn-dark text-white" href="{% url 'manager:edit_profile' user.user_id.id %}">Edit</a>
