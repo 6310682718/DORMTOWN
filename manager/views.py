@@ -54,7 +54,7 @@ def edit_profile(request, user_id):
         return render(request, 'users/login.html', status=403)
     try:
         user = User.objects.get(pk=user_id)
-        user_info = get_object_or_404(UserInfo, user_id=user_id)
+        user_info = get_object_or_404(UserInfo, user_id=user)
     except:
         return render(request, 'rooms/500.html', status=500)
 
@@ -69,12 +69,11 @@ def delete_user(request, user_id):
 
     try:
         user = User.objects.get(pk=user_id)
-        user_info = get_object_or_404(UserInfo, user_id=user_id)
+        user_info = get_object_or_404(UserInfo, user_id=user)
     except:
         return render(request, 'rooms/500.html', status=500)
 
     if user is not None:
-        user_info.delete()
         user.delete()
 
-    return redirect(reverse('manager:employee_list'))
+    return redirect(reverse('manager:dashboard'))

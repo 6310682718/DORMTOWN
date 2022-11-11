@@ -26,6 +26,10 @@
                         <td><i class="fa-solid fa-xmark" style="color: red;"></i></td>
                     {% endif %}
                 </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="4"><i>No Data</i></td>
+                    </tr>
                 {% endfor %}
             </tbody>
         </table>
