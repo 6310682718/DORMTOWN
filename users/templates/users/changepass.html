@@ -1,15 +1,20 @@
-{% extends 'users/layout.html' %}
+{% extends 'rooms/layout.html' %}
 {% block body %}
 <section class="about-header-section">
   <div class="text-center mt-4">
     <p class="header">Change Password</p>
     <div class="description">
+      {% if message %}
+      <div class="{{ message_tag }}" role="alert">
+          {{ message }}
+      </div>
+      {% endif %}
       <div class="container w-50">
         <form action="{% url 'users:change_password' %}" method="POST">
           {% csrf_token %}
           <div class="form-group text-left ">
             <label for="exampleInputEmail1">Old password</label>
-            <input required type="text" class="form-control d-flex justify-content-center" name="old_pass" aria-describedby="emailHelp" placeholder="Old password">
+            <input required type="password" class="form-control d-flex justify-content-center" name="old_password" placeholder="Old password">
           </div>
           <div class="form-group text-left mt-3">
             <label for="exampleInputPassword1">Password</label>

@@ -86,6 +86,43 @@ class TestView(TestCase):
         # )
         self.register_url = reverse('users:register')
 
+        self.role_outside = Role.objects.create(role_name='Outside')
+
+        self.outside_username = 'outside'
+        self.outside_password = 'password'
+        self.credentials = {
+            'username': self.outside_username,
+            'password': self.outside_password,
+            'email': 'outside@dormtown.com',
+            'first_name': 'Outside',
+            'last_name': 'Dormtown'}
+        self.outside_user = User.objects.create_user(**self.credentials)
+        self.outside_userinfo = UserInfo.objects.create(
+            user_id=self.outside_user,
+            role_id=self.role_outside,
+            room_id=None,
+            phone_number='0987654321',
+            address='123/45',
+            street='Changwattana',
+            city='Pakkret',
+            state='Nonthabuti',
+            country='Thailand',
+            zip_code='12345',
+        )
+
+        self.temp_username = 'temp'
+        self.temp_password = 'password'
+        self.credentials = {
+            'username': self.temp_username,
+            'password': self.temp_password,
+            'email': 'temp@dormtown.com',
+            'first_name': 'Temp',
+            'last_name': 'Dormtown'}
+        self.temp_user = User.objects.create_user(**self.credentials)
+
+        self.change_password_url = reverse('users:change_password')
+        self.edit_profile_url = reverse('users:edit_profile')
+
     def test_register_index(self):
         response = self.client.get(self.register_url)
         self.assertEqual(response.status_code, 200)
@@ -186,3 +223,99 @@ class TestView(TestCase):
         url = "/users/logout"
         response = self.client.post(url)
         self.assertEqual(response.status_code, 200)
+
+    def test_change_password_without_login(self):
+        # serch change password page without authorization, return login page with 403 Forbidden
+        response = self.client.get(self.change_password_url)
+
+        self.assertEqual(response.status_code, 403)
+        self.assertTemplateUsed(response, 'users/login.html')
+
+    def test_report_error_userinfo(self):
+        # change password with authorization but do not have userinfo data, return 500.html with 500 Internal Server Error
+        self.client.login(username=self.temp_username, password=self.temp_password)
+
+        response = self.client.get(self.change_password_url)
+
+        self.assertEqual(response.status_code, 500)
+        self.assertTemplateUsed(response, 'rooms/500.html')
+
+    def test_change_password_post(self):
+        # change password with post method, return login page with 200 OK
+        self.client.login(username=self.outside_username, password=self.outside_password)
+        
+        response = self.client.post(self.change_password_url, {
+            'old_password': self.outside_password,
+            'new_password': 'newpassword',
+            'con_password': 'newpassword'
+        })
+
+        self.assertRedirects(response, '/users/login', status_code=302, target_status_code=200, fetch_redirect_response=True)
+
+    def test_change_password_post_error_old_password(self):
+        # change password with post method but old password is invalid, return login page with 400 Bad Request
+        self.client.login(username=self.outside_username, password=self.outside_password)
+        
+        response = self.client.post(self.change_password_url, {
+            'old_password': 'oldpassword',
+            'new_password': 'newpassword',
+            'con_password': 'newpassword'
+        })
+
+        self.assertEqual(response.status_code, 400)
+        self.assertTemplateUsed(response, 'users/changepass.html')
+
+    def test_change_password_post_error_new_password(self):
+        # change password with post method but old password is invalid, return login page with 400 Bad Request
+        self.client.login(username=self.outside_username, password=self.outside_password)
+        
+        response = self.client.post(self.change_password_url, {
+            'old_password': self.outside_password,
+            'new_password': 'newpass',
+            'con_password': 'newpassword'
+        })
+
+        self.assertEqual(response.status_code, 400)
+        self.assertTemplateUsed(response, 'users/changepass.html')
+
+    def test_change_password_get(self):
+        # change password with get method, return change password page with 400 Bad Request
+        self.client.login(username=self.outside_username, password=self.outside_password)
+
+        response = self.client.get(self.change_password_url)
+
+        self.assertEqual(response.status_code, 400)
+        self.assertTemplateUsed(response, 'users/changepass.html')
+
+    def test_edit_profile_without_login(self):
+        # edit profile without authorization, return login page with 403 Forbidden
+        response = self.client.get(self.edit_profile_url)
+
+        self.assertEqual(response.status_code, 403)
+        self.assertTemplateUsed(response, 'users/login.html')
+
+    def test_edit_profile_error_userinfo(self):
+        # edit profile with authorization but do not have userinfo model, return 500.html with 500 Internal Server Error
+        self.client.login(username=self.temp_username, password=self.temp_password)
+
+        response = self.client.get(self.edit_profile_url)
+
+        self.assertEqual(response.status_code, 500)
+        self.assertTemplateUsed(response, 'rooms/500.html')
+
+    def test_edit_profile_get(self):
+        # authorize for editing profile with get method, return the page with 200 OK
+        self.client.login(username=self.outside_username, password=self.outside_password)
+
+        response = self.client.get(self.edit_profile_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'users/edit_profile.html')
+
+    def test_edit_profile_post(self):
+        # authorize for editing profile with get method, return the page with 200 OK
+        self.client.login(username=self.outside_username, password=self.outside_password)
+
+        response = self.client.post(self.edit_profile_url)
+
+        self.assertRedirects(response, '/', status_code=302, target_status_code=200, fetch_redirect_response=True)

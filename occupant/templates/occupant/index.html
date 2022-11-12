@@ -1,7 +1,7 @@
 {% extends 'occupant/layout.html' %}
 {% block body %}
 <div class="text-center mt-4">
-    <p class="header">Occupant</p>
+    <p class="header">{{ user_info.role_id.role_name }}</p>
 </div>
 
 <!--PROFILE DETAIL-->
@@ -29,12 +29,23 @@
                     <tr>
                         {% if user_info.role_id.role_name == 'Occupant' %}
                             <td colspan="2"></td>
-                            <td colspan="2" align="right"><a class="btn btn-dark text-white" href="{% url 'occupant:edit_profile' %}">Edit</a></td>
+                            <td colspan="2" align="right">
+                                <a class="btn btn-dark text-white" href="{% url 'users:edit_profile' %}">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                    Edit
+                                </a>
+                            </td>
                         {% else %}
                             <td colspan="2"></td>
                             <td class="text-end" align="right">
-                                <a class="btn btn-dark text-white" href="{% url 'occupant:edit_profile' %}">Edit</a>
-                                <a class="btn btn-success" href="{% url 'occupant:reserve' %}">Reserve a Room</a>
+                                <a class="btn btn-dark text-white" href="{% url 'users:edit_profile' %}">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                    Edit
+                                </a>
+                                <a class="btn btn-success" href="{% url 'occupant:reserve' %}">
+                                    <i class="fa-solid fa-bookmark"></i>
+                                    Reserve a Room
+                                </a>
                             </td>
                         {% endif %}
                     </tr>
@@ -66,7 +77,10 @@
                     <tr>                    
                         <td colspan="2"></td>
                         <td colspan="text-end" align="right">
-                            <a class="btn btn-danger text-white" href="{% url 'occupant:report' %}">Report Problem</a>
+                            <a class="btn btn-danger text-white" href="{% url 'occupant:report' %}">
+                                <i class="fa-solid fa-bullhorn"></i>
+                                Report Problem
+                            </a>
                         </td>
                     </tr>
                 </table>

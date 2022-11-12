@@ -1,10 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.contrib.auth.models import User
 from occupant.models import *
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
-from django.contrib.auth.hashers import make_password
-
 
 def login(req):
     if (req.method == "POST"):
@@ -23,11 +21,9 @@ def login(req):
             pass
     return render(req, "users/login.html")
 
-
 def logout(req):
     auth_logout(req)
     return render(req, "users/login.html", {"message": "Logged out"})
-
 
 def register(req):
     if req.method == "POST":
@@ -54,7 +50,7 @@ def register(req):
             return render(req, "users/register.html", {"status": False, "message": "Confirm password fail"}, status=400)
         if (username == "" or len(username) == 0 or firstname == "" or lastname == "" or password == "" or con_password == "" or email == ""):
             return render(req, "users/register.html", {"status": False, "message": "Enter your information"}, status=400)
-        role = Role.objects.get(role_name="Outside")
+        role = Role.objects.filter(role_name="Outside").first()
         rooms = Room.objects.first()
         user = User.objects.create_user(username=username, password=password, email=email, first_name=firstname, last_name=lastname)
         user_info = UserInfo.objects.create(user_id=user, phone_number=phone, address=address, street=street, state=state, city=city, country=country, zip_code=zip, role_id=role, room_id=rooms)
@@ -62,18 +58,75 @@ def register(req):
     else:
         return render(req, "users/register.html", status=200)
 
+def change_pass(request):
+    if not request.user.is_authenticated:
+        return render(request, 'users/login.html', status=403)
 
-def change_pass(req):
-    if (req.user.is_authenticated == False):
-        return redirect("/")
-    if (req.method == "POST"):
-        old_pass, new_password, con_password = req.POST[
-            'old_pass'], req.POST['new_password'], req.POST['con_password']
-        user = User.objects.get(pk=req.user.id)
-        print(user.password)
-        print(make_password(old_pass))
-        if (user.password == old_pass):
-            print("Pass")
-        else:
-            print("Not pass")
-    return render(req, "users/changepass.html", status=200)
+    try:
+        user = User.objects.get(pk=request.user.id)
+        user_info = UserInfo.objects.get(user_id=user)
+    except:
+        return render(request, 'rooms/500.html', status=500)
+
+    if (request.method == "POST"):
+        old_password = request.POST['old_password']
+        new_password = request.POST['new_password']
+        con_password = request.POST['con_password']
+
+        if (new_password != con_password) or (not user.check_password(old_password)):
+            return render(request, 'users/changepass.html', {
+                'message': 'Password is invalid.',
+                'message_tag': 'alert alert-danger'
+            }, status=400)
+        
+        user.set_password(new_password)
+        user.save()
+
+        return redirect(reverse('users:login'))
+    else:
+        return render(request, "users/changepass.html", {
+            'user_info': user_info
+        }, status=400)
+
+def edit_profile(request):
+    if not request.user.is_authenticated:
+        return render(request, 'users/login.html', status=403)
+
+    try:
+        user = User.objects.get(pk=request.user.id)
+        user_info = get_object_or_404(UserInfo, user_id=request.user.id)
+    except:
+        return render(request, 'rooms/500.html', status=500)
+
+    if request.method == 'POST':
+        first = request.POST.get('firstname', user.first_name)
+        last = request.POST.get('lastname', user.last_name)
+        tel = request.POST.get('phoneNumber', user_info.phone_number)
+        address = request.POST.get('address', user_info.address)
+        street = request.POST.get('street', user_info.street)
+        state = request.POST.get('state', user_info.state)
+        city = request.POST.get('city', user_info.city)
+        country = request.POST.get('country', user_info.country)
+        zip_code = request.POST.get('zip', user_info.zip_code)
+
+        User.objects.filter(pk=request.user.id).update(
+            first_name =  first,
+            last_name = last,
+        )
+
+        UserInfo.objects.filter(user_id=user).update(
+            phone_number = tel,
+            address = address,
+            street = street,
+            state = state,
+            city = city,
+            country = country,
+            zip_code = zip_code
+        )
+        
+        return redirect(reverse('rooms:index'))
+    else:
+        return render(request, 'users/edit_profile.html', {
+            'user': user,
+            'user_info': user_info,
+        })
