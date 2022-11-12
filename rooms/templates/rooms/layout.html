@@ -54,7 +54,7 @@
             Our teams
           </a>
         </li>
-        {% if request.user.is_authenticated and request.user.is_superuser or user_info.role_id.role_name == "Manager" %}
+        {% if request.user.is_authenticated and request.user.is_superuser %}
         <li class="nav-item">
           <a href="/manager" class="text-dark mx-3 align-middle">
             <i class="fa-solid fa-user-tie"></i>
