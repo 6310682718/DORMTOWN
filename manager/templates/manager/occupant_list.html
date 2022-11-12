@@ -1,4 +1,4 @@
-{% extends 'rooms/layout.html' %} {% block body %}
+{% extends 'manager/layout.html' %} {% block body %}
 <section class="about-header-section">
     <div class="text-center mt-4">
         <p id='about_us' class="header">Occupant</p>
@@ -23,8 +23,8 @@
                     <td>{{user.room_id.room_number}}</td>
                     <td>{{user.role_id.role_name}}</td>
                     <td colspan="2">
-                        <a class="btn btn-dark text-white" href="{% url 'manager:edit_profile' user.user_id.id %}">Edit</a>
-                        <a class="btn btn-danger text-white" href="{% url 'manager:delete_user' user.user_id.id %}">Delete</a>
+                        <a class="btn btn-dark text-white" href="{% url 'manager:edit_profile' user.user_id.id %}"> Edit</a>
+                        {% comment %} <a class="btn btn-danger text-white" href="{% url 'manager:delete_user' user.user_id.id %}">Delete</a> {% endcomment %}
                     </td>                
                 </tr>
                 {% empty %}

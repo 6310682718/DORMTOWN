@@ -1,4 +1,4 @@
-{% extends 'occupant/layout.html' %}
+{% extends 'employee/layout.html' %}
 {% block body %}
 <section class="about-header-section">
   <div class="text-center mt-4">
@@ -14,7 +14,7 @@
     </div>
     {% endif %}
     <div class="container w-50">
-      <form class="mt-5" action="{% url 'occupant:update_profile' %}" method="POST">
+      <form class="mt-5" action="{% url 'employee:update_profile' %}" method="POST">
         {% csrf_token %}
         <div class="form-row text-left">
           <div class="form-group col-md-6">

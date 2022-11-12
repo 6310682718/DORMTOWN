@@ -40,15 +40,10 @@
                         <td class="text-end">{{ user_info.address }}, {{ user_info.street }}, {{ user_info.state }}, {{ user_info.city }}, {{ user_info.country }}, {{ user_info.zip_code }} </td>
                     </tr>
                     <tr>
-                        {% if room_status %}
-                            <td colspan="2"></td>
-                            <td colspan="2" align="right"><a class="btn btn-dark text-white" href="{% url 'occupant:edit_profile' %}">Edit</a></td>
-                        {% else %}
-                            <td colspan="2"></td>
-                            <td class="text-end" align="right">
-                                <a class="btn btn-dark text-white" href="{% url 'occupant:edit_profile' %}">Edit</a>
-                            </td>
-                        {% endif %}
+                        <td colspan="2"></td>
+                        <td class="text-end" align="right">
+                          <a class="btn btn-dark text-white" href="{% url 'employee:edit_profile' %}"><i class="fa-solid fa-pen-to-square"></i> Edit</a>
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -64,17 +59,30 @@
       <div class="col card">
         <div class="card-body">
           <table class="table table-borderless">
-            <tr>
-              <td colspan="2">Cleaning Service:</td>
-              <td>2</td>
-            </tr>
+            {% if role_name == "Housekeeper" %}
+              <tr>
+                <td colspan="2">Cleaning Service:</td>
+                <td>{{clean}}</td>
+              </tr>
+            {% endif %}
+            {% if role_name == "Technician" %}
+              <tr>
+                <td colspan="2">Fix electric equipment:</td>
+                <td>{{fix}}</td>
+              </tr>
+              <tr>
+                <td colspan="2">Irrigation problem:</td>
+                <td>{{iri}}</td>
+              </tr>
+            {% endif %}
             <tr>
               <td colspan="2">Move out:</td>
-              <td>3</td>
+              <td>{{move}}</td>
             </tr>
+
             <tr>
               <td colspan="2">Due date work:</td>
-              <td> 1</td>
+              <td></td>
             </tr>
           </table>
         </div>
@@ -88,24 +96,30 @@
   <div class="col card"></div>
   <div class="py-2"></div>
   <div class="d-flex justify-content-between align-items-center py-3">
-    <h2 class="h5 mb-0">MY Job</h2>
+    <h2 class="h5 mb-0">My Job</h2>
 
   </div>
   <table class="table table-bordered text-center">
-    <thead>
+    <thead class="text-light" style="background-color: #192e80;">
       <tr>
+        <th scope="col">#</th>
         <th scope="col">Name</th>
         <th scope="col">Room</th>
-        <th scope="col">Duedate</th>
+        <th scope="col">Due date</th>
         <th scope="col">Action</th>
       </tr>
       <tbody>
-        {% for i in report %}
+        {% for i in report_a %}
           <tr>
+            <td>{{ forloop.counter }}</td>
             <td>{{i.problem_type_id}}</td>
-            <td>{{i.from_user_id}}</td>
+              {% for key,value in rooms_reporter_a.items %}
+                {% if key == i.from_user_id %}
+                  <td>{{value}}</td>
+              {% endif %}
+              {% endfor %} 
             <td>{{i.due_date}}</td>
-            <td><a class="btn btn-dark" href="#"></a></td>
+            <td><a class="btn btn-success text-white" href="{% url 'employee:submit' i.id %}"> <i class="fa-solid fa-square-check"></i> </a></td>
           </tr>
         {% endfor %}
       </tbody>
@@ -121,39 +135,27 @@
     <h2 class="h5 mb-0">All of Job</h2>
   </div>
   <table class="table table-bordered text-center">
-    <thead>
+    <thead class="text-light" style="background-color: #192e80;">
       <tr>
         <th scope="col">Name</th>
         <th scope="col">Room</th>
-        <th scope="col">Duedate</th>
+        <th scope="col">Due date</th>
         <th scope="col">Action</th>
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td>Cleanning Service</td>
-        <td>3301</td>
-        <td>27/2/2023</td>
-        <td><a class="btn btn-dark" href="#"></a></td>
-      </tr>
-      <tr>
-        <td>Cleanning Service</td>
-        <td>4103</td>
-        <td>1/2/2023</td>
-        <td><a class="btn btn-dark" href="#"></a></td>
-      </tr>
-      <tr>
-        <td>Move out</td>
-        <td>1503</td>
-        <td>29/2/2023</td>
-        <td><a class="btn btn-dark" href="#"></a></td>
-      </tr>
-      <tr>
-        <td>Move out</td>
-        <td>3402</td>
-        <td>14/2/2023</td>
-        <td><a class="btn btn-dark" href="#"></a></td>
-      </tr>
+      {% for i in report_na %}
+          <tr>
+            <td>{{i.problem_type_id}}</td>
+            {% for key,value in rooms_reporter_na.items %}
+              {% if key == i.from_user_id %}
+                <td>{{value}}</td>
+              {% endif %}
+              {% endfor %} 
+            <td>{{i.due_date}}</td>
+            <td><a class="btn btn-success text-white" href="{% url 'employee:assign' i.id %}"> <i class="fa-brands fa-get-pocket"></i> </a></td>
+          </tr>
+        {% endfor %}
     </tbody>
   </table>
 </dev>

@@ -7,16 +7,19 @@ import datetime
 
 
 class TestUrl(SimpleTestCase):
+    #test_url_login
     def test_login_is_resolved(self):
         url = reverse("users:login")
         self.assertEqual(resolve(url).func, login)
 
+    #test_url_logout
     def test_logout_is_resolved(self):
         url = reverse("users:register")
         self.assertEqual(resolve(url).func, register)
 
 
 class TestView(TestCase):
+    # set up user1
     def setUp(self):
         self.username = 'newuser'
         self.password = 'newuserpass'
@@ -31,6 +34,8 @@ class TestView(TestCase):
             'last_name': self.last}
         self.new_user = User.objects.create_user(**self.credentials)
         
+        # set up user2
+
         self.username1 = 'newuser1'
         self.password1 = 'newuserpass1'
         self.email1 = 'newuser1@dormtown.com'
@@ -121,12 +126,15 @@ class TestView(TestCase):
         self.temp_user = User.objects.create_user(**self.credentials)
 
         self.change_password_url = reverse('users:change_password')
+        self.edit_profile_url = reverse('users:edit_profile')
 
+    # test when user get to register page  will get response register.html
     def test_register_index(self):
         response = self.client.get(self.register_url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'users/register.html')
 
+    # test when user register with all correct form 
     def test_register(self):
         url = "/users/register"
         body = {
@@ -285,3 +293,36 @@ class TestView(TestCase):
 
         self.assertEqual(response.status_code, 400)
         self.assertTemplateUsed(response, 'users/changepass.html')
+
+    def test_edit_profile_without_login(self):
+        # edit profile without authorization, return login page with 403 Forbidden
+        response = self.client.get(self.edit_profile_url)
+
+        self.assertEqual(response.status_code, 403)
+        self.assertTemplateUsed(response, 'users/login.html')
+
+    def test_edit_profile_error_userinfo(self):
+        # edit profile with authorization but do not have userinfo model, return 500.html with 500 Internal Server Error
+        self.client.login(username=self.temp_username, password=self.temp_password)
+
+        response = self.client.get(self.edit_profile_url)
+
+        self.assertEqual(response.status_code, 500)
+        self.assertTemplateUsed(response, 'rooms/500.html')
+
+    def test_edit_profile_get(self):
+        # authorize for editing profile with get method, return the page with 200 OK
+        self.client.login(username=self.outside_username, password=self.outside_password)
+
+        response = self.client.get(self.edit_profile_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'users/edit_profile.html')
+
+    def test_edit_profile_post(self):
+        # authorize for editing profile with get method, return the page with 200 OK
+        self.client.login(username=self.outside_username, password=self.outside_password)
+
+        response = self.client.post(self.edit_profile_url)
+
+        self.assertRedirects(response, '/', status_code=302, target_status_code=200, fetch_redirect_response=True)

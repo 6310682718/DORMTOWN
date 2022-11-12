@@ -42,8 +42,14 @@
                     <tr>
                         <td colspan="2"></td>
                         <td colspan="2" align="right">
-                            <a class="btn btn-dark text-white" href="{% url 'occupant:edit_report' report.id %}">Edit</a>
-                            <a class="btn btn-danger text-white" href="{% url 'occupant:delete_report' report.id %}">Remove</a>
+                            <a class="btn btn-dark text-white" href="{% url 'occupant:edit_report' report.id %}">
+                                <i class="fa-solid fa-pen-to-square"></i>
+                                Edit
+                            </a>
+                            <a class="btn btn-danger text-white" href="{% url 'occupant:delete_report' report.id %}">
+                                <i class="fa-solid fa-trash"></i>
+                                Remove
+                            </a>
                         </td>
                     </tr>
                     {% endif %}
