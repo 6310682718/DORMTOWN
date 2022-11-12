@@ -35,37 +35,51 @@
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
-      </ul>
-      <div class="position-relative">
-        <div class="position-absulute justify-content-center mx-2 display-flex">
-          <a href="/occupant" class="text-dark mx-4">
-            <i class="fa-solid fa-user-tie"></i>
-            {{ user_info.role_id.role_name }}
-          </a>
-          {% if user_info.role_id.role_name == 'Occupant' %}
-          <a href="{% url 'occupant:list_report' %}" class="text-dark mx-4">
+    <div class="collapse navbar-collapse  w-100 order-3 dual-collapse2" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto">
+        {% if user_info.role_id.role_name == 'Occupant' %}
+        <li class="nav-item">
+          <a href="{% url 'occupant:list_report' %}" class="text-dark mx-3 align-middle">
             <i class="fa-solid fa-screwdriver-wrench"></i>
             List of Reporting
           </a>
-          {% else %}
-          <a href="{% url 'occupant:get_reserve' %}" class="text-dark mx-4">
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a href="{% url 'occupant:get_reserve' %}" class="text-dark mx-3 align-middle">
             <i class="fa-solid fa-circle-info"></i>
             List of Reservation
           </a>
-          {% endif %}
-          <a href="{% url 'users:change_password' %}" class="text-dark mx-4">
+        </li>
+        {% endif %}
+        <li class="nav-item">
+          <a href="/occupant" class="text-dark mx-3 align-middle">
+            <i class="fa-solid fa-user-tie"></i>
+            {{ user_info.role_id.role_name }}
+          </a>
+        </li>
+        {% if request.user.is_authenticated %}
+        <li class="nav-item">
+          <a href="{% url 'users:change_password' %}" class="text-dark mx-3 align-middle">
             <i class="fa-solid fa-lock"></i>
             Change Password
           </a>
-          <a class="text-danger" href="{% url 'users:logout'%}" role=" button">
+        </li>
+        <li class="nav-item">
+          <a class="text-danger mx-3 align-middle" href="{% url 'users:logout'%}" role="button">
             <i class="fa-solid fa-right-from-bracket"></i>
             Sign Out
           </a>
-        </div>
-      </div>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a href="users/register" class="text-dark mx-3 align-middle">Sign Up</a>
+        </li>
+        <li class=" nav-item">
+          <a class="btn text-light btn-sm ml-3" href="{% url 'users:login' %}" role="button" style="background-color: #192e80;">Sign In</a>
+        </li>
+        {% endif %}
+      </ul>
     </div>
   </nav>
 

@@ -92,6 +92,12 @@
         {% endif %}
         {% if request.user.is_authenticated %}
         <li class="nav-item">
+          <a href="{% url 'users:change_password' %}" class="text-dark mx-3 align-middle">
+            <i class="fa-solid fa-lock"></i>
+            Change Password
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="text-danger mx-3 align-middle" href="{% url 'users:logout'%}" role="button">
             <i class="fa-solid fa-right-from-bracket"></i>
             Sign Out
