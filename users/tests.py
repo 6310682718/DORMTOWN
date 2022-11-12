@@ -7,16 +7,19 @@ import datetime
 
 
 class TestUrl(SimpleTestCase):
+    #test_url_login
     def test_login_is_resolved(self):
         url = reverse("users:login")
         self.assertEqual(resolve(url).func, login)
 
+    #test_url_logout
     def test_logout_is_resolved(self):
         url = reverse("users:register")
         self.assertEqual(resolve(url).func, register)
 
 
 class TestView(TestCase):
+    # set up user1
     def setUp(self):
         self.username = 'newuser'
         self.password = 'newuserpass'
@@ -31,6 +34,8 @@ class TestView(TestCase):
             'last_name': self.last}
         self.new_user = User.objects.create_user(**self.credentials)
         
+        # set up user2
+
         self.username1 = 'newuser1'
         self.password1 = 'newuserpass1'
         self.email1 = 'newuser1@dormtown.com'
@@ -123,11 +128,13 @@ class TestView(TestCase):
         self.change_password_url = reverse('users:change_password')
         self.edit_profile_url = reverse('users:edit_profile')
 
+    # test when user get to register page  will get response register.html
     def test_register_index(self):
         response = self.client.get(self.register_url)
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'users/register.html')
 
+    # test when user register with all correct form 
     def test_register(self):
         url = "/users/register"
         body = {

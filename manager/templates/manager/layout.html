@@ -43,10 +43,42 @@
           </ul>
           <div class="position-relative">
             <div class="position-absulute justify-content-center mx-3 display-flex">
-              <a href="/manager" class="text-dark mx-4">
-                <i class="fa-solid fa-user-tie"></i>
-                Manager
-              </a>
+                {% if request.user.is_authenticated and request.user.is_superuser %}
+                <li class="nav-item">
+                  <a href="/manager" class="text-dark mx-3 align-middle">
+                    <i class="fa-solid fa-user-tie"></i>
+                    Manager
+                  </a>
+                </li>
+                {% elif request.user.is_authenticated and user_info.role_id.role_name == "Outside" %}
+                <li class="nav-item">
+                  <a href="/occupant" class="text-dark mx-3 align-middle">
+                    <i class="fa-solid fa-user-tie"></i>
+                    Outside
+                  </a>
+                </li>
+                {% elif request.user.is_authenticated and user_info.role_id.role_name == "Occupant" %}
+                <li class="nav-item">
+                  <a href="/occupant" class="text-dark mx-3 align-middle">
+                    <i class="fa-solid fa-user-tie"></i>
+                    Occupant
+                  </a>
+                </li>
+                {% elif request.user.is_authenticated and user_info.role_id.role_name == "Housekeeper" %}
+                <li class="nav-item">
+                  <a href="/employee" class="text-dark mx-3 align-middle">
+                    <i class="fa-solid fa-user-tie"></i>
+                    Housekeeper
+                  </a>
+                </li>
+                {% elif request.user.is_authenticated and user_info.role_id.role_name == "Technician" %}
+                <li class="nav-item">
+                  <a href="/employee" class="text-dark mx-3 align-middle">
+                    <i class="fa-solid fa-user-tie"></i>
+                    Technician
+                  </a>
+                </li>
+                {% endif %}
               {% if request.user.is_authenticated %}
               <a href="{% url 'users:change_password' %}" class="text-dark mx-3">
                 <i class="fa-solid fa-lock"></i>
