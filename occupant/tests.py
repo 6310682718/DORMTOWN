@@ -601,31 +601,39 @@ class TestModel(TestCase):
         )
 
     def test_role_str(self):
+        # test method str in Role model
         self.assertEquals(self.role.__str__(), self.role.role_name)
 
     def test_room_type_str(self):
+        # test method str in RoomType model
         self.assertEquals(self.room_type.__str__(), self.room_type.class_level)
 
     def test_room_str(self):
+        # test method str in Room model
         self.assertEquals(self.room.__str__(
         ), f'#{ self.room.room_number } Class { self.room.room_type }')
 
     def test_user_info_str(self):
+        # test method str in UserInfo model
         self.assertEquals(self.user_info.__str__(),
                           f'{ self.new_user.username } { self.role.role_name }')
 
     def test_status_type_str(self):
+        # test method str in StatusType model
         self.assertEquals(self.status_type.__str__(),
                           self.status_type.status_name)
 
     def test_reserve_str(self):
+        # test method str in Reserve model
         self.assertEquals(self.reserve.__str__(
         ), f'Class { self.room_type.class_level } { self.status_type.status_name }')
 
     def test_problem_type_str(self):
+        # test method str in ProblemType model
         self.assertEquals(self.problem_type.__str__(),
                           self.problem_type.problem_name)
 
     def test_report_str(self):
+        # test method str in Report model
         self.assertEquals(self.report.__str__(
         ), f'{ self.new_user.username } report { self.problem_type.problem_name }')
