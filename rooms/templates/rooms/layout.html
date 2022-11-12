@@ -37,54 +37,54 @@
     <div class="collapse navbar-collapse  w-100 order-3 dual-collapse2" id="navbarSupportedContent">
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
-          <a href="/" class="text-dark mx-4">
+          <a href="/" class="text-dark mx-3 align-middle">
             <i class="fa-solid fa-circle-info"></i>
             About us
           </a>
         </li>
         <li class="nav-item">
-          <a href="#service-section" class="text-dark mx-4">
+          <a href="#service-section" class="text-dark mx-3 align-middle">
             <i class="fa-solid fa-screwdriver-wrench"></i>
             Service
           </a>
         </li>
         <li class="nav-item">
-          <a href="#ourteams-section" class="text-dark mx-4">
+          <a href="#ourteams-section" class="text-dark mx-3 align-middle">
             <i class="fa-solid fa-people-group"></i>
             Our teams
           </a>
         </li>
         {% if request.user.is_authenticated and request.user.is_superuser or user_info.role_id.role_name == "Manager" %}
         <li class="nav-item">
-          <a href="/manager" class="text-dark mx-4">
+          <a href="/manager" class="text-dark mx-3 align-middle">
             <i class="fa-solid fa-user-tie"></i>
             Manager
           </a>
         </li>
         {% elif request.user.is_authenticated and user_info.role_id.role_name == "Outside" %}
         <li class="nav-item">
-          <a href="/occupant" class="text-dark mx-4">
+          <a href="/occupant" class="text-dark mx-3 align-middle">
             <i class="fa-solid fa-user-tie"></i>
             Outside
           </a>
         </li>
         {% elif request.user.is_authenticated and user_info.role_id.role_name == "Occupant" %}
         <li class="nav-item">
-          <a href="/occupant" class="text-dark mx-4">
+          <a href="/occupant" class="text-dark mx-3 align-middle">
             <i class="fa-solid fa-user-tie"></i>
             Occupant
           </a>
         </li>
         {% elif request.user.is_authenticated and user_info.role_id.role_name == "Housekeeper" %}
         <li class="nav-item">
-          <a href="/employee" class="text-dark mx-4">
+          <a href="/employee" class="text-dark mx-3 align-middle">
             <i class="fa-solid fa-user-tie"></i>
             Housekeeper
           </a>
         </li>
         {% elif request.user.is_authenticated and user_info.role_id.role_name == "Technician" %}
         <li class="nav-item">
-          <a href="/employee" class="text-dark mx-4">
+          <a href="/employee" class="text-dark mx-3 align-middle">
             <i class="fa-solid fa-user-tie"></i>
             Technician
           </a>
@@ -92,17 +92,17 @@
         {% endif %}
         {% if request.user.is_authenticated %}
         <li class="nav-item">
-          <a class="text-danger mx-4" href="{% url 'users:logout'%}" role="button">
+          <a class="text-danger mx-3 align-middle" href="{% url 'users:logout'%}" role="button">
             <i class="fa-solid fa-right-from-bracket"></i>
             Sign Out
           </a>
         </li>
         {% else %}
         <li class="nav-item">
-          <a href="users/register" class="text-dark mx-4">Sign Up</a>
+          <a href="users/register" class="text-dark mx-3 align-middle">Sign Up</a>
         </li>
-        <li class="nav-item">
-          <a class="btn text-light" href="{% url 'users:login' %}" role="button" style="background-color: #192e80;">Sign In</a>
+        <li class=" nav-item">
+          <a class="btn text-light btn-sm ml-3" href="{% url 'users:login' %}" role="button" style="background-color: #192e80;">Sign In</a>
         </li>
         {% endif %}
       </ul>
