@@ -18,61 +18,6 @@ def index(request):
         'user_info': user_info,
     })
 
-def edit_profile(request):
-    if not request.user.is_authenticated:
-        return render(request, 'users/login.html', status=403)
-
-    try:
-        user = User.objects.get(pk=request.user.id)
-        user_info = get_object_or_404(UserInfo, user_id=request.user.id)
-    except:
-        return render(request, 'rooms/500.html', status=500)
-
-    return render(request, 'occupant/edit_profile.html', {
-        'user': user,
-        'user_info': user_info,
-    })
-
-def update_profile(request):
-    if not request.user.is_authenticated:
-        return render(request, 'users/login.html', status=403)
-
-    if request.method == 'POST':
-        try:
-            user = User.objects.get(pk=request.user.id)
-            user_info = get_object_or_404(UserInfo, user_id=request.user.id)
-        except:
-            return render(request, 'rooms/500.html', status=500)
-
-        first = request.POST.get('firstname', user.first_name)
-        last = request.POST.get('lastname', user.last_name)
-        tel = request.POST.get('phoneNumber', user_info.phone_number)
-        address = request.POST.get('address', user_info.address)
-        street = request.POST.get('street', user_info.street)
-        state = request.POST.get('state', user_info.state)
-        city = request.POST.get('city', user_info.city)
-        country = request.POST.get('country', user_info.country)
-        zip_code = request.POST.get('zip', user_info.zip_code)
-
-        User.objects.filter(pk=request.user.id).update(
-            first_name =  first,
-            last_name = last,
-        )
-
-        UserInfo.objects.filter(user_id=user).update(
-            phone_number = tel,
-            address = address,
-            street = street,
-            state = state,
-            city = city,
-            country = country,
-            zip_code = zip_code
-        )
-
-        return redirect(reverse('occupant:index'))
-    else:
-        return render(request, 'rooms/404.html', status=404)
-
 def reserve(request):
     if not request.user.is_authenticated:
         return render(request, 'users/login.html', status=403)
@@ -172,18 +117,10 @@ def report(request):
 
     try:
         problem_type = ProblemType.objects.all()
-        user_info = get_object_or_404(UserInfo, user_id=request.user.id)
+        user = User.objects.get(id=request.user.id)
+        user_info = get_object_or_404(UserInfo, user_id=user)
     except:
         return render(request, 'rooms/500.html', status=500)
-
-    return render(request, 'occupant/report.html', {
-        'user_info': user_info,
-        'problems': problem_type
-    })
-
-def create_report(request):
-    if not request.user.is_authenticated:
-        return render(request, 'users/login.html', status=403)
 
     if request.method == 'POST':
         if request.POST.get('problem', None) is None:
@@ -193,9 +130,8 @@ def create_report(request):
         due_date = request.POST.get('due_date', datetime.datetime.today())
         note = request.POST.get('note', None)
 
-        user = User.objects.get(id=request.user.id)
-        problem_type = ProblemType.objects.get(problem_name=problem)
-        status = StatusType.objects.get(status_name='Idle')
+        problem_type = ProblemType.objects.filter(problem_name=problem).first()
+        status = StatusType.objects.filter(status_name='Idle').first()
 
         report = Report.objects.create(
             from_user_id=user,
@@ -209,7 +145,10 @@ def create_report(request):
 
         return redirect(reverse('occupant:get_report', args=[report.id]))
     else:
-        return render(request, 'rooms/404.html', status=404)
+        return render(request, 'occupant/report.html', {
+            'user_info': user_info,
+            'problems': problem_type
+        })
 
 def edit_report(request, report_id):
     if not request.user.is_authenticated:
@@ -217,34 +156,14 @@ def edit_report(request, report_id):
 
     try:
         user = User.objects.get(pk=request.user.id)
+        user_info = UserInfo.objects.get(user_id=user)
         report = get_object_or_404(Report, pk=report_id, from_user_id=user)
     except:
         return render(request, 'rooms/404.html', status=404)
 
-    user_info = UserInfo.objects.get(user_id=user)
-    problem_type = ProblemType.objects.all()
-    report.due_date = report.due_date.strftime(("%Y-%m-%d"))
-
-    return render(request, 'occupant/edit_report.html', {
-        'report': report,
-        'user_info': user_info,
-        'problems': problem_type
-    })
-    
-
-def update_report(request, report_id):
-    if not request.user.is_authenticated:
-        return render(request, 'users/login.html', status=403)
-
     if request.method == 'POST':
         if request.POST.get('problem', None) is None:
             return redirect(reverse('occupant:report'))
-
-        try:
-            user = User.objects.get(pk=request.user.id)
-            report = get_object_or_404(Report, pk=report_id, from_user_id=user)
-        except:
-            return render(request, 'rooms/404.html', status=404)
 
         problem = request.POST.get('problem', report.problem_type_id.problem_name)
         due_date = request.POST.get('due_date', report.due_date)
@@ -257,9 +176,17 @@ def update_report(request, report_id):
             due_date=due_date,
             note=note
         )
+
         return redirect(reverse('occupant:list_report'))
     else:
-        return render(request, 'rooms/404.html', status=404)
+        problem_type = ProblemType.objects.all()
+        report.due_date = report.due_date.strftime(("%Y-%m-%d"))
+
+        return render(request, 'occupant/edit_report.html', {
+            'report': report,
+            'user_info': user_info,
+            'problems': problem_type
+        })
 
 def get_report(request, report_id):
     if not request.user.is_authenticated:
