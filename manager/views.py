@@ -64,7 +64,7 @@ def edit_profile(request, user_id):
     except:
         return render(request, 'rooms/500.html', status=500)
 
-    return render(request, 'occupant/edit_profile.html', {
+    return render(request, 'users/edit_profile.html', {
         'user': user,
         'user_info': user_info,
     })
