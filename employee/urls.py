@@ -10,7 +10,7 @@ urlpatterns = [
     path('update_profile', views.update_profile, name='update_profile'),
 
     path("submit/<int:report_id>", views.submit, name='submit'),
-    path("assign/get_submit/<int:report_id>", views.get_submit, name='get_submit'),
+    path("submit/get_submit/<int:report_id>", views.get_submit, name='get_submit'),
     path("assign/<int:report_id>", views.assign, name='assign'),
     path("assign/get_assign/<int:report_id>", views.get_assign, name='get_assign'),
 

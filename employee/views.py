@@ -16,8 +16,6 @@ def index(request):
         role_name = user_info.role_id.role_name
         report_a = Report.objects.filter(assign_to_id=request.user,status_id=StatusType.objects.get(pk=2)).order_by('due_date')
         report_na = Report.objects.filter(assign_to_id__isnull=True).order_by('due_date')
-        print("reportna")
-        print(report_a)
         rooms_reporter_a = {}
         for report in report_a:
             Object_reporter = UserInfo.objects.get(user_id=report.from_user_id.id)
@@ -35,10 +33,6 @@ def index(request):
         clean=0
         move=0
         for i in report_a:
-            print("THISIS I")
-            print(i)
-            print("THISIS INSIDE")
-            print(i.problem_type_id)
             if str(i.problem_type_id) == "Fix electric equipment":
                 fix +=1
             elif str(i.problem_type_id) == "Cleaning Service":
@@ -47,39 +41,33 @@ def index(request):
                 iri +=1
             elif str(i.problem_type_id) == "Move Out":
                 move +=1
-        print(fix)
-        print(clean)
-        print(move)
-       
+
         if role_name == 'Technician' or 'Housekeeper':
-            print("can_access = true")
             can_access = True
         else:
             can_access = False
-            print("can_access = false")
         for i in report_na:
-            print(i.problem_type_id.problem_name)
-        if(can_access):
-            return render(request, 'employee/index.html', {
-                'user': user,   
-                'user_info': user_info,
-                'role_name': role_name,
-                'report_a' : report_a,
-                'report_na' : report_na,
-                'fix' :fix,
-                'clean' :clean,
-                'move' :move,
-                'iri' :iri,
-                'rooms_reporter_a' :rooms_reporter_a,
-                'rooms_reporter_na' :rooms_reporter_na,
 
-            })
-        else:    
-            return render(request, "rooms/index.html")
+            if(can_access):
+                return render(request, 'employee/index.html', {
+                    'user': user,   
+                    'user_info' : user_info,
+                    'role_name' : role_name,
+                    'report_a'  : report_a,
+                    'report_na' : report_na,
+                    'fix'       : fix,
+                    'clean'     : clean,
+                    'move'      : move,
+                    'iri'       : iri,
+                    'rooms_reporter_a' :rooms_reporter_a,
+                    'rooms_reporter_na' :rooms_reporter_na,
+
+                })
+            else:    
+                return render(request, "rooms/index.html")
 
 
 def edit_profile(request):
-    print("EDIT pROGIEL")
     if not request.user.is_authenticated:
         return render(request, 'users/login.html', status=403)
 
@@ -129,7 +117,7 @@ def update_profile(request):
             country = country,
             zip_code = zip_code
         )
-        print("hello BBBBBIIIIIIITTTTTTEEEEEEECCCCCHHHHHHHH")
+
         return redirect(reverse('employee:index'))
     else:
         return render(request, 'rooms/404.html', status=404)
@@ -144,17 +132,9 @@ def submit(request,report_id):
         report = Report.objects.get(pk=report_id)
         assign_to = report.assign_to_id
         due_date = report.due_date
-        print("THSIS")  
-        print(report.from_user_id.id)      
         reporter = UserInfo.objects.get(user_id=report.from_user_id.id)
-        print("THSIS Reporter") 
-        print(reporter)
         reporter_room = reporter.room_id
-        print("THSIS ReporterRoom") 
-        print(reporter_room)
-        reporter_contact = reporter.phone_number
-        print("THSIS Reportercontact")    
-        print(reporter_contact)     
+        reporter_contact = reporter.phone_number    
         
     except:
         return render(request, 'rooms/500.html', status=500)
@@ -178,13 +158,9 @@ def assign(request,report_id):
         user_info = get_object_or_404(UserInfo, user_id=request.user.id)
         report = Report.objects.get(pk=report_id)
         assign_to = report.assign_to_id
-        due_date = report.due_date
-        #print("THSIS")  
-        #print(report.from_user_id.id)      
+        due_date = report.due_date    
         reporter = UserInfo.objects.get(user_id=report.from_user_id.id)
-        #print(reporter)
         reporter_room = reporter.room_id
-        #print(reporter_room)
         reporter_contact = reporter.phone_number
 
     except:
