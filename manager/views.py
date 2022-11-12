@@ -9,9 +9,15 @@ from django.urls import reverse
 
 @login_required
 def index(req):
+    if req.user.is_authenticated:    
+        user_info = UserInfo.objects.get(user_id=req.user)
+        rooms_available = Room.objects.filter(status=True)
+        rooms_unavailable = Room.objects.filter(status=False)
+        return render(req, "manager/dashboard.html", {"user_info": user_info, "rooms_a": rooms_available, "rooms_b": rooms_unavailable})
     return render(req, "manager/dashboard.html")
 
 def rooms_available(req):
+    
     try:
         rooms = Room.objects.filter(status=True)
     except:

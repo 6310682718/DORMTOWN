@@ -1,4 +1,4 @@
-{% extends 'rooms/layout.html' %}
+{% extends 'manager/layout.html' %}
 {% block body %}
 <div class="container-fluid">
   <h1 class="bold-text text-center mt-4">
@@ -15,19 +15,19 @@
       <table class="table table-borderless">
         <tr>
           <td colspan="2">Name:</td>
-          <td class="text-end">Natnicha Faksang</td>
+          <td class="text-end">{{user_info.user_id.first_name}} {{user_info.user_id.last_name}}</td>
         </tr>
         <tr>
           <td colspan="2">Contact:</td>
-          <td class="text-end">0644153591</td>
+          <td class="text-end">{{user_info.phone_number}}</td>
         </tr>
         <tr>
           <td colspan="2">Job position:</td>
-          <td class="text-end">Manager</td>
+          <td class="text-end">{{user_info.role_id.role_name}}</td>
         </tr>
         <tr>
           <td colspan="2">Address:</td>
-          <td class="text-end">9330 W Lake Dr ## A, Eagle River, Alaska 99577, USA</td>
+          <td class="text-end">{{ user_info.address }}, {{ user_info.street }}, {{ user_info.state }}, {{ user_info.city }}, {{ user_info.country }}, {{ user_info.zip_code }} </td>
         </tr>
       </table>
       <div class="d-flex justify-content-end">
@@ -45,7 +45,7 @@
   <section class="manager-stat d-flex justify-content-around">
     <div onclick="location.href='rooms_available';" style="cursor: pointer;" class="col-4 available-box">
       <h3><i class="fa-solid fa-bookmark fa-1x"></i> Available</h3>
-      <span>50</span>
+      <span>{{rooms_a.count}}</span>
     </div>
     <div onclick="location.href='rooms_reserve';" style="cursor: pointer;" class="col-4 reserve-box mx-4">
       <div>
@@ -61,7 +61,7 @@
         <i class="fa-solid fa-square-xmark fa-1x"></i>
         Unavailable
       </h3>
-      <span>5</span>
+      <span>{{rooms_b.count}}</span>
     </div>
   </section>
   <section class="manager-log">
