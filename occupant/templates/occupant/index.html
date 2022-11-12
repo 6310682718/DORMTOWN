@@ -29,11 +29,19 @@
                     <tr>
                         {% if user_info.role_id.role_name == 'Occupant' %}
                             <td colspan="2"></td>
-                            <td colspan="2" align="right"><a class="btn btn-dark text-white" href="{% url 'users:edit_profile' %}">Edit</a></td>
+                            <td colspan="2" align="right">
+                                <a class="btn btn-dark text-white" href="{% url 'users:edit_profile' %}">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                    Edit
+                                </a>
+                            </td>
                         {% else %}
                             <td colspan="2"></td>
                             <td class="text-end" align="right">
-                                <a class="btn btn-dark text-white" href="{% url 'users:edit_profile' %}">Edit</a>
+                                <a class="btn btn-dark text-white" href="{% url 'users:edit_profile' %}">
+                                    <i class="fa-solid fa-pen-to-square"></i>
+                                    Edit
+                                </a>
                                 <a class="btn btn-success" href="{% url 'occupant:reserve' %}">Reserve a Room</a>
                             </td>
                         {% endif %}
