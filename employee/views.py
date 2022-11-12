@@ -69,6 +69,7 @@ def index(request):
                 'fix' :fix,
                 'clean' :clean,
                 'move' :move,
+                'iri' :iri,
                 'rooms_reporter_a' :rooms_reporter_a,
                 'rooms_reporter_na' :rooms_reporter_na,
 

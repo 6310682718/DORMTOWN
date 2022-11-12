@@ -9,6 +9,32 @@ class TestUrl(SimpleTestCase):
     def test_index_is_resolved(self):
         url = reverse("employee:index")
         self.assertEqual(resolve(url).func, index)
+    
+    def test_index_is_resolved(self):
+        url = reverse("employee:index")
+        self.assertEqual(resolve(url).func, index)
+
+    def test_index_is_resolved(self):
+        url = reverse("employee:index")
+        self.assertEqual(resolve(url).func, index)
+    
+    def test_index_is_resolved(self):
+        url = reverse("employee:index")
+        self.assertEqual(resolve(url).func, index)
+    
+    def test_index_is_resolved(self):
+        url = reverse("employee:index")
+        self.assertEqual(resolve(url).func, index)
+    
+    def test_index_is_resolved(self):
+        url = reverse("employee:index")
+        self.assertEqual(resolve(url).func, index)
+    
+    def test_index_is_resolved(self):
+        url = reverse("employee:index")
+        self.assertEqual(resolve(url).func, index)
+
+
 
 class TestViews(TestCase):
     def setUp(self):
