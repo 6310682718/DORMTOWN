@@ -34,97 +34,79 @@
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav mr-auto">
+    <div class="collapse navbar-collapse  w-100 order-3 dual-collapse2" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a href="/" class="text-dark mx-4">
+            <i class="fa-solid fa-circle-info"></i>
+            About us
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#service-section" class="text-dark mx-4">
+            <i class="fa-solid fa-screwdriver-wrench"></i>
+            Service
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#ourteams-section" class="text-dark mx-4">
+            <i class="fa-solid fa-people-group"></i>
+            Our teams
+          </a>
+        </li>
+        {% if request.user.is_authenticated and request.user.is_superuser or user_info.role_id.role_name == "Manager" %}
+        <li class="nav-item">
+          <a href="/manager" class="text-dark mx-4">
+            <i class="fa-solid fa-user-tie"></i>
+            Manager
+          </a>
+        </li>
+        {% elif request.user.is_authenticated and user_info.role_id.role_name == "Outside" %}
+        <li class="nav-item">
+          <a href="/occupant" class="text-dark mx-4">
+            <i class="fa-solid fa-user-tie"></i>
+            Outside
+          </a>
+        </li>
+        {% elif request.user.is_authenticated and user_info.role_id.role_name == "Occupant" %}
+        <li class="nav-item">
+          <a href="/occupant" class="text-dark mx-4">
+            <i class="fa-solid fa-user-tie"></i>
+            Occupant
+          </a>
+        </li>
+        {% elif request.user.is_authenticated and user_info.role_id.role_name == "Housekeeper" %}
+        <li class="nav-item">
+          <a href="/employee" class="text-dark mx-4">
+            <i class="fa-solid fa-user-tie"></i>
+            Housekeeper
+          </a>
+        </li>
+        {% elif request.user.is_authenticated and user_info.role_id.role_name == "Technician" %}
+        <li class="nav-item">
+          <a href="/employee" class="text-dark mx-4">
+            <i class="fa-solid fa-user-tie"></i>
+            Technician
+          </a>
+        </li>
+        {% endif %}
+        {% if request.user.is_authenticated %}
+        <li class="nav-item">
+          <a class="text-danger mx-4" href="{% url 'users:logout'%}" role="button">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            Sign Out
+          </a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a href="users/register" class="text-dark mx-4">Sign Up</a>
+        </li>
+        <li class="nav-item">
+          <a class="btn text-light" href="{% url 'users:login' %}" role="button" style="background-color: #192e80;">Sign In</a>
+        </li>
+        {% endif %}
       </ul>
-      <div class="position-relative">
-        <div class="position-absulute justify-content-center mx-2 display-flex">
-          </ul>
-          <div class="position-relative">
-            <div class="position-absulute justify-content-center mx-2 display-flex">
-              <a href="/" class="text-dark mx-4">
-                <i class="fa-solid fa-circle-info"></i>
-                About us
-              </a>
-              <a href="#service-section" class="text-dark mx-4">
-                <i class="fa-solid fa-screwdriver-wrench"></i>
-                Service
-              </a>
-              <a href="#ourteams-section" class="text-dark mx-4">
-                <i class="fa-solid fa-people-group"></i>
-                Our teams
-              </a>
-              <a href="#location-section" class="text-dark mx-4">
-                <i class="fa-solid fa-location-dot"></i>
-                Location
-              </a>
-              {% if request.user.is_authenticated and request.user.is_superuser or user_info.role_id.role_name == "Manager" %}
-              <a href="/manager" class="text-dark mx-4">
-                <i class="fa-solid fa-user-tie"></i>
-                Manager
-              </a>
-              <a class="text-danger" href="{% url 'users:logout'%}" role=" button">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                Sign Out
-              </a>
-              {% elif request.user.is_authenticated and user_info.role_id.role_name == "Outside" %}
-              <a href="/occupant" class="text-dark mx-4">
-                <i class="fa-solid fa-user-tie"></i>
-                Outside
-              </a>
-              <a class="text-danger" href="{% url 'users:logout'%}" role=" button">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                Sign Out
-              </a>
-              {% elif request.user.is_authenticated and user_info.role_id.role_name == "Occupant" %}
-              <a href="/occupant" class="text-dark mx-4">
-                <i class="fa-solid fa-user-tie"></i>
-                Occupant
-              </a>
-              <a class="text-danger" href="{% url 'users:logout'%}" role=" button">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                Sign Out
-              </a>
-              {% elif request.user.is_authenticated and user_info.role_id.role_name == "Housekeeper" %}
-              <a href="/employee" class="text-dark mx-4">
-                <i class="fa-solid fa-user-tie"></i>
-                Housekeeper
-              </a>
-              <a class="text-danger" href="{% url 'users:logout'%}" role=" button">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                Sign Out
-              </a>
-              {% elif request.user.is_authenticated and user_info.role_id.role_name == "Technician" %}
-              <a href="/employee" class="text-dark mx-4">
-                <i class="fa-solid fa-user-tie"></i>
-                Technician
-              </a>
-              <a class="text-danger" href="{% url 'users:logout'%}" role=" button">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                Sign Out
-              </a>
-              {% elif request.user.is_authenticated %}
-              <a class="text-danger" href="{% url 'users:logout'%}" role=" button">
-                <i class="fa-solid fa-right-from-bracket"></i>
-                Sign Out
-              </a>
-              {% else %}
-              <a href="users/register" class="text-dark mx-4">Sign Up</a>
-              <a class="btn text-light" href="{% url 'users:login' %}" role="button" style="background-color: #192e80;">Sign In</a>
-              {% endif %}
-            </div>
-          </div>
-          {% comment %}
-          <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" />
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">
-              Search
-            </button>
-          </form>
-          {% endcomment %}
-        </div>
-      </div>
+    </div>
   </nav>
 
   <div class="container-fluid">{% block body %} {% endblock %}</div>
@@ -134,7 +116,7 @@
         <div class="col-7" class="font-mid p-4">
           <p> let's making our dormitory</p>
           <p> a dream place!</p>
-          {% if request.user.is_superuser == False %}
+          {% if request.user.is_superuser == False and request.user.is_authenticated %}
           <a class="btn btn-secondary" href="/chat">
             Chat
             <i class="fa-solid fa-comment"></i>
@@ -155,9 +137,9 @@
             Privotal tracker : <a href="https://www.pivotaltracker.com/n/projects/2606927">our privotal</a>
           </p>
         </div>
-        </div>
       </div>
     </div>
+  </div>
   </div>
   {% block scripts %}
   {% endblock %}
