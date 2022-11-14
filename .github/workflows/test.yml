@@ -8,10 +8,12 @@ jobs:
       - uses: actions/checkout@v2
       - name: Run Django unit tests
         run: |
+          pip3 install --upgrade pip
           pip3 install --user -r requirements.txt
           pip3 install coverage
           pip3 install fontawesomefree
           pip3 install selenium
+          pip3 install pyopenssl --upgrade
           python3 manage.py makemigrations
           python3 manage.py migrate
           coverage run --source='.' manage.py test
