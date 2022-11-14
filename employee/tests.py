@@ -19,17 +19,25 @@ class TestUrl(SimpleTestCase):
         url = reverse("employee:update_profile")
         self.assertEqual(resolve(url).func, update_profile)
 
-    # def test_submit_is_resolved(self):
-    #     return
+    def test_submit_is_resolved(self):
+        url = reverse("employee:submit", args=[1])
+        self.assertEqual(resolve(url).func, submit)
 
-    # def test_get_submit_is_resolved(self):
-    #     return
+    def test_get_submit_is_resolved(self):
+        url = reverse("employee:get_submit", args=[1])
+        self.assertEqual(resolve(url).func, get_submit)
 
-    # def test_assign_is_resolved(self):
-    #     return
+    def test_assign_is_resolved(self):
+        url = reverse("employee:assign", args=[1])
+        self.assertEqual(resolve(url).func, assign)
 
-    # def test_get_assign_is_resolved(self):
-    #     return
+    def test_get_assign_is_resolved(self):
+        url = reverse("employee:get_assign", args=[1])
+        self.assertEqual(resolve(url).func, get_assign)
+
+    def test_list_of_jobs_is_resolved(self):
+        url = reverse("employee:list_of_jobs")
+        self.assertEqual(resolve(url).func, list_of_jobs)
 
 class TestViews(TestCase):
     def setUp(self):
@@ -129,6 +137,7 @@ class TestViews(TestCase):
             'first_name': 'Temp',
             'last_name': 'Dormtown'}
         self.temp_user = User.objects.create_user(**self.credentials)
+        
 
         self.status_idle = StatusType.objects.create(
             status_name='Idle'
@@ -153,12 +162,13 @@ class TestViews(TestCase):
         )
 
         self.index_url = reverse('employee:index')
+        self.list_of_jobs = reverse('employee:list_of_jobs')
         self.edit_profile_url = reverse('employee:edit_profile')
         self.update_profile_url = reverse('employee:update_profile')
-        #self.assign_url = reverse('employee:assign',args=[self.report.id])
-        #self.get_assign_url = reverse('employee:assign/get_assign',args=[self.report.id])
-        #self.submit_url = reverse('employee:submit'.args=[self.report.id])
-        #self.get_submit_url = reverse('employee:submit/get_submit',args=[self.report.id])
+        self.assign_url = reverse('employee:assign',args=[self.report.id])
+        self.get_assign_url = reverse('employee:get_assign',args=[self.report.id])
+        self.submit_url = reverse('employee:submit',args=[self.report.id])
+        self.get_submit_url = reverse('employee:get_submit',args=[self.report.id])
 
         
     def test_index_without_login(self):
@@ -168,14 +178,14 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertTemplateUsed(response, 'users/login.html')
 
-    # def test_index_error_userinfo(self):
-    #     # serch occupant homepage with authorization but do not have userinfo data, return 500.html with 500 Internal Server Error
-    #     self.client.login(username=self.temp_username, password=self.temp_password)
+    def test_index_error_userinfo(self):
+        # serch occupant homepage with authorization but do not have userinfo data, return 500.html with 500 Internal Server Error
+        self.client.login(username=self.temp_username, password=self.temp_password)
 
-    #     response = self.client.get(self.index_url)
+        response = self.client.get(self.index_url)
 
-    #     self.assertEqual(response.status_code, 500)
-    #     self.assertTemplateUsed(response, 'rooms/500.html')
+        self.assertEqual(response.status_code, 500)
+        self.assertTemplateUsed(response, 'rooms/500.html')
 
     def test_index(self):
         # authorize for occupant homepage with user and userinfo model, return the page with 200 OK
@@ -244,11 +254,30 @@ class TestViews(TestCase):
 
         self.assertRedirects(response, '/employee/', status_code=302, target_status_code=200, fetch_redirect_response=True)
     
-    # def test_submit(self):
-    #     response = self.client.get(self.test_submit)
+    def test_submit_without_login(self):
+        response = self.client.get(self.submit_url)
 
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertTemplateUsed(response, 'employee/submit/<int:report_id>.html')
+        self.assertEqual(response.status_code, 403)
+        self.assertTemplateUsed(response, 'users/login.html')
+    
+    def test_submit_error_userinfo(self):
+        # serch reservation page with authorization but do not have userinfo data, return 500.html with 500 Internal Server Error
+        self.client.login(username=self.temp_username, password=self.temp_password)
+
+        response = self.client.get(self.submit_url)
+
+        self.assertEqual(response.status_code, 500)
+        self.assertTemplateUsed(response, 'rooms/500.html')
+    
+    def test_submit(self):
+        # occupant role search reservation page with authorization (already reserved), return result of seservation path with 200 OK
+        self.client.login(username=self.technician_username, password=self.technician_password)
+
+        response = self.client.get(self.submit_url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'employee/submit.html')
+
     
     # def test_get_submit(self):
     #     response = self.client.get(self.test_submit)

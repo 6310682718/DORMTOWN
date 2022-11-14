@@ -10,7 +10,7 @@ from occupant.models import UserInfo,Report,StatusType
 def index(request):
     if not request.user.is_authenticated:
         return render(request, 'users/login.html', status=400)
-    else:
+    try:
         user = User.objects.filter(pk=request.user.id).first()
         user_info = UserInfo.objects.filter(user_id=request.user.id).first()
         role_name = user_info.role_id.role_name
@@ -65,6 +65,8 @@ def index(request):
                 })
             else:    
                 return render(request, "rooms/index.html")
+    except:
+        return render(request, 'rooms/500.html', status=500)
 
 
 def edit_profile(request):
