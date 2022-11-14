@@ -30,37 +30,58 @@ class TestUrl(SimpleTestCase):
 class TestViews(TestCase):
     def setUp(self):
         self.urls = {
-            "index": reverse("chat:index")
+            "index": reverse("chat:chat_to_admin"),
+            "chat_to_user": reverse("chat:chat_to_user", args=[1]) # user id = 1
         }
         self.client = Client()
 
-        account1 = {
+        self.account1 = {
             'username': "admin",
             'password': "admin",
             'email': "admin@gmail.com",
             'first_name': "AdminNaja",
             'last_name': "LastnameAdmin"
         }
-        self.admin_account = User.objects.create_superuser(**account1)
+        self.admin_account = User.objects.create_superuser(**self.account1)
 
-        account2 = {
+        self.account2 = {
             'username': "user1",
             'password': "user1pass",
             'email': "user@gmail.com",
             'first_name': "User1Naja",
             'last_name': "LastnameUser1"
         }
-        self.user1_account = User.objects.create_user(**account2)
+        self.user1_account = User.objects.create_user(**self.account2)
 
-    # def test_chat_page(self):
-    #     response = self.client.get(self.urls["index"])
-    #     self.assertEqual(response.status_code, 200)
+    def test_chat_page_not_login(self):
+        response = self.client.get(self.urls["index"])
+        self.assertEqual(response.status_code, 302)
+    
+    def test_chat_page_login(self):
+        self.client.login(username=self.account2['username'], password=self.account2['password']);
+        response = self.client.get(self.urls["index"])
+        self.assertEqual(response.status_code, 200)
+
+    def test_chat_admin_not_login(self):
+        response = self.client.get(self.urls["chat_to_user"])
+        self.assertEqual(response.status_code, 302)
+
+    def test_chat_admin_login_user(self):
+        self.client.login(username=self.account2['username'], password=self.account2['password']);
+        response = self.client.get(self.urls["chat_to_user"])
+        self.assertEqual(response.status_code, 302)
+
+    def test_chat_admin_login_admin(self):
+        self.client.login(username=self.account1['username'], password=self.account1['password']);
+        response = self.client.get(self.urls["chat_to_user"])
+        self.assertEqual(response.status_code, 200)
 
 
 class TestModel(TestCase):
     def setUp(self):
         self.urls = {
-            # "index": reverse("chat:index")
+            "index": reverse("chat:chat_to_admin"),
+            "chat_to_user": reverse("chat:chat_to_user", args=[1]) # user id = 1
         }
         self.client = Client()
 
