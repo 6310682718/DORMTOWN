@@ -39,7 +39,7 @@ def index(request):
                 clean +=1
             elif str(i.problem_type_id) == "Irrigation problem":
                 iri +=1
-            elif str(i.problem_type_id) == "Move Out":
+            elif str(i.problem_type_id) == "Move out":
                 move +=1
 
         if role_name == 'Technician' or 'Housekeeper':
@@ -210,3 +210,25 @@ def get_submit(request, report_id):
     report.save()
     
     return redirect(reverse('employee:index'))
+
+def list_of_jobs(request):
+    if not request.user.is_authenticated:
+        return render(request, 'users/login.html', status=403)
+
+    try :
+        all_report = Report.objects.order_by('due_date')
+        all_room = {}
+        for report in all_report:
+            Object_reporter = UserInfo.objects.get(user_id=report.from_user_id.id)
+            reporter_room = Object_reporter.room_id
+            all_room.update({report.from_user_id:reporter_room})
+
+    except:
+        return render(request, 'rooms/500.html', status=500)
+    
+    return render(request, 'employee/list_of_jobs.html', {
+
+        'all_report': all_report,
+        'all_room': all_room,
+
+        })
