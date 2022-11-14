@@ -9,4 +9,4 @@ tornado==6.2
 django-heroku
 psycopg2
 gunicorn
-channels==3.04
+channels==3.0.4
