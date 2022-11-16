@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     "manager",
     "chat",
     "employee",
+    'sweetify',
     'fontawesomefree',
     "django.contrib.admin",
     "django.contrib.auth",
@@ -52,7 +53,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 ]
-
+SWEETIFY_SWEETALERT_LIBRARY = 'sweetalert2'
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",

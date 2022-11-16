@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.contrib.auth.models import User
 from occupant.models import *
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
+import sweetify
 
 def login(req):
     if (req.method == "POST"):
@@ -15,8 +16,11 @@ def login(req):
             auth_login(req, user)
             return render(req, "rooms/index.html", status=200)
         else:
-            return render(req, "users/login.html", {"message": "Invalid credential"}, status=400)
-    
+            sweetify.warning(req, 'Invalid Credential', button=True)
+            return render(req, "users/login.html", {
+                "message": "Invalid credential"
+            }, status=400)
+
     return render(req, "users/login.html")
 
 def logout(req):
