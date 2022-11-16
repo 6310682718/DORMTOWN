@@ -38,5 +38,10 @@ def chat_log(req, user_id):
         })
     except Exception as e:
         print(f"<-- ERROR {e} -->")
-
+    return render(req, "chat/chat_log.html", {
+        "text_to": {},
+        "messages": [],
+        "only_texter" : [],
+        "message_count": 0
+    })
 
