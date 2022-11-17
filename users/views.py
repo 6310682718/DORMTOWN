@@ -9,16 +9,14 @@ def login(req):
         username = req.POST.get("username", False)
         password = req.POST.get("password", False)
         user = authenticate(req, username=username, password=password)
-        try:
-            # find role and return to right path plz
-            if (user is not None):
-                user_info = UserInfo.objects.get(user_id=user)
-                auth_login(req, user)
-                return redirect(reverse('rooms:index'))
-            else:
-                return render(req, "users/login.html", {"message": "Invalid credential"}, status=400)
-        except Exception as e:
-            pass
+        # find role and return to right path plz
+        if (user is not None):
+            user_info = UserInfo.objects.get(user_id=user)
+            auth_login(req, user)
+            return render(req, "rooms/index.html", status=200)
+        else:
+            return render(req, "users/login.html", {"message": "Invalid credential"}, status=400)
+    
     return render(req, "users/login.html")
 
 def logout(req):
