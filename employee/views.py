@@ -12,7 +12,7 @@ def index(request):
         return render(request, 'users/login.html', status=400)
     try:
         user = User.objects.filter(pk=request.user.id).first()
-        user_info = UserInfo.objects.filter(user_id=request.user.id).first()
+        user_info = get_object_or_404(UserInfo, user_id=request.user.id)
         role_name = user_info.role_id.role_name
         report_a = Report.objects.filter(assign_to_id=request.user,status_id=StatusType.objects.get(pk=2)).order_by('due_date')
         report_na = Report.objects.filter(assign_to_id__isnull=True).order_by('due_date')
@@ -42,10 +42,11 @@ def index(request):
             elif str(i.problem_type_id) == "Move out":
                 move +=1
 
-        if role_name == 'Technician' or 'Housekeeper':
+        if role_name == 'Technician' or role_name == 'Housekeeper':
             can_access = True
         else:
             can_access = False
+
         for i in report_na:
 
             if(can_access):
@@ -183,13 +184,9 @@ def get_assign(request, report_id):
     if not request.user.is_authenticated:
         return render(request, 'users/login.html', status=403)
 
-    try:
-        user = User.objects.get(pk=request.user.id)
-        report = Report.objects.get(pk=report_id)
+    user = User.objects.get(pk=request.user.id)
+    report = Report.objects.get(pk=report_id)
     
-    except:
-        return render(request, 'rooms/404.html', status=404)
-
     report.assign_to_id=user
     report.status_id=StatusType.objects.get(pk=2)
     report.save()
@@ -200,12 +197,9 @@ def get_submit(request, report_id):
     if not request.user.is_authenticated:
         return render(request, 'users/login.html', status=403)
 
-    try:
-        user = User.objects.get(pk=request.user.id)
-        report = Report.objects.get(pk=report_id)
+    user = User.objects.get(pk=request.user.id)
+    report = get_object_or_404(Report,pk=report_id)
     
-    except:
-        return render(request, 'rooms/404.html', status=404)
 
     report.assign_to_id=user
     report.status_id=StatusType.objects.get(pk=3)
@@ -218,6 +212,7 @@ def list_of_jobs(request):
         return render(request, 'users/login.html', status=403)
 
     try :
+        user_info = get_object_or_404(UserInfo, user_id=request.user.id)
         all_report = Report.objects.order_by('due_date')
         all_room = {}
         for report in all_report:
@@ -232,5 +227,6 @@ def list_of_jobs(request):
 
         'all_report': all_report,
         'all_room': all_room,
+        'user_info':user_info,
 
         })
