@@ -13,7 +13,6 @@ def index(req):
 
 
 def handler404(request, exception):
-    print("<-- 404 -->")
     response = render(request, 'rooms/404.html', {}, status=404)
     return response
 
