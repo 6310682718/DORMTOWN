@@ -25,8 +25,7 @@ def reserve(request):
     rooms = RoomType.objects.all()
     for room in rooms:
         rooms_by_type = Room.objects.filter(room_type=room, status=True)
-        room.available = (rooms_by_type.count() > 0)
-
+        room.available = rooms_by_type.count()
     try:
         user = User.objects.get(pk=request.user.id)
         user_info = get_object_or_404(UserInfo, user_id=request.user.id)
@@ -50,30 +49,33 @@ def create_reserve(request, room_type):
         user = User.objects.filter(pk=request.user.id).first()
         user_info = get_object_or_404(UserInfo, user_id=request.user.id)
         reserve = Reserve.objects.filter(user_id=user).first()
+        role = Role.objects.get(role_name='Manager')
+        managers = UserInfo.objects.filter(role_id=role)
     except:
         return render(request, 'rooms/500.html', status=500)
 
-    if reserve is None:
+    if request.method == 'POST':
         room_type = RoomType.objects.filter(pk=room_type).first()
         status_type = StatusType.objects.filter(pk=1).first()
+
+        due_date = request.POST.get('due_date', report.due_date)
 
         reserve = Reserve.objects.create(
             user_id=user,
             room_type=room_type,
-            due_date=datetime.datetime.today(),
+            due_date=due_date,
             status_type=status_type
-        )
+            )
 
-    role = Role.objects.get(role_name='Manager')
-    managers = UserInfo.objects.filter(role_id=role)
-
-    return render(request, 'occupant/result_reserve.html', {
-        'user_info': user_info,
-        'room': reserve.room_type,
-        'reserve_id': reserve.id,
-        'header': 'Summary of Reservation',
-        'managers': managers
-    })
+        return render(request, 'occupant/result_reserve.html', {
+            'user_info': user_info,
+            'room': reserve.room_type,
+            'reserve_id': reserve.id,
+            'header': 'Summary of Reservation',
+            'managers': managers
+        })
+    else:
+        return render(request, 'occupant/reserve_form.html')
 
 def get_reserve(request):
     if not request.user.is_authenticated:
