@@ -6,25 +6,26 @@ from django.contrib.auth import authenticate, login as auth_login, logout as aut
 import sweetify
 
 def login(req):
+
     if (req.method == "POST"):
         username = req.POST.get("username", False)
         password = req.POST.get("password", False)
         user = authenticate(req, username=username, password=password)
-        # find role and return to right path plz
         if (user is not None):
             user_info = UserInfo.objects.get(user_id=user)
             auth_login(req, user)
-            return redirect(reverse('rooms:index'))
+            sweetify.success(req, 'Login success', button=True)
+            return redirect("/")
         else:
             sweetify.warning(req, 'Invalid Credential', button=True)
             return render(req, "users/login.html", {
                 "message": "Invalid credential"
             }, status=400)
-
     return render(req, "users/login.html")
 
 def logout(req):
     auth_logout(req)
+    sweetify.warning(req, 'Logged Out', button=True)
     return render(req, "users/login.html", {"message": "Logged out"})
 
 def register(req):
@@ -44,18 +45,22 @@ def register(req):
         zip = req.POST.get("zip", False)
         try:
             _user = User.objects.get(email=email)
+            sweetify.warning(req, "Username already used", button=True)
             return render(req, "users/register.html", {"status": False, "message": "Username already used"}, status=400)
         except:
             pass
             # print("<--- User not found (Can register) --->")
         if (con_password != password):
+            sweetify.warning(req, "Confirm password fail", button=True)
             return render(req, "users/register.html", {"status": False, "message": "Confirm password fail"}, status=400)
         if (username == "" or len(username) == 0 or firstname == "" or lastname == "" or password == "" or con_password == "" or email == ""):
+            sweetify.warning(req, "Enter your information", button=True)
             return render(req, "users/register.html", {"status": False, "message": "Enter your information"}, status=400)
         role = Role.objects.filter(role_name="Outside").first()
         rooms = Room.objects.first()
         user = User.objects.create_user(username=username, password=password, email=email, first_name=firstname, last_name=lastname)
         user_info = UserInfo.objects.create(user_id=user, phone_number=phone, address=address, street=street, state=state, city=city, country=country, zip_code=zip, role_id=role, room_id=rooms)
+        sweetify.success(req, "Register Success", button=True)
         return render(req, "users/login.html", {"status": True, "message": "Register Success"}, status=200)
     else:
         return render(req, "users/register.html", status=200)
