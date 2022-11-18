@@ -3,5 +3,62 @@
 <div class="text-center mt-4">
     <p class="header">Reservation</p>
 </div>
-
+<div class="container">
+    <div class="py-3"></div>
+    <div class="row">
+        <div class="col-lg-10 card" style="margin: auto">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center py-3">
+                    <h2 class="h5 mb-0">Room Class {{ room.class_level }}</h2>
+                    <form class="py-3 d-flex" action="{% url 'occupant:create_reserve' room.id %}" method="POST">
+                        {% csrf_token %}
+                        <label>Due date</label>
+                        <input required type="date" class="form-control" id="due_date" name="due_date">
+                        <button type="submit" class="btn btn-success text-light">Reserve a room</button>
+                    </form> 
+                </div>
+                <div class="row">
+                    <div class="col-9">
+                        {% load static %}
+                        {% if room.class_level == 'S' %}
+                            <img src="{% static 'occupant/room-s.jpeg' %}" height="500">
+                        {% else %}
+                            <img src="{% static 'occupant/room-a.jpeg' %}" height="500">
+                        {% endif %}
+                    </div>
+                    <div class="col-3 bg-main banner position-relative">
+                        <br>
+                        <br>
+                        {% if room.tv_fridge %}
+                        <p class="sub">TV & Fridge</p>
+                        {% else %}
+                        <br>
+                        {% endif %}
+                        {% if room.wardrobe %}
+                        <p class="sub">Wardrobe</p>
+                        {% endif %}
+                        {% if room.water_heater %}
+                        <p class="sub">Water heater</p>
+                        {% endif %}
+                        <p class="sub">Facility</p>
+                        <br>
+                        <br>
+                        <h2 class="text-white text-center">
+                        {{ room.room_service }}
+                        </h2>
+                        <p class="sub">Room service</p>
+                        <br>
+                        <br>
+                        <h2 class="text-white text-center">
+                        {{ room.price }}
+                        </h2>
+                        <p class="sub">Rent cost per month</p>
+                        <br>
+                        <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>   
 {% endblock %}

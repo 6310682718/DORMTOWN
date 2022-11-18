@@ -49,16 +49,16 @@ def create_reserve(request, room_type):
         user = User.objects.filter(pk=request.user.id).first()
         user_info = get_object_or_404(UserInfo, user_id=request.user.id)
         reserve = Reserve.objects.filter(user_id=user).first()
+        room_type = RoomType.objects.filter(pk=room_type).first()
         role = Role.objects.get(role_name='Manager')
         managers = UserInfo.objects.filter(role_id=role)
     except:
         return render(request, 'rooms/500.html', status=500)
 
     if request.method == 'POST':
-        room_type = RoomType.objects.filter(pk=room_type).first()
-        status_type = StatusType.objects.filter(pk=1).first()
+        status_type = StatusType.objects.filter(status_name='Idle').first()
 
-        due_date = request.POST.get('due_date', report.due_date)
+        due_date = request.POST.get('due_date')
 
         reserve = Reserve.objects.create(
             user_id=user,
@@ -75,7 +75,10 @@ def create_reserve(request, room_type):
             'managers': managers
         })
     else:
-        return render(request, 'occupant/reserve_form.html')
+        return render(request, 'occupant/reserve_form.html', {
+            'user_info': user_info,
+            'room': room_type
+        })
 
 def get_reserve(request):
     if not request.user.is_authenticated:
