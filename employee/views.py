@@ -64,7 +64,7 @@ def index(request):
 
                 })
         else:    
-            return render(request, "rooms/500.html")
+            return render(request, "rooms/index.html")
     except:
         return render(request, 'rooms/500.html', status=500)
 
@@ -206,6 +206,7 @@ def get_submit(request, report_id):
 
     try:
         user = User.objects.get(pk=request.user.id)
+        user_info = get_object_or_404(UserInfo, user_id=request.user.id)
         report = get_object_or_404(Report,pk=report_id)
 
         report.assign_to_id=user
