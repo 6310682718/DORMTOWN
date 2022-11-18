@@ -3,6 +3,8 @@ from django.contrib.auth.decorators import login_required
 from occupant.models import *
 from django.db.models import Q
 from django.urls import reverse
+import sweetify
+
 
 # Create your views here.
 
@@ -48,7 +50,8 @@ def edit_profile(request, user_id):
             user_info = get_object_or_404(UserInfo, user_id=user)
         except:
             return render(request, 'rooms/500.html', status=500)
-
+            
+    sweetify.success(request, "Change Password Complete", button=True)
     return render(request, 'users/edit_profile.html', {
         'user': user,
         'user_info': user_info,
@@ -66,5 +69,5 @@ def delete_user(request, user_id):
 
     if user is not None:
         user.delete()
-
+        sweetify.success(request, "Deleted", button=True)
     return render(request, 'manager/dashboard.html')

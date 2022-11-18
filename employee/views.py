@@ -4,15 +4,16 @@ from django.http import HttpResponse
 import datetime
 from django.contrib.auth.models import User
 from occupant.models import UserInfo,Report,StatusType
+import sweetify
 
 # Create your views here.
 
 def index(request):
     if not request.user.is_authenticated:
         return render(request, 'users/login.html', status=400)
-    else:
+    try:
         user = User.objects.filter(pk=request.user.id).first()
-        user_info = UserInfo.objects.filter(user_id=request.user.id).first()
+        user_info = get_object_or_404(UserInfo, user_id=request.user.id)
         role_name = user_info.role_id.role_name
         report_a = Report.objects.filter(assign_to_id=request.user,status_id=StatusType.objects.get(pk=2)).order_by('due_date')
         report_na = Report.objects.filter(assign_to_id__isnull=True).order_by('due_date')
@@ -39,32 +40,33 @@ def index(request):
                 clean +=1
             elif str(i.problem_type_id) == "Irrigation problem":
                 iri +=1
-            elif str(i.problem_type_id) == "Move Out":
+            elif str(i.problem_type_id) == "Move out":
                 move +=1
 
-        if role_name == 'Technician' or 'Housekeeper':
+        if role_name == 'Technician' or role_name == 'Housekeeper':
             can_access = True
         else:
             can_access = False
-        for i in report_na:
 
-            if(can_access):
-                return render(request, 'employee/index.html', {
-                    'user': user,   
-                    'user_info' : user_info,
-                    'role_name' : role_name,
-                    'report_a'  : report_a,
-                    'report_na' : report_na,
-                    'fix'       : fix,
-                    'clean'     : clean,
-                    'move'      : move,
-                    'iri'       : iri,
-                    'rooms_reporter_a' :rooms_reporter_a,
-                    'rooms_reporter_na' :rooms_reporter_na,
+        if(can_access):
+            return render(request, 'employee/index.html', {
+                'user': user,   
+                'user_info' : user_info,
+                'role_name' : role_name,
+                'report_a'  : report_a,
+                'report_na' : report_na,
+                'fix'       : fix,
+                'clean'     : clean,
+                'move'      : move,
+                'iri'       : iri,
+                'rooms_reporter_a' :rooms_reporter_a,
+                'rooms_reporter_na' :rooms_reporter_na,
 
                 })
-            else:    
-                return render(request, "rooms/index.html")
+        else:    
+            return render(request, "rooms/index.html")
+    except:
+        return render(request, 'rooms/500.html', status=500)
 
 
 def edit_profile(request):
@@ -75,6 +77,7 @@ def edit_profile(request):
         user = User.objects.get(pk=request.user.id)
         user_info = get_object_or_404(UserInfo, user_id=request.user.id)
     except:
+        sweetify.warning(request, 'Invalid Credential', button=True)
         return render(request, 'rooms/500.html', status=500)
 
     return render(request, 'employee/edit_profile.html', {
@@ -120,6 +123,7 @@ def update_profile(request):
 
         return redirect(reverse('employee:index'))
     else:
+        sweetify.warning(request, 'Invalid Credential', button=True)
         return render(request, 'rooms/404.html', status=404)
 
 def submit(request,report_id):
@@ -183,16 +187,18 @@ def get_assign(request, report_id):
 
     try:
         user = User.objects.get(pk=request.user.id)
+        user_info = get_object_or_404(UserInfo, user_id=request.user.id)
         report = Report.objects.get(pk=report_id)
-    
-    except:
-        return render(request, 'rooms/404.html', status=404)
+        
+        report.assign_to_id=user
+        report.status_id=StatusType.objects.get(pk=2)
+        report.save()
 
-    report.assign_to_id=user
-    report.status_id=StatusType.objects.get(pk=2)
-    report.save()
-    
-    return redirect(reverse('employee:index'))
+        return redirect(reverse('employee:index'))
+
+    except:
+        sweetify.warning(request, 'Invalid Credential', button=True)
+        return render(request, 'rooms/404.html', status=404)
 
 def get_submit(request, report_id):
     if not request.user.is_authenticated:
@@ -200,13 +206,38 @@ def get_submit(request, report_id):
 
     try:
         user = User.objects.get(pk=request.user.id)
-        report = Report.objects.get(pk=report_id)
-    
+        user_info = get_object_or_404(UserInfo, user_id=request.user.id)
+        report = get_object_or_404(Report,pk=report_id)
+
+        report.assign_to_id=user
+        report.status_id=StatusType.objects.get(pk=3)
+        report.save()
+        
+        return redirect(reverse('employee:index'))
     except:
+        sweetify.warning(request, 'Invalid Credential', button=True)
         return render(request, 'rooms/404.html', status=404)
 
-    report.assign_to_id=user
-    report.status_id=StatusType.objects.get(pk=3)
-    report.save()
+def list_of_jobs(request):
+    if not request.user.is_authenticated:
+        return render(request, 'users/login.html', status=403)
+
+    try :
+        user_info = get_object_or_404(UserInfo, user_id=request.user.id)
+        all_report = Report.objects.order_by('due_date')
+        all_room = {}
+        for report in all_report:
+            Object_reporter = UserInfo.objects.get(user_id=report.from_user_id.id)
+            reporter_room = Object_reporter.room_id
+            all_room.update({report.from_user_id:reporter_room})
+
+    except:
+        return render(request, 'rooms/500.html', status=500)
     
-    return redirect(reverse('employee:index'))
+    return render(request, 'employee/list_of_jobs.html', {
+
+        'all_report': all_report,
+        'all_room': all_room,
+        'user_info':user_info,
+
+        })

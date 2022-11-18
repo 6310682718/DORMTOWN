@@ -79,11 +79,6 @@
               <td colspan="2">Move out:</td>
               <td>{{move}}</td>
             </tr>
-
-            <tr>
-              <td colspan="2">Due date work:</td>
-              <td></td>
-            </tr>
           </table>
         </div>
       </div>
@@ -116,10 +111,14 @@
               {% for key,value in rooms_reporter_a.items %}
                 {% if key == i.from_user_id %}
                   <td>{{value}}</td>
-              {% endif %}
+                {% endif %}
               {% endfor %} 
             <td>{{i.due_date}}</td>
             <td><a class="btn btn-success text-white" href="{% url 'employee:submit' i.id %}"> <i class="fa-solid fa-square-check"></i> </a></td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="5"><i>No Data</i></td>
           </tr>
         {% endfor %}
       </tbody>
@@ -137,6 +136,7 @@
   <table class="table table-bordered text-center">
     <thead class="text-light" style="background-color: #192e80;">
       <tr>
+        <th scope="col">#</th>
         <th scope="col">Name</th>
         <th scope="col">Room</th>
         <th scope="col">Due date</th>
@@ -145,17 +145,22 @@
     </thead>
     <tbody>
       {% for i in report_na %}
-          <tr>
-            <td>{{i.problem_type_id}}</td>
-            {% for key,value in rooms_reporter_na.items %}
-              {% if key == i.from_user_id %}
-                <td>{{value}}</td>
-              {% endif %}
-              {% endfor %} 
-            <td>{{i.due_date}}</td>
-            <td><a class="btn btn-success text-white" href="{% url 'employee:assign' i.id %}"> <i class="fa-brands fa-get-pocket"></i> </a></td>
-          </tr>
-        {% endfor %}
+        <tr>
+          <td>{{ forloop.counter }}</td>
+          <td>{{i.problem_type_id}}</td>
+          {% for key,value in rooms_reporter_na.items %}
+            {% if key == i.from_user_id %}
+              <td>{{value}}</td>
+            {% endif %}
+          {% endfor %} 
+          <td>{{i.due_date}}</td>
+          <td><a class="btn btn-success text-white" href="{% url 'employee:assign' i.id %}"> <i class="fa-brands fa-get-pocket"></i> </a></td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="5"><i>No Data</i></td>
+        </tr>
+      {% endfor %}
     </tbody>
   </table>
 </dev>
