@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login as auth_login, logout as aut
 import sweetify
 
 def login(req):
+
     if (req.method == "POST"):
         username = req.POST.get("username", False)
         password = req.POST.get("password", False)
