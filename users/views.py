@@ -10,7 +10,6 @@ def login(req):
         username = req.POST.get("username", False)
         password = req.POST.get("password", False)
         user = authenticate(req, username=username, password=password)
-        # find role and return to right path plz
         if (user is not None):
             user_info = UserInfo.objects.get(user_id=user)
             auth_login(req, user)
