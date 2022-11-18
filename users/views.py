@@ -15,7 +15,8 @@ def login(req):
         if (user is not None):
             user_info = UserInfo.objects.get(user_id=user)
             auth_login(req, user)
-            return redirect(reverse('rooms:index'))
+            sweetify.success(req, 'Invalid Credential', button=True)
+            return render(req, "rooms/index.html", status=200)
         else:
             sweetify.warning(req, 'Invalid Credential', button=True)
             return render(req, "users/login.html", {
@@ -26,6 +27,7 @@ def login(req):
 
 def logout(req):
     auth_logout(req)
+    sweetify.warning(req, 'Logged Out', button=True)
     return render(req, "users/login.html", {"message": "Logged out"})
 
 def register(req):
@@ -45,18 +47,22 @@ def register(req):
         zip = req.POST.get("zip", False)
         try:
             _user = User.objects.get(email=email)
+            sweetify.warning(req, "Username already used", button=True)
             return render(req, "users/register.html", {"status": False, "message": "Username already used"}, status=400)
         except:
             pass
             # print("<--- User not found (Can register) --->")
         if (con_password != password):
+            sweetify.warning(req, "Confirm password fail", button=True)
             return render(req, "users/register.html", {"status": False, "message": "Confirm password fail"}, status=400)
         if (username == "" or len(username) == 0 or firstname == "" or lastname == "" or password == "" or con_password == "" or email == ""):
+            sweetify.warning(req, "Enter your information", button=True)
             return render(req, "users/register.html", {"status": False, "message": "Enter your information"}, status=400)
         role = Role.objects.filter(role_name="Outside").first()
         rooms = Room.objects.first()
         user = User.objects.create_user(username=username, password=password, email=email, first_name=firstname, last_name=lastname)
         user_info = UserInfo.objects.create(user_id=user, phone_number=phone, address=address, street=street, state=state, city=city, country=country, zip_code=zip, role_id=role, room_id=rooms)
+        sweetify.success(req, "Register Success", button=True)
         return render(req, "users/login.html", {"status": True, "message": "Register Success"}, status=200)
     else:
         return render(req, "users/register.html", status=200)
@@ -77,13 +83,15 @@ def change_pass(request):
         con_password = request.POST['con_password']
 
         if (new_password != con_password) or (not user.check_password(old_password)):
-            sweetify.warning(request, 'Invalid password', button=True)
-            return redirect(reverse('users:change_password'))
+            sweetify.warning(request, "Confirm password fail", button=True)
+            return render(request, 'users/changepass.html', {
+                'message': 'Password is invalid.',
+                'message_tag': 'alert alert-danger'
+            }, status=400)
         
         user.set_password(new_password)
         user.save()
 
-        sweetify.success(request, 'Change password successful')
         return redirect(reverse('users:login'))
     else:
         return render(request, "users/changepass.html", {
@@ -125,8 +133,7 @@ def edit_profile(request):
             country = country,
             zip_code = zip_code
         )
-        
-        sweetify.success(request, 'Edit profile successfil', button=True)
+        sweetify.success(request, "Update Success", button=True)
         return redirect(reverse('rooms:index'))
     else:
         return render(request, 'users/edit_profile.html', {
