@@ -131,7 +131,15 @@ def edit_profile(request):
         )
         
         sweetify.success(request, 'Edit profile successfully')
-        return redirect(reverse('rooms:index'))
+
+        print(user_info.role_id.role_name)
+
+        if user_info.role_id.role_name == 'Manager':
+            return redirect(reverse('manager:dashboard'))
+        elif user_info.role_id.role_name == 'Technician' or user_info.role_id.role_name == 'Housekeeper':
+            return redirect(reverse('employee:index'))
+        else:
+            return redirect(reverse('occupant:index'))
     else:
         return render(request, 'users/edit_profile.html', {
             'user': user,

@@ -13,22 +13,25 @@ def index(request):
         return render(request, 'users/login.html', status=400)
     try:
         user = User.objects.filter(pk=request.user.id).first()
-        user_info = get_object_or_404(UserInfo, user_id=request.user.id)
+        user_info = UserInfo.objects.filter(user_id=request.user.id).first()
+
         role_name = user_info.role_id.role_name
-        report_a = Report.objects.filter(assign_to_id=request.user,status_id=StatusType.objects.get(pk=2)).order_by('due_date')
+
+        report_a = Report.objects.filter(assign_to_id=request.user, status_id=StatusType.objects.filter(pk=2).first()).order_by('due_date')
         report_na = Report.objects.filter(assign_to_id__isnull=True).order_by('due_date')
+
         rooms_reporter_a = {}
-        for report in report_a:
-            Object_reporter = UserInfo.objects.get(user_id=report.from_user_id.id)
+        for report in report_a:# 
+            Object_reporter = UserInfo.objects.filter(user_id=report.from_user_id.id).first()
             reporter_room = Object_reporter.room_id
             rooms_reporter_a.update({report.from_user_id:reporter_room})
 
         rooms_reporter_na = {}
         for report in report_na:
-            Object_reporter = UserInfo.objects.get(user_id=report.from_user_id.id)
+            Object_reporter = UserInfo.objects.filter(user_id=report.from_user_id.id).first()
             reporter_room = Object_reporter.room_id
             rooms_reporter_na.update({report.from_user_id:reporter_room})
-        
+
         iri=0
         fix=0
         clean=0
