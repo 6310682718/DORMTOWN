@@ -4,11 +4,6 @@
   <div class="text-center mt-4">
     <p class="header">Change Password</p>
     <div class="description">
-      {% if message %}
-      <div class="{{ message_tag }}" role="alert">
-          {{ message }}
-      </div>
-      {% endif %}
       <div class="container w-50">
         <form action="{% url 'users:change_password' %}" method="POST">
           {% csrf_token %}
