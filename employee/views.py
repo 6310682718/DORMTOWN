@@ -48,25 +48,23 @@ def index(request):
         else:
             can_access = False
 
-        for i in report_na:
-
-            if(can_access):
-                return render(request, 'employee/index.html', {
-                    'user': user,   
-                    'user_info' : user_info,
-                    'role_name' : role_name,
-                    'report_a'  : report_a,
-                    'report_na' : report_na,
-                    'fix'       : fix,
-                    'clean'     : clean,
-                    'move'      : move,
-                    'iri'       : iri,
-                    'rooms_reporter_a' :rooms_reporter_a,
-                    'rooms_reporter_na' :rooms_reporter_na,
+        if(can_access):
+            return render(request, 'employee/index.html', {
+                'user': user,   
+                'user_info' : user_info,
+                'role_name' : role_name,
+                'report_a'  : report_a,
+                'report_na' : report_na,
+                'fix'       : fix,
+                'clean'     : clean,
+                'move'      : move,
+                'iri'       : iri,
+                'rooms_reporter_a' :rooms_reporter_a,
+                'rooms_reporter_na' :rooms_reporter_na,
 
                 })
-            else:    
-                return render(request, "rooms/index.html")
+        else:    
+            return render(request, "rooms/500.html")
     except:
         return render(request, 'rooms/500.html', status=500)
 
