@@ -83,11 +83,10 @@ def get_reserve(request):
         user = User.objects.get(pk=request.user.id)
         user_info = get_object_or_404(UserInfo, user_id=request.user.id)
         reserve = Reserve.objects.filter(user_id=user).first()
+        role = Role.objects.get(role_name='Manager')
+        managers = UserInfo.objects.filter(role_id=role)
     except:
         return render(request, 'rooms/500.html', status=500)
-
-    role = Role.objects.get(role_name='Manager')
-    managers = UserInfo.objects.filter(role_id=role)
 
     if reserve is not None:
         return render(request, 'occupant/result_reserve.html', {
@@ -196,13 +195,18 @@ def get_report(request, report_id):
         user = User.objects.get(pk=request.user.id)
         user_info = get_object_or_404(UserInfo, user_id=user)
         report = Report.objects.get(pk=report_id, from_user_id=user)
+        assign_to_user_info = UserInfo.objects.filter(user_id=report.assign_to_id).first()
+        role = Role.objects.get(role_name='Manager')
+        managers = UserInfo.objects.filter(role_id=role)
     except:
         return render(request, 'rooms/500.html', status=500)
 
     return render(request, 'occupant/result_report.html', {
         'report': report,
         'header': 'Summary of Reporting',
-        'user_info': user_info
+        'user_info': user_info,
+        'assign_to_user_info': assign_to_user_info,
+        'managers': managers
     })
 
 def list_report(request):

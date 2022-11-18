@@ -9,4 +9,5 @@ tornado==6.2
 django-heroku
 psycopg2
 gunicorn
+sweetify
 channels==3.0.4

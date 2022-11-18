@@ -217,15 +217,18 @@ class TestView(TestCase):
 
     def test_login(self):
         url = "/users/login"
-        body = {"username": "newuser", "password": "newuserpass"}
-        body2 = {"username": "newuser1", "password": "newuserpass1"}
-
+        body = {"username": "outside", "password": "password"}
         response = self.client.post(url, body)
         self.assertEqual(response.status_code, 200)
-        body["password"] = "wrongpass"
-        response = self.client.post(url, body)
-        self.assertEqual(response.status_code, 400)
+        self.assertTemplateUsed(response, 'rooms/index.html')
     
+    def test_login_error(self):
+        url = "/users/login"
+        body2 = {"username": "newuser1", "password": "newuserpa"}
+        response = self.client.post(url, body2)
+        self.assertEqual(response.status_code, 400)
+        self.assertTemplateUsed(response, 'users/login.html')
+
     def test_logout(self):
         url = "/users/logout"
         response = self.client.post(url)

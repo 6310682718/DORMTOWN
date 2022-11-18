@@ -86,6 +86,15 @@ class TestViews(TestCase):
         response = self.client.get(self.urls["chat_to_user"])
         self.assertEqual(response.status_code, 200)
 
+    def test_chat_admin_login_admin_with_user(self):
+        # test admin chat to user [ SUCCESS ]
+        # user send message
+        chat_room = ChatRoom.objects.create(room_name="room-1")
+        Message.objects.create(room=chat_room, user=self.user1_account, content="Hello")
+        self.client.login(username=self.account1['username'], password=self.account1['password']);
+        response = self.client.get(self.urls["chat_to_user"])
+        self.assertEqual(response.status_code, 200)
+
     def test_admin_chat_unknown_account(self):
         # test admin chat to unknown account [ FAIL ]
         self.client.login(username=self.account1['username'], password=self.account1['password']);
