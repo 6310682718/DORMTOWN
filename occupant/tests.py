@@ -278,20 +278,22 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 500)
         self.assertTemplateUsed(response, 'rooms/500.html')
 
-    def test_create_reserve_outside(self):
-        # create reservation with authorization by outside role, return result of reservation with 200 OK
+    def test_create_reserve_get(self):
+        # get reservation form page by outside role, return the page with 200 OK
         self.client.login(username=self.outside_username, password=self.outside_password)
 
         response = self.client.get(self.create_reserve_url)
 
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'occupant/result_reserve.html')
+        self.assertTemplateUsed(response, 'occupant/reserve_form.html')
 
-    def test_create_reserve_occupant(self):
-        # create reservation with authorization by occupant role, return result of reservation without creating new reservation with 200 OK
-        self.client.login(username=self.occupant_username, password=self.occupant_password)
+    def test_create_reserve_post(self):
+        # create reservation page by post method, return result of reservation page with 200 OK
+        self.client.login(username=self.outside_username, password=self.outside_password)
 
-        response = self.client.get(self.create_reserve_url)
+        response = self.client.post(self.create_reserve_url, {
+            'due_date': datetime.datetime.today().strftime(("%Y-%m-%d")),
+        })
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'occupant/result_reserve.html')

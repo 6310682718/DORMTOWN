@@ -219,8 +219,8 @@ class TestView(TestCase):
         url = "/users/login"
         body = {"username": "outside", "password": "password"}
         response = self.client.post(url, body)
-        self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'rooms/index.html')
+
+        self.assertRedirects(response, '/', status_code=302, target_status_code=200, fetch_redirect_response=True)
     
     def test_login_error(self):
         url = "/users/login"
@@ -272,8 +272,7 @@ class TestView(TestCase):
             'con_password': 'newpassword'
         })
 
-        self.assertEqual(response.status_code, 400)
-        self.assertTemplateUsed(response, 'users/changepass.html')
+        self.assertRedirects(response, '/users/changepassword', status_code=302, target_status_code=200, fetch_redirect_response=True)
 
     def test_change_password_post_error_new_password(self):
         # change password with post method but old password is invalid, return login page with 400 Bad Request
@@ -285,8 +284,7 @@ class TestView(TestCase):
             'con_password': 'newpassword'
         })
 
-        self.assertEqual(response.status_code, 400)
-        self.assertTemplateUsed(response, 'users/changepass.html')
+        self.assertRedirects(response, '/users/changepassword', status_code=302, target_status_code=200, fetch_redirect_response=True)
 
     def test_change_password_get(self):
         # change password with get method, return change password page with 400 Bad Request
@@ -294,7 +292,7 @@ class TestView(TestCase):
 
         response = self.client.get(self.change_password_url)
 
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'users/changepass.html')
 
     def test_edit_profile_without_login(self):
