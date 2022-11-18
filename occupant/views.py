@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 import datetime
 from .models import *
-import sweetify
 
 def index(request):
     if not request.user.is_authenticated:
@@ -68,7 +67,6 @@ def create_reserve(request, room_type):
             status_type=status_type
             )
 
-        sweetify.success(request, 'Reserve successful')
         return render(request, 'occupant/result_reserve.html', {
             'user_info': user_info,
             'room': reserve.room_type,
@@ -115,7 +113,6 @@ def delete_reserve(request, reserve_id):
     if reserve is not None:
         reserve.delete()
 
-    sweetify.success(request, 'Remove reservation successful')
     return redirect(reverse('occupant:index'))
 
 def report(request):
@@ -150,7 +147,6 @@ def report(request):
             role_id=None
         )
 
-        sweetify.success(request, 'Create report successful')
         return redirect(reverse('occupant:get_report', args=[report.id]))
     else:
         return render(request, 'occupant/report.html', {
@@ -185,7 +181,6 @@ def edit_report(request, report_id):
             note=note
         )
 
-        sweetify.success(request, 'Edit report successful')
         return redirect(reverse('occupant:list_report'))
     else:
         problem_type = ProblemType.objects.all()
@@ -248,5 +243,4 @@ def delete_report(request, report_id):
 
     report.delete()
     
-    sweetify.success(request, 'Delete report successful')
     return redirect(reverse('occupant:list_report'))
