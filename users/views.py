@@ -87,7 +87,7 @@ def change_pass(request):
         user.set_password(new_password)
         user.save()
 
-        sweetify.success(request, 'Change password successful')
+        sweetify.success(request, 'Change password successfully')
         return redirect(reverse('users:login'))
     else:
         return render(request, "users/changepass.html", {
@@ -130,7 +130,7 @@ def edit_profile(request):
             zip_code = zip_code
         )
         
-        sweetify.success(request, 'Edit profile successfil', button=True)
+        sweetify.success(request, 'Edit profile successfully')
         return redirect(reverse('rooms:index'))
     else:
         return render(request, 'users/edit_profile.html', {
