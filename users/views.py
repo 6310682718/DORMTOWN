@@ -15,13 +15,12 @@ def login(req):
             user_info = UserInfo.objects.get(user_id=user)
             auth_login(req, user)
             sweetify.success(req, 'Invalid Credential', button=True)
-            return render(req, "rooms/index.html", status=200)
+            return redirect("/")
         else:
             sweetify.warning(req, 'Invalid Credential', button=True)
             return render(req, "users/login.html", {
                 "message": "Invalid credential"
             }, status=400)
-
     return render(req, "users/login.html")
 
 def logout(req):
@@ -82,15 +81,13 @@ def change_pass(request):
         con_password = request.POST['con_password']
 
         if (new_password != con_password) or (not user.check_password(old_password)):
-            sweetify.warning(request, "Confirm password fail", button=True)
-            return render(request, 'users/changepass.html', {
-                'message': 'Password is invalid.',
-                'message_tag': 'alert alert-danger'
-            }, status=400)
+            sweetify.warning(request, 'Invalid password', button=True)
+            return redirect(reverse('users:change_password'))
         
         user.set_password(new_password)
         user.save()
 
+        sweetify.success(request, 'Change password successful')
         return redirect(reverse('users:login'))
     else:
         return render(request, "users/changepass.html", {
@@ -132,7 +129,8 @@ def edit_profile(request):
             country = country,
             zip_code = zip_code
         )
-        sweetify.success(request, "Update Success", button=True)
+        
+        sweetify.success(request, 'Edit profile successfil', button=True)
         return redirect(reverse('rooms:index'))
     else:
         return render(request, 'users/edit_profile.html', {
