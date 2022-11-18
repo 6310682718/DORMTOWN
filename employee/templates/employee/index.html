@@ -1,11 +1,11 @@
 {% extends 'employee/layout.html' %}
 {% block body %}
 
-{% if role_name_str == "Housekeeper" %}
+{% if role_name == "Housekeeper" %}
 <div class="text-center mt-4">
     <h1>Housekeeper</h1>
 </div>
-{% elif role_name_str == "Technician" %}
+{% elif role_name == "Technician" %}
 <div class="text-center mt-4">
     <h1>Technician</h1>
 </div>
@@ -78,11 +78,6 @@
             <tr>
               <td colspan="2">Move out:</td>
               <td>{{move}}</td>
-            </tr>
-
-            <tr>
-              <td colspan="2">Due date work:</td>
-              <td></td>
             </tr>
           </table>
         </div>

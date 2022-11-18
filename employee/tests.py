@@ -351,6 +351,15 @@ class TestViews(TestCase):
 
         self.assertEqual(response.status_code, 403)
         self.assertTemplateUsed(response, 'users/login.html')
+    
+    def test_get_submit_withwronguserinfo(self):
+        # occupant role search reservation page with authorization (already reserved), return result of seservation path with 200 OK
+        self.client.login(username=self.temp_username, password=self.temp_password)
+
+        response = self.client.get(self.get_submit_url)
+
+        self.assertEqual(response.status_code, 404)
+        self.assertTemplateUsed(response, 'rooms/404.html')
 
     def test_get_submit(self):
         # occupant role search reservation page with authorization (already reserved), return result of seservation path with 200 OK
@@ -391,6 +400,15 @@ class TestViews(TestCase):
 
         self.assertEqual(response.status_code, 403)
         self.assertTemplateUsed(response, 'users/login.html')
+
+    def test_get_assign_withwronguserinfo(self):
+        # occupant role search reservation page with authorization (already reserved), return result of seservation path with 200 OK
+        self.client.login(username=self.temp_username, password=self.temp_password)
+
+        response = self.client.get(self.get_assign_url)
+
+        self.assertEqual(response.status_code, 404)
+        self.assertTemplateUsed(response, 'rooms/404.html')
 
     def test_get_assign(self):
         # occupant role search reservation page with authorization (already reserved), return result of seservation path with 200 OK

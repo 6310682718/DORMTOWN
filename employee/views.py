@@ -4,6 +4,7 @@ from django.http import HttpResponse
 import datetime
 from django.contrib.auth.models import User
 from occupant.models import UserInfo,Report,StatusType
+import sweetify
 
 # Create your views here.
 
@@ -78,6 +79,7 @@ def edit_profile(request):
         user = User.objects.get(pk=request.user.id)
         user_info = get_object_or_404(UserInfo, user_id=request.user.id)
     except:
+        sweetify.warning(request, 'Invalid Credential', button=True)
         return render(request, 'rooms/500.html', status=500)
 
     return render(request, 'employee/edit_profile.html', {
@@ -123,6 +125,7 @@ def update_profile(request):
 
         return redirect(reverse('employee:index'))
     else:
+        sweetify.warning(request, 'Invalid Credential', button=True)
         return render(request, 'rooms/404.html', status=404)
 
 def submit(request,report_id):
@@ -184,28 +187,37 @@ def get_assign(request, report_id):
     if not request.user.is_authenticated:
         return render(request, 'users/login.html', status=403)
 
-    user = User.objects.get(pk=request.user.id)
-    report = Report.objects.get(pk=report_id)
-    
-    report.assign_to_id=user
-    report.status_id=StatusType.objects.get(pk=2)
-    report.save()
-    
-    return redirect(reverse('employee:index'))
+    try:
+        user = User.objects.get(pk=request.user.id)
+        user_info = get_object_or_404(UserInfo, user_id=request.user.id)
+        report = Report.objects.get(pk=report_id)
+        
+        report.assign_to_id=user
+        report.status_id=StatusType.objects.get(pk=2)
+        report.save()
+
+        return redirect(reverse('employee:index'))
+
+    except:
+        sweetify.warning(request, 'Invalid Credential', button=True)
+        return render(request, 'rooms/404.html', status=404)
 
 def get_submit(request, report_id):
     if not request.user.is_authenticated:
         return render(request, 'users/login.html', status=403)
 
-    user = User.objects.get(pk=request.user.id)
-    report = get_object_or_404(Report,pk=report_id)
-    
+    try:
+        user = User.objects.get(pk=request.user.id)
+        report = get_object_or_404(Report,pk=report_id)
 
-    report.assign_to_id=user
-    report.status_id=StatusType.objects.get(pk=3)
-    report.save()
-    
-    return redirect(reverse('employee:index'))
+        report.assign_to_id=user
+        report.status_id=StatusType.objects.get(pk=3)
+        report.save()
+        
+        return redirect(reverse('employee:index'))
+    except:
+        sweetify.warning(request, 'Invalid Credential', button=True)
+        return render(request, 'rooms/404.html', status=404)
 
 def list_of_jobs(request):
     if not request.user.is_authenticated:
