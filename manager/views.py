@@ -14,7 +14,8 @@ def index(req):
         user_info = UserInfo.objects.get(user_id=req.user)
         rooms_available = Room.objects.filter(status=True)
         rooms_unavailable = Room.objects.filter(status=False)
-        return render(req, "manager/dashboard.html", {"user_info": user_info, "rooms_a": rooms_available, "rooms_b": rooms_unavailable})
+        rooms_reserve = Reserve.objects.all()
+        return render(req, "manager/dashboard.html", {"user_info": user_info, "rooms_a": rooms_available, "rooms_b": rooms_unavailable, "rooms_s": rooms_reserve})
     return render(req, "manager/dashboard.html")
 
 def rooms_available(req):
@@ -51,7 +52,6 @@ def edit_profile(request, user_id):
         except:
             return render(request, 'rooms/500.html', status=500)
             
-    sweetify.success(request, "Change Password Complete", button=True)
     return render(request, 'users/edit_profile.html', {
         'user': user,
         'user_info': user_info,

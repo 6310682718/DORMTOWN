@@ -6,7 +6,8 @@ from django.contrib.auth import authenticate, login as auth_login, logout as aut
 import sweetify
 
 def login(req):
-
+    if req.user.is_authenticated:
+        return render(req, 'rooms/index.html', status=403)
     if (req.method == "POST"):
         username = req.POST.get("username", False)
         password = req.POST.get("password", False)
@@ -29,6 +30,8 @@ def logout(req):
     return render(req, "users/login.html", {"message": "Logged out"})
 
 def register(req):
+    if req.user.is_authenticated:
+        return render(req, 'rooms/index.html', status=403)
     if req.method == "POST":
         username = req.POST["email"]
         firstname = req.POST["firstname"]
@@ -49,7 +52,6 @@ def register(req):
             return render(req, "users/register.html", {"status": False, "message": "Username already used"}, status=400)
         except:
             pass
-            # print("<--- User not found (Can register) --->")
         if (con_password != password):
             sweetify.warning(req, "Confirm password fail", button=True)
             return render(req, "users/register.html", {"status": False, "message": "Confirm password fail"}, status=400)
@@ -131,8 +133,6 @@ def edit_profile(request):
         )
         
         sweetify.success(request, 'Edit profile successfully')
-
-        print(user_info.role_id.role_name)
 
         if user_info.role_id.role_name == 'Manager':
             return redirect(reverse('manager:dashboard'))

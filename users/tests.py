@@ -215,8 +215,22 @@ class TestView(TestCase):
 
         self.change_password_url = reverse('users:change_password')
         self.edit_profile_url = reverse('users:edit_profile')
+        self.login_url = reverse('users:login')
+
 
     # test when user get to register page  will get response register.html
+    def test_register_index_with_login(self):
+        self.client.login(username=self.outside_username, password=self.outside_password)
+        response = self.client.get(self.register_url)
+        self.assertEqual(response.status_code, 403)
+        self.assertTemplateUsed(response, 'rooms/index.html')
+    
+    def test_login_index_with_login(self):
+        self.client.login(username=self.outside_username, password=self.outside_password)
+        response = self.client.get(self.login_url)
+        self.assertEqual(response.status_code, 403)
+        self.assertTemplateUsed(response, 'rooms/index.html')
+    
     def test_register_index(self):
         response = self.client.get(self.register_url)
         self.assertEqual(response.status_code, 200)
