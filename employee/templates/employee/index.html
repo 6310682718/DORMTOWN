@@ -132,6 +132,7 @@
   <table class="table table-bordered text-center">
     <thead class="text-light" style="background-color: #192e80;">
       <tr>
+        <th scope="col">#</th>
         <th scope="col">Name</th>
         <th scope="col">Room</th>
         <th scope="col">Due date</th>
@@ -141,6 +142,7 @@
     <tbody>
       {% for i in report_na %}
           <tr>
+            <td>{{ forloop.counter }}</td>
             <td>{{i.problem_type_id}}</td>
             {% for key,value in rooms_reporter_na.items %}
               {% if key == i.from_user_id %}
