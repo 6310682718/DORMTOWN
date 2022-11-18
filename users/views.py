@@ -14,7 +14,7 @@ def login(req):
         if (user is not None):
             user_info = UserInfo.objects.get(user_id=user)
             auth_login(req, user)
-            sweetify.success(req, 'Invalid Credential', button=True)
+            sweetify.success(req, 'Login success', button=True)
             return redirect("/")
         else:
             sweetify.warning(req, 'Invalid Credential', button=True)
