@@ -1,8 +1,6 @@
 from django.shortcuts import render
 from occupant.models import *
 
-# Create your views here.
-
 
 def index(req):
     if req.user.is_authenticated:    
@@ -13,10 +11,10 @@ def index(req):
 
 
 def handler404(request, exception):
-    response = render(request, 'rooms/404.html', {}, status=404)
-    return response
+    print(exception)
+    
+    return render(request, 'rooms/404.html', {})
 
 
 def handler500(request):
-    response = render(request, 'rooms/500.html', {}, status=500)
-    return response
+    return render(request, 'rooms/500.html', {})
