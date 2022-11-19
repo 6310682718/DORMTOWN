@@ -8,34 +8,42 @@ import datetime
 
 class TestUrl(SimpleTestCase):
     def test_index_is_resolved(self):
+        # test employee index url use index method for homepage of user (Technician and Housekeeper)
         url = reverse("employee:index")
         self.assertEqual(resolve(url).func, index)
     
     def test_edit_profile_is_resolved(self):
+        # test employee edit profile url use edit profile method 
         url = reverse("employee:edit_profile")
         self.assertEqual(resolve(url).func, edit_profile)
     
     def test_update_profile_is_resolved(self):
+        # test employee update_profile url use update_profile method         
         url = reverse("employee:update_profile")
         self.assertEqual(resolve(url).func, update_profile)
 
     def test_submit_is_resolved(self):
+        # test employee submit url and send one argument to use submit method      
         url = reverse("employee:submit", args=[1])
         self.assertEqual(resolve(url).func, submit)
 
     def test_get_submit_is_resolved(self):
+        # test employee get submit report with get submit url and use get submit method to submit report
         url = reverse("employee:get_submit", args=[1])
         self.assertEqual(resolve(url).func, get_submit)
 
     def test_assign_is_resolved(self):
+        # test employee assign url and send one argument to use assign method      
         url = reverse("employee:assign", args=[1])
         self.assertEqual(resolve(url).func, assign)
 
     def test_get_assign_is_resolved(self):
+        # test employee get assign report with get assign url and use get assign method to assign report
         url = reverse("employee:get_assign", args=[1])
         self.assertEqual(resolve(url).func, get_assign)
 
     def test_list_of_jobs_is_resolved(self):
+        # test employee view list of jobs with list of jobs url and use list of jobs method  
         url = reverse("employee:list_of_jobs")
         self.assertEqual(resolve(url).func, list_of_jobs)
 
@@ -223,14 +231,14 @@ class TestViews(TestCase):
         
         
     def test_index_without_login(self):
-        # serch occupant homepage without authorization, return login page with 403 Forbidden
+        # serch employee homepage without authorization, return login page with 403 Forbidden
         response = self.client.get(self.index_url)
 
         self.assertEqual(response.status_code, 400)
         self.assertTemplateUsed(response, 'users/login.html')
 
     def test_index_wrong_role(self):
-        # serch occupant homepage without authorization, return login page with 403 Forbidden
+        # serch employee homepage without authorization, return room page 
         self.client.login(username=self.occupant_username, password=self.occupant_password)
         response = self.client.get(self.index_url)
 
@@ -238,7 +246,7 @@ class TestViews(TestCase):
 
 
     def test_index_error_userinfo(self):
-        # serch occupant homepage with authorization but do not have userinfo data, return 500.html with 500 Internal Server Error
+        # serch employee homepage with authorization but do not have userinfo data, return 500.html with 500 Internal Server Error
         self.client.login(username=self.temp_username, password=self.temp_password)
 
         response = self.client.get(self.index_url)
@@ -247,7 +255,7 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'rooms/500.html')
 
     def test_index(self):
-        # authorize for occupant homepage with user and userinfo model, return the page with 200 OK
+        # authorize for employee homepage with user and userinfo model, return the page with 200 OK
         self.client.login(username=self.technician_username, password=self.technician_password)
 
         Report.objects.create(
@@ -314,7 +322,7 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'rooms/500.html')
 
     def test_update_profile(self):
-        # authorize for updating profile to model with userinfo model and post method, redirect to occupant:index
+        # authorize for updating profile to model with userinfo model and post method, redirect to employee:index
         self.client.login(username=self.occupant_username, password=self.occupant_password)
 
         response = self.client.post(self.update_profile_url)
@@ -322,13 +330,14 @@ class TestViews(TestCase):
         self.assertRedirects(response, '/employee/', status_code=302, target_status_code=200, fetch_redirect_response=True)
     
     def test_submit_without_login(self):
+        # test submit page with out login ,return 403 and go to login page
         response = self.client.get(self.submit_url)
 
         self.assertEqual(response.status_code, 403)
         self.assertTemplateUsed(response, 'users/login.html')
     
     def test_submit_error_userinfo(self):
-        # serch reservation page with authorization but do not have userinfo data, return 500.html with 500 Internal Server Error
+        # test submit page with wrong userinfo ,return 500.html with 500 Internal Server Error
         self.client.login(username=self.temp_username, password=self.temp_password)
 
         response = self.client.get(self.submit_url)
@@ -337,7 +346,7 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'rooms/500.html')
     
     def test_submit(self):
-        # occupant role search reservation page with authorization (already reserved), return result of seservation path with 200 OK
+        # test submit page with user userinfo ,return the page with 200 OK
         self.client.login(username=self.technician_username, password=self.technician_password)
 
         response = self.client.get(self.submit_url)
@@ -346,14 +355,14 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'employee/submit.html')
     
     def test_get_submit_without_login(self):
-        # occupant role search reservation page with authorization (already reserved), return result of seservation path with 200 OK
+        # test get_submit page with out login ,return 403 and go to login page
         response = self.client.get(self.get_submit_url)
 
         self.assertEqual(response.status_code, 403)
         self.assertTemplateUsed(response, 'users/login.html')
     
     def test_get_submit_withwronguserinfo(self):
-        # occupant role search reservation page with authorization (already reserved), return result of seservation path with 200 OK
+        # test get_submit page with wrong userinfo ,return 404.html with 404 Not Found
         self.client.login(username=self.temp_username, password=self.temp_password)
 
         response = self.client.get(self.get_submit_url)
@@ -362,7 +371,7 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'rooms/404.html')
     
     def test_get_submit(self):
-        # occupant role search reservation page with authorization (already reserved), return result of seservation path with 200 OK
+        # employee submit report with authorization and data, redirect employee:index
         self.client.login(username=self.technician_username, password=self.technician_password)
 
         response = self.client.get(self.get_submit2_url)
@@ -371,13 +380,14 @@ class TestViews(TestCase):
 
     
     def test_assign_without_login(self):
+        # test assign page with out login ,return 403 and go to login page
         response = self.client.get(self.assign_url)
 
         self.assertEqual(response.status_code, 403)
         self.assertTemplateUsed(response, 'users/login.html')
     
     def test_assign_error_userinfo(self):
-        # serch reservation page with authorization but do not have userinfo data, return 500.html with 500 Internal Server Error
+        # test assign page with worng userinfo ,,return 500.html with 500 Internal Server Error
         self.client.login(username=self.temp_username, password=self.temp_password)
 
         response = self.client.get(self.assign_url)
@@ -386,7 +396,7 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'rooms/500.html')
     
     def test_assign(self):
-        # occupant role search reservation page with authorization (already reserved), return result of seservation path with 200 OK
+        # test assign page with user userinfo ,return the page with 200 OK
         self.client.login(username=self.technician_username, password=self.technician_password)
 
         response = self.client.get(self.assign_url)
@@ -395,14 +405,14 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'employee/assign.html')
     
     def test_get_assign_without_login(self):
-        # occupant role search reservation page with authorization (already reserved), return result of seservation path with 200 OK
+        # test get_assign page with out login ,return 403 and go to login page
         response = self.client.get(self.get_assign_url)
 
         self.assertEqual(response.status_code, 403)
         self.assertTemplateUsed(response, 'users/login.html')
 
     def test_get_assign_withwronguserinfo(self):
-        # occupant role search reservation page with authorization (already reserved), return result of seservation path with 200 OK
+        # test get_assign page with wrong userinfo ,return 404.html with 404 Not Found
         self.client.login(username=self.temp_username, password=self.temp_password)
 
         response = self.client.get(self.get_assign_url)
@@ -411,7 +421,7 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'rooms/404.html')
 
     def test_get_assign(self):
-        # occupant role search reservation page with authorization (already reserved), return result of seservation path with 200 OK
+        # test employee assign report with authorization and data, redirect employee:index
         self.client.login(username=self.technician_username, password=self.technician_password)
 
         response = self.client.get(self.get_assign1_url)
@@ -419,7 +429,7 @@ class TestViews(TestCase):
         self.assertRedirects(response, '/employee/', status_code=302, target_status_code=200, fetch_redirect_response=True)
     
     def test_get_assign2(self):
-        # occupant role search reservation page with authorization (already reserved), return result of seservation path with 200 OK
+        # test employee assign report with authorization and data, redirect employee:index
         self.client.login(username=self.technician_username, password=self.technician_password)
 
         response = self.client.get(self.get_assign2_url)
@@ -427,7 +437,7 @@ class TestViews(TestCase):
         self.assertRedirects(response, '/employee/', status_code=302, target_status_code=200, fetch_redirect_response=True)
 
     def test_get_assign3(self):
-        # occupant role search reservation page with authorization (already reserved), return result of seservation path with 200 OK
+        # test employee assign report with authorization and data, redirect employee:index
         self.client.login(username=self.technician_username, password=self.technician_password)
 
         response = self.client.get(self.get_assign3_url)
@@ -435,7 +445,7 @@ class TestViews(TestCase):
         self.assertRedirects(response, '/employee/', status_code=302, target_status_code=200, fetch_redirect_response=True)
     
     def test_list_of_jobs_without_login(self):
-        # occupant role search reservation page with authorization (already reserved), return result of seservation path with 200 OK
+        # test list_of_jobs page with out login ,return 403 and go to login page
         response = self.client.get(self.assign_url)
         response = self.client.get(self.list_of_jobs_url)
 
@@ -443,7 +453,7 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'users/login.html')
     
     def test_list_of_jobs(self):
-        # occupant role search reservation page with authorization (already reserved), return result of seservation path with 200 OK
+        # test list_of_job page with user userinfo ,return the page with 200 OK
         self.client.login(username=self.technician_username, password=self.technician_password)
 
         response = self.client.get(self.list_of_jobs_url)
@@ -452,7 +462,7 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'employee/list_of_jobs.html')
     
     def test_list_of_jobs_error_userinfo(self):
-        # serch reservation page with authorization but do not have userinfo data, return 500.html with 500 Internal Server Error
+        # test list_of_jobs page with worng userinfo ,,return 500.html with 500 Internal Server Error
         self.client.login(username=self.temp_username, password=self.temp_password)
 
         response = self.client.get(self.list_of_jobs_url)
