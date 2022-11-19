@@ -1,4 +1,4 @@
-{% extends 'occupant/layout.html' %}
+{% extends 'rooms/layout.html' %}
 {% load static %}
 {% block body %}
 <div class="text-center mt-4">
@@ -49,7 +49,10 @@
                         <p class="sub">Rent cost per month</p>
                         <br>
                         <br>
-                        <a class="btn btn-danger btn-lg btn-block center" href="{% url 'occupant:delete_reserve' reserve_id %}">Remove</a>
+                        <a class="btn btn-danger btn-lg btn-block center" href="{% url 'occupant:delete_reserve' reserve_id %}">
+                            <i class="fa-solid fa-trash"></i>
+                            Remove
+                        </a>
                     </div>
                 </div>
             </div>
@@ -65,7 +68,7 @@
         <div class="col-lg-10 card" style="margin: auto">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center py-3">
-                    <h2 class="h5 mb-0">Contact</h2>
+                    <h2 class="h5 mb-0">{{ manager.role_id }} Contact</h2>
                 </div>
                 <table class="table table-borderless">
                     <tr>

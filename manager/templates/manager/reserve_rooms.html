@@ -1,4 +1,4 @@
-{% extends 'manager/layout.html' %} {% block body %}
+{% extends 'rooms/layout.html' %} {% block body %}
 <section class="about-header-section">
     <div class="text-center mt-4">
         <p id='about_us' class="header">Rooms Reserved</p>
@@ -9,29 +9,26 @@
             <thead class="text-light" style="background-color: #192e80;">
                 <tr>
                     <th scope="col">#</th>
-                    <th scope="col">Room number</th>
+                    <th scope="col">Username</th>
                     <th scope="col">Room type</th>
+                    <th scope="col">Due date</th>
                     <th scope="col">Status</th>
                 </tr>
             </thead>
             <tbody>
-            <tr>
-                <th scope="row">1</th>
-                <td>Mark</td>
-                <td>Otto</td>
-                <td>@mdo</td>
-            </tr>
-            <tr>
-                <th scope="row">2</th>
-                <td>Jacob</td>
-                <td>Thornton</td>
-                <td>@fat</td>
-            </tr>
-            <tr>
-                <th scope="row">3</th>
-                <td colspan="2">Larry the Bird</td>
-                <td>@twitter</td>
-            </tr>
+                {% for room in rooms %}
+                <tr>
+                    <th scope="row">{{forloop.counter}}</th>
+                    <td>{{room.user_id.username}}</td>
+                    <td>{{room.room_type}}</td>
+                    <td>{{room.due_date}}</td>
+                    <td>{{room.status_type}}</td>
+                </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5"><i>No Data</i></td>
+                    </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>

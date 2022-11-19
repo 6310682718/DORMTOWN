@@ -8,3 +8,4 @@ tornado==6.2
 gunicorn
 channels==3.0.4
 mysqlclient
+sweetify
