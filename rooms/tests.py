@@ -3,13 +3,22 @@ from django.urls import reverse, resolve
 
 from django.contrib.auth.models import User
 from .views import *
-import datetime
-# Create your tests here.
+
 class TestUrl(SimpleTestCase):
     def test_index_is_resolved(self):
         # test occupant index url use index method for homepage of user (occupant and outside role)
         url = reverse("rooms:index")
         self.assertEqual(resolve(url).func, index)
+
+    def test_handler404_is_resolved(self):
+        # test handler404 url use handler404 method
+        url = reverse('rooms:handler404', args=[0])
+        self.assertEqual(resolve(url).func, handler404)
+
+    def test_handler500_is_resolved(self):
+        # test handler500 url use handler500 method
+        url = reverse('rooms:handler500')
+        self.assertEqual(resolve(url).func, handler500)
 
 class TestViews(TestCase):
     def setUp(self):
