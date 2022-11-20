@@ -228,8 +228,7 @@ class TestView(TestCase):
     def test_login_index_with_login(self):
         self.client.login(username=self.outside_username, password=self.outside_password)
         response = self.client.get(self.login_url)
-        self.assertEqual(response.status_code, 403)
-        self.assertTemplateUsed(response, 'rooms/index.html')
+        self.assertRedirects(response, "/", status_code=302, target_status_code=200, fetch_redirect_response=True)
     
     def test_register_index(self):
         response = self.client.get(self.register_url)
