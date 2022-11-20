@@ -81,7 +81,7 @@
             Housekeeper
           </a>
         </li>
-        
+
         {% elif request.user.is_authenticated and user_info.role_id.role_name == "Technician" %}
         <li class="nav-item">
           <a href="/employee" class="text-dark mx-3 align-middle">
@@ -92,14 +92,14 @@
         {% endif %}
         {% if request.user.is_authenticated and user_info.role_id.role_name == "Housekeeper"  %}
         <li class="nav-item">
-          <a href="/employee/list_of_jobs" class="text-dark mx-3 align-middle"> 
+          <a href="/employee/list_of_jobs" class="text-dark mx-3 align-middle">
             <i class="fa-solid fa-user-tie"></i>
             List of Reporting
           </a>
         </li>
         {% elif request.user.is_authenticated and user_info.role_id.role_name == "Technician"  %}
         <li class="nav-item">
-          <a href="/employee/list_of_jobs" class="text-dark mx-3 align-middle"> 
+          <a href="/employee/list_of_jobs" class="text-dark mx-3 align-middle">
             <i class="fa-solid fa-user-tie"></i>
             List of Reporting
           </a>
@@ -120,10 +120,15 @@
         </li>
         {% else %}
         <li class="nav-item">
-          <a href="users/register" class="text-dark mx-3 align-middle">Sign Up</a>
+          <a href="users/register" class="text-dark mx-3 align-middle">
+            Sign Up
+          </a>
         </li>
         <li class=" nav-item">
-          <a class="btn text-light btn-sm ml-3" href="{% url 'users:login' %}" role="button" style="background-color: #192e80;">Sign In</a>
+          <a class="btn text-light btn-sm ml-3" href="{% url 'users:login' %}" role="button" style="background-color: #192e80;">
+            Sign In
+            <i class="fa-solid fa-arrow-right-to-bracket"></i>
+          </a>
         </li>
         {% endif %}
       </ul>
