@@ -1,7 +1,8 @@
 {% extends 'rooms/layout.html' %} {% block body %}
-<div id="container">
-  <main>
-    <header>
+<!-- <div id="container"> -->
+<div class="container">
+  <main class="w-100 border border-dark rounded">
+    <header class="border border-bottom-dark">
       <div>
         <h2>Chat with
           {{ text_to.username }}
@@ -25,7 +26,6 @@
             {{ m.date_added }}
           </h3>
         </div>
-        <div class="triangle"></div>
         <div class="message">
           {{ m.content }}
         </div>
@@ -41,7 +41,6 @@
           </h2>
           <span class="status blue"></span>
         </div>
-        <div class="triangle"></div>
         <div class="message">
           {{ m.content }}
         </div>
@@ -49,14 +48,15 @@
       {% endif %}
       {% endfor %}
     </ul>
-    <footer>
-      <textarea placeholder="Type your message" id="msgText"></textarea>
+    <footer class="w-100" align="right">
+      <textarea placeholder="Type your message" class="border border-primary" id="msgText"></textarea>
       <!-- <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/ico_picture.png" alt="">
-      <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/ico_file.png" alt=""> -->
+        <img src="https://s3-us-west-2.amazonaws.com/s.cdpn.io/1940306/ico_file.png" alt=""> -->
       <a href="#" id="sendMsg">Send <i class="fa-solid fa-paper-plane"></i></a>
     </footer>
   </main>
 </div>
+<!-- </div> -->
 <script>
   const username = "{{ request.user.username }}"
   const replyId = "{{ request.user.id }}"
@@ -114,7 +114,6 @@
             ${data.username}
           </h2>
         </div>
-        <div class="triangle"></div>
         <div class="message">
           ${data.message}
         </div>
@@ -134,7 +133,6 @@
             Now
           </h3>
         </div>
-        <div class="triangle"></div>
         <div class="message">
           ${data.message}
         </div>
