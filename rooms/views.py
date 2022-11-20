@@ -9,6 +9,7 @@ def index(req):
             return render(req, "rooms/index.html", {"user_info": user_info})
     except:
         return render(req, "rooms/index.html", {})
+    return render(req, "rooms/index.html", {"user_info": []})
 
 
 def handler404(request, exception):
