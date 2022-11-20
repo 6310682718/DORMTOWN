@@ -51,6 +51,11 @@ class TestUrl(SimpleTestCase):
         url = reverse("occupant:delete_report", args=[1])
         self.assertEqual(resolve(url).func, delete_report)
 
+    def test_edit_report_is_resolved(self):
+        # test occupant edit report url use delete report method for deleting reporting
+        url = reverse("occupant:edit_report", args=[1])
+        self.assertEqual(resolve(url).func, edit_report)
+
 class TestViews(TestCase):
     def setUp(self):
         self.client = Client()
@@ -205,14 +210,14 @@ class TestViews(TestCase):
         self.edit_report_url = reverse('occupant:edit_report', args=[self.report.id])
 
     def test_index_without_login(self):
-        # serch occupant homepage without authorization, return login page with 403 Forbidden
+        # search occupant homepage without authorization, return login page with 403 Forbidden
         response = self.client.get(self.index_url)
 
         self.assertEqual(response.status_code, 403)
         self.assertTemplateUsed(response, 'users/login.html')
 
     def test_index_error_userinfo(self):
-        # serch occupant homepage with authorization but do not have userinfo data, return 500.html with 500 Internal Server Error
+        # search occupant homepage with authorization but do not have userinfo data, return 500.html with 500 Internal Server Error
         self.client.login(username=self.temp_username, password=self.temp_password)
 
         response = self.client.get(self.index_url)
@@ -230,14 +235,14 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'occupant/index.html')
 
     def test_reserve_without_login(self):
-        # serch reservation page without authorization, return login page with 403 Forbidden
+        # search reservation page without authorization, return login page with 403 Forbidden
         response = self.client.get(self.reserve_url)
 
         self.assertEqual(response.status_code, 403)
         self.assertTemplateUsed(response, 'users/login.html')
 
     def test_reserve_error_userinfo(self):
-        # serch reservation page with authorization but do not have userinfo data, return 500.html with 500 Internal Server Error
+        # search reservation page with authorization but do not have userinfo data, return 500.html with 500 Internal Server Error
         self.client.login(username=self.temp_username, password=self.temp_password)
 
         response = self.client.get(self.reserve_url)
@@ -255,7 +260,7 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'occupant/reserve.html')
 
     def test_reserve_occupant(self):
-        # occupant role search reservation page with authorization (already reserved), return result of seservation path with 200 OK
+        # occupant role search reservation page with authorization (already reserved), redirect to result of seservation path
         self.client.login(username=self.occupant_username, password=self.occupant_password)
 
         response = self.client.get(self.reserve_url)
@@ -278,20 +283,22 @@ class TestViews(TestCase):
         self.assertEqual(response.status_code, 500)
         self.assertTemplateUsed(response, 'rooms/500.html')
 
-    def test_create_reserve_outside(self):
-        # create reservation with authorization by outside role, return result of reservation with 200 OK
+    def test_create_reserve_get(self):
+        # get reservation form page by outside role, return the page with 200 OK
         self.client.login(username=self.outside_username, password=self.outside_password)
 
         response = self.client.get(self.create_reserve_url)
 
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, 'occupant/result_reserve.html')
+        self.assertTemplateUsed(response, 'occupant/reserve_form.html')
 
-    def test_create_reserve_occupant(self):
-        # create reservation with authorization by occupant role, return result of reservation without creating new reservation with 200 OK
-        self.client.login(username=self.occupant_username, password=self.occupant_password)
+    def test_create_reserve_post(self):
+        # create reservation page by post method, return result of reservation page with 200 OK
+        self.client.login(username=self.outside_username, password=self.outside_password)
 
-        response = self.client.get(self.create_reserve_url)
+        response = self.client.post(self.create_reserve_url, {
+            'due_date': datetime.datetime.today().strftime(("%Y-%m-%d")),
+        })
 
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'occupant/result_reserve.html')
@@ -313,7 +320,7 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'rooms/500.html')
 
     def test_detail_reserve_outside(self):
-        # outside role get detail of reservation but have no reservation, redirct to occupant:reserve
+        # outside role get detail of reservation but have no reservation, redirct to reservation page
         self.client.login(username=self.outside_username, password=self.outside_password)
 
         response = self.client.get(self.detail_reserve_url)
@@ -337,7 +344,7 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'users/login.html')
 
     def test_delete_reserve_outside(self):
-        # outside role delete reservation but have no reservation, redirct to occupant:index
+        # outside role delete reservation but have no reservation, redirect to occupant homepage
         self.client.login(username=self.outside_username, password=self.outside_password)
 
         response = self.client.get(self.delete_reserve_url)
@@ -345,7 +352,7 @@ class TestViews(TestCase):
         self.assertRedirects(response, '/occupant/', status_code=302, target_status_code=200, fetch_redirect_response=True)
 
     def test_delete_reserve_occupant(self):
-        # occupant role (or outside role who has reserved already) delete reservation, delete reservation and redirct to occupant:index
+        # occupant role (or outside role who has reserved already) delete reservation, delete reservation and redirct to occupant homepage
         self.client.login(username=self.occupant_username, password=self.occupant_password)
 
         response = self.client.get(self.delete_reserve_url)
@@ -353,14 +360,14 @@ class TestViews(TestCase):
         self.assertRedirects(response, '/occupant/', status_code=302, target_status_code=200, fetch_redirect_response=True)
 
     def test_report_without_login(self):
-        # serch reservation page without authorization, return login page with 403 Forbidden
+        # search reservation page without authorization, return login page with 403 Forbidden
         response = self.client.get(self.report_url)
 
         self.assertEqual(response.status_code, 403)
         self.assertTemplateUsed(response, 'users/login.html')
 
     def test_report_error_userinfo(self):
-        # serch report page with authorization but do not have userinfo data, return 500.html with 500 Internal Server Error
+        # search report page with authorization but do not have userinfo data, return 500.html with 500 Internal Server Error
         self.client.login(username=self.temp_username, password=self.temp_password)
 
         response = self.client.get(self.report_url)
@@ -378,7 +385,7 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'occupant/report.html')
 
     def test_report_post_without_data(self):
-         # occupant create reporting with post method without data, redirect to occupant:report
+         # occupant create reporting with post method without data, redirect to report page
          self.client.login(username=self.occupant_username, password=self.occupant_password)
 
          response = self.client.post(self.report_url)
@@ -386,7 +393,7 @@ class TestViews(TestCase):
          self.assertRedirects(response, '/occupant/report/', status_code=302, target_status_code=200, fetch_redirect_response=True)
 
     def test_report_post(self):
-        # occupant create reporting with post method, return result of reporting with 200 OK
+        # occupant create reporting with post method, redirect to result of reporting
         self.client.login(username=self.occupant_username, password=self.occupant_password)
 
         response = self.client.post(self.report_url, {
@@ -424,7 +431,7 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'occupant/edit_report.html')
 
     def test_edit_report_post_without_data(self):
-        # occupant edit reporting with post method without data, redirect to occupant:report
+        # occupant edit reporting with post method without data, redirect to report page
         self.client.login(username=self.occupant_username, password=self.occupant_password)
         
         response = self.client.post(self.edit_report_url)
@@ -432,7 +439,7 @@ class TestViews(TestCase):
         self.assertRedirects(response, '/occupant/report/', status_code=302, target_status_code=200, fetch_redirect_response=True)
 
     def test_edit_report_post(self):
-        # occupant create reporting with post method without data, redirect to occupant:report
+        # occupant create reporting with post method without data, redirect to list of report page
         self.client.login(username=self.occupant_username, password=self.occupant_password)
         
         response = self.client.post(self.edit_report_url, {
@@ -451,7 +458,7 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'users/login.html')
 
     def test_detail_report_error_userinfo(self):
-        # serch detail of report with authorization but do not have userinfo data, return 500.html with 500 Internal Server Error
+        # search detail of report with authorization but do not have userinfo data, return 500.html with 500 Internal Server Error
         self.client.login(username=self.temp_username, password=self.temp_password)
 
         response = self.client.get(self.detail_report_url)
@@ -460,7 +467,7 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'rooms/500.html')
 
     def test_detail_report(self):
-        # serch detail of report with authorization, return the page with 200 OK
+        # search detail of report with authorization, return the page with 200 OK
         self.client.login(username=self.occupant_username, password=self.occupant_password)
 
         response = self.client.get(self.detail_report_url)
@@ -476,7 +483,7 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'users/login.html')
 
     def test_list_report_error_userinfo(self):
-        # serch list of report with authorization but do not have userinfo data, return 500.html with 500 Internal Server Error
+        # search list of report with authorization but do not have userinfo data, return 500.html with 500 Internal Server Error
         self.client.login(username=self.temp_username, password=self.temp_password)
 
         response = self.client.get(self.list_report_url)
@@ -485,7 +492,7 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'rooms/500.html')
 
     def test_list_report(self):
-        # serch list of report with authorization, return the page with 200 OK
+        # search list of report with authorization, return the page with 200 OK
         self.client.login(username=self.occupant_username, password=self.occupant_password)
 
         response = self.client.get(self.list_report_url)
@@ -501,7 +508,7 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'users/login.html')
 
     def test_delete_report_without_data(self):
-        # occupant delete reporting with authorization without data, return 404.html with 404 Not Found
+        # occupant delete reporting with authorization but do not have the reporting, return 404.html with 404 Not Found
         self.client.login(username=self.occupant_username, password=self.occupant_password)
 
         url = url = reverse('occupant:delete_report', args=[2])
@@ -511,7 +518,7 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, 'rooms/404.html')
 
     def test_delete_report(self):
-        # occupant delete reporting with authorization and data, redirect occupant:list_report
+        # occupant delete reporting with authorization and data, redirect to list of reporting page
         self.client.login(username=self.occupant_username, password=self.occupant_password)
 
         response = self.client.post(self.delete_report_url)

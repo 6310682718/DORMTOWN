@@ -14,4 +14,6 @@ urlpatterns = [
     path("assign/<int:report_id>", views.assign, name='assign'),
     path("assign/get_assign/<int:report_id>", views.get_assign, name='get_assign'),
 
+    path("list_of_jobs", views.list_of_jobs, name='list_of_jobs'),
+
 ]

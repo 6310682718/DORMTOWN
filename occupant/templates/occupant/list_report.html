@@ -1,9 +1,10 @@
-{% extends 'occupant/layout.html' %}
+{% extends 'rooms/layout.html' %}
 {% block body %}
 <div class="text-center mt-4">
     <p class="header">List of Reporting</p>
 </div>
 <div class="container">
+    <div class="py-3"></div>
     <table class="table table-bordered text-center table-striped">
         <thead class="text-light" style="background-color: #192e80;">
             <tr>
@@ -11,7 +12,7 @@
                 <th>Title</th>
                 <th>Assign to</th>
                 <th>Due date</th>
-                <th>status</th>
+                <th>Detail</th>
             </tr>
         </thead>
         <tbodt>
@@ -25,7 +26,11 @@
                     <td>-</td>
                 {% endif %}
                 <td>{{ report.due_date }}</td>
-                <td><a class="btn btn-dark text-white" href="{% url 'occupant:get_report' report.id %}">Detail</a></td>
+                <td>
+                    <a class="btn btn-success text-white" href="{% url 'occupant:get_report' report.id %}">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </a>
+                </td>
             </tr>
             {% empty %}
             <tr>

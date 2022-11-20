@@ -1,14 +1,9 @@
-{% extends 'manager/layout.html' %}
+{% extends 'rooms/layout.html' %}
 {% block body %}
 <section class="about-header-section">
   <div class="text-center mt-4">
     <p class="header">Change Password</p>
     <div class="description">
-      {% if message %}
-      <div class="{{ message_tag }}" role="alert">
-          {{ message }}
-      </div>
-      {% endif %}
       <div class="container w-50">
         <form action="{% url 'users:change_password' %}" method="POST">
           {% csrf_token %}
@@ -24,7 +19,7 @@
             <label for="exampleInputPassword1">Confirm password</label>
             <input required type="password" class="form-control d-flex justify-content-center" name="con_password" placeholder="Confirm password">
           </div>
-          <button type="submit" class="btn btn-primary ">Change password</button>
+          <button type="submit" class="btn text-light" style="background-color: #192e80;">Change password</button>
         </form>
       </div>
     </div>

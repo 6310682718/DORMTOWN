@@ -6,5 +6,6 @@ soupsieve==2.3.2.post1
 sqlparse==0.4.3
 tornado==6.2
 gunicorn
-channels==3.0.4
 mysqlclient
+sweetify
+channels==3.0.4

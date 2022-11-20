@@ -1,4 +1,4 @@
-{% extends 'occupant/layout.html' %}
+{% extends 'rooms/layout.html' %}
 {% block body %}
 <div class="text-center mt-4">
     <p class="header">{{ header }}</p>
@@ -13,7 +13,18 @@
                 <table class="table table-borderless">
                     <tr>
                         <td colspan="2">Report:</td>
-                        <td class="text-end">{{ report.problem_type_id.problem_name }}</td>
+                        <td class="text-end">
+                            {% if report.problem_type_id.problem_name == 'Cleaning service' %}
+                            <i class="fa-solid fa-broom"></i>
+                            {% elif report.problem_type_id.problem_name == 'Irrigation problem' %}
+                            <i class="fa-solid fa-droplet"></i>
+                            {% elif report.problem_type_id.problem_name == 'Fix electric equipment' %}
+                            <i class="fa-solid fa-lightbulb"></i>
+                            {% elif report.problem_type_id.problem_name == 'Move out' %}
+                            <i class="fa-solid fa-door-open"></i>
+                            {% endif %}
+                            {{ report.problem_type_id.problem_name }}
+                        </td>
                     </tr>
                     <tr>
                         <td colspan="2">Room:</td>
@@ -60,6 +71,34 @@
 </div>    
 
 <!--CONTACT DETAIL-->
+{% if report.status_id.status_name != 'Idle' %}
+<div class="container">
+    <div class="row">
+        <div class="col-lg-10 card" style="margin: auto">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center py-3">
+                    <h2 class="h5 mb-0">Contact</h2>
+                </div>
+                <table class="table table-borderless">
+                    <tr>
+                        <td colspan="2">Name:</td>
+                        <td class="text-end">{{ assign_to_user_info.user_id.first_name }} {{ assign_to_user_info.user_id.last_name }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Contact:</td>
+                        <td class="text-end">{{ assign_to_user_info.phone_number }}</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">Job:</td>
+                        <td class="text-end">{{ assign_to_user_info.role_id }}</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+</div> 
+{% else %}
+{% for manager in managers %}
 <div class="container">
     <div class="py-3"></div>
     <div class="row">
@@ -71,20 +110,22 @@
                 <table class="table table-borderless">
                     <tr>
                         <td colspan="2">Name:</td>
-                        <td class="text-end">Natnicha Faksang</td>
+                        <td class="text-end">{{ manager.user_id.first_name }} {{ manager.user_id.last_name }}</td>
                     </tr>
                     <tr>
                         <td colspan="2">Contact:</td>
-                        <td class="text-end">0644153591</td>
+                        <td class="text-end">{{ manager.phone_number }}</td>
                     </tr>
                     <tr>
                         <td colspan="2">Job:</td>
-                        <td class="text-end">Housekeeper</td>
+                        <td class="text-end">{{ manager.role_id }}</td>
                     </tr>
                 </table>
             </div>
         </div>
     </div>
 </div> 
+{% endfor %}
+{% endif %}
 
 {% endblock %}

@@ -45,15 +45,18 @@
             <i class="fa-solid fa-user-tie"></i>
             Employee
           </a>
-          <a href="#" class="text-dark mx-4">
+          <a href="{% url 'employee:list_of_jobs'%}" class="text-dark mx-4">
             <i class="fa-solid fa-screwdriver-wrench"></i>
             List of Reporting
           </a>
-          <a href="#" class="text-dark mx-4">
+          <a href="{% url 'users:change_password' %}" class="text-dark mx-4">
             <i class="fa-solid fa-lock"></i>
             Change Password
           </a>
-          <a class="btn btn-danger" href="{% url 'users:logout'%}" role=" button">Sign Out</a>
+          <a class="text-danger mx-3 align-middle" href="{% url 'users:logout'%}" role="button">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            Sign Out
+          </a>
         </div>
       </div>
     </div>

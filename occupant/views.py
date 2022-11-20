@@ -25,8 +25,7 @@ def reserve(request):
     rooms = RoomType.objects.all()
     for room in rooms:
         rooms_by_type = Room.objects.filter(room_type=room, status=True)
-        room.available = (rooms_by_type.count() > 0)
-
+        room.available = rooms_by_type.count()
     try:
         user = User.objects.get(pk=request.user.id)
         user_info = get_object_or_404(UserInfo, user_id=request.user.id)
@@ -50,30 +49,36 @@ def create_reserve(request, room_type):
         user = User.objects.filter(pk=request.user.id).first()
         user_info = get_object_or_404(UserInfo, user_id=request.user.id)
         reserve = Reserve.objects.filter(user_id=user).first()
+        room_type = RoomType.objects.filter(pk=room_type).first()
+        role = Role.objects.get(role_name='Manager')
+        managers = UserInfo.objects.filter(role_id=role)
     except:
         return render(request, 'rooms/500.html', status=500)
 
-    if reserve is None:
-        room_type = RoomType.objects.filter(pk=room_type).first()
-        status_type = StatusType.objects.filter(pk=1).first()
+    if request.method == 'POST':
+        status_type = StatusType.objects.filter(status_name='Idle').first()
+
+        due_date = request.POST.get('due_date')
 
         reserve = Reserve.objects.create(
             user_id=user,
             room_type=room_type,
-            due_date=datetime.datetime.today(),
+            due_date=due_date,
             status_type=status_type
-        )
+            )
 
-    role = Role.objects.get(role_name='Manager')
-    managers = UserInfo.objects.filter(role_id=role)
-
-    return render(request, 'occupant/result_reserve.html', {
-        'user_info': user_info,
-        'room': reserve.room_type,
-        'reserve_id': reserve.id,
-        'header': 'Summary of Reservation',
-        'managers': managers
-    })
+        return render(request, 'occupant/result_reserve.html', {
+            'user_info': user_info,
+            'room': reserve.room_type,
+            'reserve_id': reserve.id,
+            'header': 'Summary of Reservation',
+            'managers': managers
+        })
+    else:
+        return render(request, 'occupant/reserve_form.html', {
+            'user_info': user_info,
+            'room': room_type
+        })
 
 def get_reserve(request):
     if not request.user.is_authenticated:
@@ -83,11 +88,10 @@ def get_reserve(request):
         user = User.objects.get(pk=request.user.id)
         user_info = get_object_or_404(UserInfo, user_id=request.user.id)
         reserve = Reserve.objects.filter(user_id=user).first()
+        role = Role.objects.get(role_name='Manager')
+        managers = UserInfo.objects.filter(role_id=role)
     except:
         return render(request, 'rooms/500.html', status=500)
-
-    role = Role.objects.get(role_name='Manager')
-    managers = UserInfo.objects.filter(role_id=role)
 
     if reserve is not None:
         return render(request, 'occupant/result_reserve.html', {
@@ -196,13 +200,18 @@ def get_report(request, report_id):
         user = User.objects.get(pk=request.user.id)
         user_info = get_object_or_404(UserInfo, user_id=user)
         report = Report.objects.get(pk=report_id, from_user_id=user)
+        assign_to_user_info = UserInfo.objects.filter(user_id=report.assign_to_id).first()
+        role = Role.objects.get(role_name='Manager')
+        managers = UserInfo.objects.filter(role_id=role)
     except:
         return render(request, 'rooms/500.html', status=500)
 
     return render(request, 'occupant/result_report.html', {
         'report': report,
         'header': 'Summary of Reporting',
-        'user_info': user_info
+        'user_info': user_info,
+        'assign_to_user_info': assign_to_user_info,
+        'managers': managers
     })
 
 def list_report(request):

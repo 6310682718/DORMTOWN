@@ -52,6 +52,8 @@ class TestView(TestCase):
         self.outsite_role = Role.objects.create(role_name='Outside')
         self.occupant_role = Role.objects.create(role_name='Occupant')
         self.manager_role = Role.objects.create(role_name='Manager')
+        self.technician_role = Role.objects.create(role_name='Technician')
+        self.housekeeper_role = Role.objects.create(role_name='Housekeeper')
 
         self.user_manager = UserInfo.objects.filter(user_id=2).update(role_id=1)
         # self.phone = '0987654321'
@@ -91,8 +93,6 @@ class TestView(TestCase):
         # )
         self.register_url = reverse('users:register')
 
-        self.role_outside = Role.objects.create(role_name='Outside')
-
         self.outside_username = 'outside'
         self.outside_password = 'password'
         self.credentials = {
@@ -104,7 +104,95 @@ class TestView(TestCase):
         self.outside_user = User.objects.create_user(**self.credentials)
         self.outside_userinfo = UserInfo.objects.create(
             user_id=self.outside_user,
-            role_id=self.role_outside,
+            role_id=self.outsite_role,
+            room_id=None,
+            phone_number='0987654321',
+            address='123/45',
+            street='Changwattana',
+            city='Pakkret',
+            state='Nonthabuti',
+            country='Thailand',
+            zip_code='12345',
+        )
+
+        self.occupant_username = 'occupant'
+        self.occupant_password = 'password'
+        self.credentials = {
+            'username': self.occupant_username,
+            'password': self.occupant_password,
+            'email': 'occupant@dormtown.com',
+            'first_name': 'Occupant',
+            'last_name': 'Dormtown'}
+        self.occupant_user = User.objects.create_user(**self.credentials)
+        self.occupant_userinfo = UserInfo.objects.create(
+            user_id=self.occupant_user,
+            role_id=self.occupant_role,
+            room_id=None,
+            phone_number='0987654321',
+            address='123/45',
+            street='Changwattana',
+            city='Pakkret',
+            state='Nonthabuti',
+            country='Thailand',
+            zip_code='12345',
+        )
+
+        self.manager_username = 'manager'
+        self.manager_password = 'password'
+        self.credentials = {
+            'username': self.manager_username,
+            'password': self.manager_password,
+            'email': 'manager@dormtown.com',
+            'first_name': 'Manager',
+            'last_name': 'Dormtown'}
+        self.manager_user = User.objects.create_user(**self.credentials)
+        self.manager_userinfo = UserInfo.objects.create(
+            user_id=self.manager_user,
+            role_id=self.manager_role,
+            room_id=None,
+            phone_number='0987654321',
+            address='123/45',
+            street='Changwattana',
+            city='Pakkret',
+            state='Nonthabuti',
+            country='Thailand',
+            zip_code='12345',
+        )
+
+        self.technician_username = 'technician'
+        self.technician_password = 'password'
+        self.credentials = {
+            'username': self.technician_username,
+            'password': self.technician_password,
+            'email': 'technician@dormtown.com',
+            'first_name': 'Technician',
+            'last_name': 'Dormtown'}
+        self.technician_user = User.objects.create_user(**self.credentials)
+        self.technician_userinfo = UserInfo.objects.create(
+            user_id=self.technician_user,
+            role_id=self.technician_role,
+            room_id=None,
+            phone_number='0987654321',
+            address='123/45',
+            street='Changwattana',
+            city='Pakkret',
+            state='Nonthabuti',
+            country='Thailand',
+            zip_code='12345',
+        )
+
+        self.housekeeper_username = 'housekeeper'
+        self.housekeeper_password = 'password'
+        self.credentials = {
+            'username': self.housekeeper_username,
+            'password': self.housekeeper_password,
+            'email': 'housekeeper@dormtown.com',
+            'first_name': 'Housekeeper',
+            'last_name': 'Dormtown'}
+        self.housekeeper_user = User.objects.create_user(**self.credentials)
+        self.housekeeper_userinfo = UserInfo.objects.create(
+            user_id=self.housekeeper_user,
+            role_id=self.housekeeper_role,
             room_id=None,
             phone_number='0987654321',
             address='123/45',
@@ -127,7 +215,22 @@ class TestView(TestCase):
 
         self.change_password_url = reverse('users:change_password')
         self.edit_profile_url = reverse('users:edit_profile')
+        self.login_url = reverse('users:login')
 
+
+    # test when user get to register page with auth  will get response register.html
+    def test_register_index_with_login(self):
+        self.client.login(username=self.outside_username, password=self.outside_password)
+        response = self.client.get(self.register_url)
+        self.assertEqual(response.status_code, 403)
+        self.assertTemplateUsed(response, 'rooms/index.html')
+    
+    # test when user get to login page  with auth will can't get login
+    def test_login_index_with_login(self):
+        self.client.login(username=self.outside_username, password=self.outside_password)
+        response = self.client.get(self.login_url)
+        self.assertRedirects(response, "/", status_code=302, target_status_code=200, fetch_redirect_response=True)
+    
     # test when user get to register page  will get response register.html
     def test_register_index(self):
         response = self.client.get(self.register_url)
@@ -154,7 +257,8 @@ class TestView(TestCase):
         }
         response = self.client.post(url, body)
         self.assertEqual(response.status_code, 200)
-
+        
+    # test when user will register but take password != confirm password
     def test_register_fail_con_pass(self):
         url = "/users/register"
         body2 = {
@@ -175,6 +279,7 @@ class TestView(TestCase):
         response = self.client.post(url, body2)
         self.assertEqual(response.status_code, 400)
 
+    # test when user will register but take input not complete
     def test_register_fail_no_input(self):
         url = "/users/register"
         body3 = {
@@ -195,6 +300,7 @@ class TestView(TestCase):
         response = self.client.post(url, body3)
         self.assertEqual(response.status_code, 400)
     
+    # test when user will register but use same username in database
     def test_register_fail_username_same(self):
         url = "/users/register"
         body4 = {
@@ -215,17 +321,23 @@ class TestView(TestCase):
         response = self.client.post(url, body4)
         self.assertEqual(response.status_code, 400)
 
+    #test login when input is correct
     def test_login(self):
         url = "/users/login"
-        body = {"username": "newuser", "password": "newuserpass"}
-        body2 = {"username": "newuser1", "password": "newuserpass1"}
+        body = {"username": "outside", "password": "password"}
+        response = self.client.post(url, body)
 
-        response = self.client.post(url, body)
-        self.assertEqual(response.status_code, 200)
-        body["password"] = "wrongpass"
-        response = self.client.post(url, body)
-        self.assertEqual(response.status_code, 400)
+        self.assertRedirects(response, '/', status_code=302, target_status_code=200, fetch_redirect_response=True)
     
+    #test login when input is wrong
+    def test_login_error(self):
+        url = "/users/login"
+        body2 = {"username": "newuser1", "password": "newuserpa"}
+        response = self.client.post(url, body2)
+        self.assertEqual(response.status_code, 400)
+        self.assertTemplateUsed(response, 'users/login.html')
+
+    #test logout
     def test_logout(self):
         url = "/users/logout"
         response = self.client.post(url)
@@ -269,8 +381,7 @@ class TestView(TestCase):
             'con_password': 'newpassword'
         })
 
-        self.assertEqual(response.status_code, 400)
-        self.assertTemplateUsed(response, 'users/changepass.html')
+        self.assertRedirects(response, '/users/changepassword', status_code=302, target_status_code=200, fetch_redirect_response=True)
 
     def test_change_password_post_error_new_password(self):
         # change password with post method but old password is invalid, return login page with 400 Bad Request
@@ -282,8 +393,7 @@ class TestView(TestCase):
             'con_password': 'newpassword'
         })
 
-        self.assertEqual(response.status_code, 400)
-        self.assertTemplateUsed(response, 'users/changepass.html')
+        self.assertRedirects(response, '/users/changepassword', status_code=302, target_status_code=200, fetch_redirect_response=True)
 
     def test_change_password_get(self):
         # change password with get method, return change password page with 400 Bad Request
@@ -291,7 +401,7 @@ class TestView(TestCase):
 
         response = self.client.get(self.change_password_url)
 
-        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'users/changepass.html')
 
     def test_edit_profile_without_login(self):
@@ -319,10 +429,42 @@ class TestView(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'users/edit_profile.html')
 
-    def test_edit_profile_post(self):
-        # authorize for editing profile with get method, return the page with 200 OK
+    def test_edit_profile_outside_post(self):
+        # outsite role authorize for editing profile with get method, redirect index with 200 OK
         self.client.login(username=self.outside_username, password=self.outside_password)
 
         response = self.client.post(self.edit_profile_url)
 
-        self.assertRedirects(response, '/', status_code=302, target_status_code=200, fetch_redirect_response=True)
+        self.assertRedirects(response, '/occupant/', status_code=302, target_status_code=200, fetch_redirect_response=True)
+
+    def test_edit_profile_occupant_post(self):
+        # occupant role authorize for editing profile with get method, redirect index with 200 OK
+        self.client.login(username=self.occupant_username, password=self.occupant_password)
+
+        response = self.client.post(self.edit_profile_url)
+
+        self.assertRedirects(response, '/occupant/', status_code=302, target_status_code=200, fetch_redirect_response=True)
+
+    def test_edit_profile_technician_post(self):
+        # technician role authorize for editing profile with get method, redirect index with 200 OK
+        self.client.login(username=self.technician_username, password=self.technician_password)
+
+        response = self.client.post(self.edit_profile_url)
+
+        self.assertRedirects(response, '/employee/', status_code=302, target_status_code=200, fetch_redirect_response=True)
+
+    def test_edit_profile_housekeeper_post(self):
+        # housekeeper role authorize for editing profile with get method, redirect index with 200 OK
+        self.client.login(username=self.housekeeper_username, password=self.housekeeper_password)
+
+        response = self.client.post(self.edit_profile_url)
+
+        self.assertRedirects(response, '/employee/', status_code=302, target_status_code=200, fetch_redirect_response=True)
+
+    def test_edit_profile_manager_post(self):
+        # housekeeper role authorize for editing profile with get method, redirect index with 200 OK
+        self.client.login(username=self.manager_username, password=self.manager_password)
+
+        response = self.client.post(self.edit_profile_url)
+
+        self.assertRedirects(response, '/manager/', status_code=302, target_status_code=200, fetch_redirect_response=True)
