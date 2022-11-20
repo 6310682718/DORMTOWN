@@ -6,6 +6,8 @@ from .views import *
 
 
 class TestUrl(SimpleTestCase):
+
+    #set up url to use in test case
     def setUp(self):
         self.urls = {
             "dashboard": reverse("manager:dashboard"),
@@ -19,33 +21,42 @@ class TestUrl(SimpleTestCase):
 
         }
 
+    #test url_dashboard
     def test_dashboard(self):
-        
         self.assertEqual(resolve(self.urls['dashboard']).func, index)
     
+    #test url_rooms available
     def test_rooms_available(self):
         self.assertEqual(resolve(self.urls['rooms_available']).func, rooms_available)
     
+    #test url_rooms reserve
     def test_rooms_reserve(self):
         self.assertEqual(resolve(self.urls['rooms_reserve']).func, rooms_reserve)
 
+    #test url_rooms unavailable
     def test_rooms_unavailable(self):
         self.assertEqual(resolve(self.urls['rooms_unavailable']).func, rooms_unavailable)
     
+    #test url_employee list
     def test_employee_list(self):
         self.assertEqual(resolve(self.urls['employee_list']).func, employee_list)
     
+    #test url_occupant list
     def test_occupant_list(self):
         self.assertEqual(resolve(self.urls['occupant_list']).func, occupant_list)
 
+    #test edit profile
     def test_edit_profile_is_resolved(self):
         url = reverse("manager:edit_profile", args=[1])
         self.assertEqual(resolve(url).func, edit_profile)
     
+    #test delete user
     def test_delete_user_is_resolved(self):
         url = reverse("manager:delete_user", args=[1])
         self.assertEqual(resolve(url).func, delete_user)
 class TestViews(TestCase):
+
+    #set up urls
     def setUp(self):
         self.urls = {
             "dashboard": reverse("manager:dashboard"),
@@ -64,6 +75,7 @@ class TestViews(TestCase):
 
         # initial account
         
+        #create roomtype S
         self.room_type_s = RoomType.objects.create(
             class_level='S',
             price=6500,
@@ -72,6 +84,8 @@ class TestViews(TestCase):
             wardrobe=True,
             water_heater=True
         )
+
+        #create roomtype A
         self.room_type_a = RoomType.objects.create(
             class_level='A',
             price=4500,
@@ -81,16 +95,21 @@ class TestViews(TestCase):
             water_heater=True
         )
 
+        #create rooms available
         self.room_available = Room.objects.create(
             room_number='101',
             room_type=self.room_type_s,
             status=True
         )
+
+        #create rooms unavailable
         self.room_unavailable = Room.objects.create(
             room_number='102',
             room_type=self.room_type_a,
             status=False
         )
+
+        #create manager user
         self.manager_username = 'manager'
         self.manager_password = 'password'
         self.credentials = {
@@ -114,6 +133,7 @@ class TestViews(TestCase):
             zip_code='12345',
         )
 
+        #create temp_manager
         self.client = Client()
         self.temp_username = 'temp'
         self.temp_password = 'password'
@@ -126,59 +146,68 @@ class TestViews(TestCase):
         self.temp_user = User.objects.create_user(**self.credentials)
 
         
-
+    #test get dashboard.html with login
     def test_dashboard_login(self):
         self.client.login(username=self.manager_username, password=self.manager_password)
         response = self.client.get(self.urls["dashboard"])
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'manager/dashboard.html')
     
+    #test get dashboard.html without login
     def test_dashboard_without_login(self):
         response = self.client.get(self.urls["dashboard"])
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'manager/dashboard.html')
     
+    #test get rooms_available.html with login
     def test_rooms_available_login(self):
         self.client.login(username="admin", password="admin")
         response = self.client.get(self.urls["rooms_available"])
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'manager/available_rooms.html')
 
+    #test get rooms_unavailable.html with login
     def test_rooms_unavailable_login(self):
         self.client.login(username="admin", password="admin")
         response = self.client.get(self.urls["rooms_unavailable"])
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'manager/unavailable_rooms.html')
     
+    #test get rooms_reserve.html with login
     def test_rooms_reserve_login(self):
         self.client.login(username="admin", password="admin")
         response = self.client.get(self.urls["rooms_reserve"])
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'manager/reserve_rooms.html')
 
+    #test get employee_list.html with login
     def test_employee_list_login(self):
         self.client.login(username="admin", password="admin")
         response = self.client.get(self.urls["employee_list"])
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'manager/employee_list.html')
     
+    #test get occupant_list.html with login
     def test_occupant_list_login(self):
             self.client.login(username="admin", password="admin")
             response = self.client.get(self.urls["occupant_list"])
             self.assertEqual(response.status_code, 200)
             self.assertTemplateUsed(response, 'manager/occupant_list.html')
-    
+
+    #test get report_logs.html with login
     def test_report_logs_login(self):
             self.client.login(username="admin", password="admin")
             response = self.client.get(self.urls["report_logs"])
             self.assertEqual(response.status_code, 200)
             self.assertTemplateUsed(response, 'manager/report_logs.html')
 
+    #test edit profile without login will return to login page
     def test_edit_profile_without_login(self):
             response = self.client.get(self.urls["edit_profile"])
             self.assertEqual(response.status_code, 403)
             self.assertTemplateUsed(response, 'users/login.html')
     
+    #test edit profile with login will return to edit_profile page
     def test_edit_profile_login(self):
             self.client.login(username=self.manager_username, password=self.manager_password)
             response = self.client.get(self.urls["edit_profile"])
@@ -191,11 +220,13 @@ class TestViews(TestCase):
             self.assertEqual(response.status_code, 500)
             self.assertTemplateUsed(response, 'rooms/500.html')
 
+    #test delete profile without login will return to login page
     def test_delete_profile_without_login(self):
             response = self.client.get(self.urls["delete_profile"])
             self.assertEqual(response.status_code, 403)
             self.assertTemplateUsed(response, 'users/login.html')
 
+    #test delete profile with login will return to manager/dashboard.html
     def test_delete_profile_login(self):
             self.client.login(username=self.manager_username, password=self.manager_password)
             response = self.client.get(self.urls["delete_profile"])
