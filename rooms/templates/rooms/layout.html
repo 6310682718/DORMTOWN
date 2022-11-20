@@ -76,6 +76,12 @@
         </li>
         {% elif request.user.is_authenticated and user_info.role_id.role_name == "Housekeeper" %}
         <li class="nav-item">
+          <a href="{% url 'employee:list_of_jobs' %}" class="text-dark mx-3 align-middle">
+            <i class="fa-solid fa-screwdriver-wrench"></i>
+            List of Reporting
+          </a>
+        </li>
+        <li class="nav-item">
           <a href="/employee" class="text-dark mx-3 align-middle">
             <i class="fa-solid fa-user-tie"></i>
             Housekeeper
@@ -84,24 +90,15 @@
 
         {% elif request.user.is_authenticated and user_info.role_id.role_name == "Technician" %}
         <li class="nav-item">
+          <a href="{% url 'employee:list_of_jobs' %}" class="text-dark mx-3 align-middle">
+            <i class="fa-solid fa-screwdriver-wrench"></i>
+            List of Reporting
+          </a>
+        </li>
+        <li class="nav-item">
           <a href="/employee" class="text-dark mx-3 align-middle">
             <i class="fa-solid fa-user-tie"></i>
             Technician
-          </a>
-        </li>
-        {% endif %}
-        {% if request.user.is_authenticated and user_info.role_id.role_name == "Housekeeper"  %}
-        <li class="nav-item">
-          <a href="/employee/list_of_jobs" class="text-dark mx-3 align-middle">
-            <i class="fa-solid fa-user-tie"></i>
-            List of Reporting
-          </a>
-        </li>
-        {% elif request.user.is_authenticated and user_info.role_id.role_name == "Technician"  %}
-        <li class="nav-item">
-          <a href="/employee/list_of_jobs" class="text-dark mx-3 align-middle">
-            <i class="fa-solid fa-user-tie"></i>
-            List of Reporting
           </a>
         </li>
         {% endif %}
