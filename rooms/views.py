@@ -3,12 +3,9 @@ from occupant.models import *
 
 
 def index(req):
-    try:
-        if req.user.is_authenticated:    
-            user_info = UserInfo.objects.get(user_id=req.user)
-            return render(req, "rooms/index.html", {"user_info": user_info})
-    except:
-        return render(req, "rooms/index.html", {})
+    if req.user.is_authenticated:
+        user_info = UserInfo.objects.filter(user_id=req.user).first()
+        return render(req, "rooms/index.html", {"user_info": user_info})
     return render(req, "rooms/index.html", {"user_info": []})
 
 
