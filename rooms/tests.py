@@ -70,12 +70,12 @@ class TestViews(TestCase):
         # when server cannot find the requested resource, return 404.html with 200 OK
         response = self.client.get(self.error_404)
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 404)
         self.assertTemplateUsed(response, 'rooms/404.html')
     
     def test_500(self):
         # when server has encountered a situation it does not know how to handle, return 500.html with 200 OK
         response = self.client.get(self.error_500)
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 500)
         self.assertTemplateUsed(response, 'rooms/500.html')

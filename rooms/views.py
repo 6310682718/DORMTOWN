@@ -12,8 +12,8 @@ def index(req):
 def handler404(request, exception):
     print(exception)
     
-    return render(request, 'rooms/404.html', {})
+    return render(request, 'rooms/404.html', status=404)
 
 
 def handler500(request):
-    return render(request, 'rooms/500.html', {})
+    return render(request, 'rooms/500.html', status=500)
