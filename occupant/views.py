@@ -66,6 +66,7 @@ def create_reserve(request, room_type):
             due_date=due_date,
             status_type=status_type
             )
+        reserve = Reserve.objects.filter(user_id=user).first()
 
         return render(request, 'occupant/result_reserve.html', {
             'user_info': user_info,
@@ -94,6 +95,7 @@ def get_reserve(request):
         return render(request, 'rooms/500.html', status=500)
 
     if reserve is not None:
+        print(reserve.due_date)
         return render(request, 'occupant/result_reserve.html', {
             'user_info': user_info,
             'room': reserve.room_type,
