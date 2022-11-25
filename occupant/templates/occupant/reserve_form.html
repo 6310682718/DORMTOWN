@@ -23,9 +23,9 @@
           <div class="col-9">
             {% load static %}
             {% if room.class_level == 'S' %}
-            <img src="{% static 'occupant/room-s.jpeg' %}" height="500">
+            <img class="image-center image-fluid" src="{% static 'occupant/room-s.jpeg' %}" height="500">
             {% else %}
-            <img src="{% static 'occupant/room-a.jpeg' %}" height="500">
+            <img class="image-center image-fluid" src="{% static 'occupant/room-a.jpeg' %}" height="500">
             {% endif %}
           </div>
           <div class="col-3 bg-main banner position-relative">
