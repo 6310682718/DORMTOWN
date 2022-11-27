@@ -26,7 +26,7 @@ def rooms_available(req):
 def rooms_reserve(req):
     status_type = StatusType.objects.filter(status_name='Idle').first()
     rooms = Reserve.objects.filter(status_type=status_type)
-    num_rooms = Room.objects.all()
+    num_rooms = Room.objects.filter(status=True)
     return render(req, "manager/reserve_rooms.html", {"rooms": rooms, "num_rooms": num_rooms})
 
 def rooms_unavailable(req):
