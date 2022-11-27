@@ -218,19 +218,20 @@ class TestView(TestCase):
         self.login_url = reverse('users:login')
 
 
-    # test when user get to register page  will get response register.html
+    # test when user get to register page with auth  will get response register.html
     def test_register_index_with_login(self):
         self.client.login(username=self.outside_username, password=self.outside_password)
         response = self.client.get(self.register_url)
         self.assertEqual(response.status_code, 403)
         self.assertTemplateUsed(response, 'rooms/index.html')
     
+    # test when user get to login page  with auth will can't get login
     def test_login_index_with_login(self):
         self.client.login(username=self.outside_username, password=self.outside_password)
         response = self.client.get(self.login_url)
-        self.assertEqual(response.status_code, 403)
-        self.assertTemplateUsed(response, 'rooms/index.html')
+        self.assertRedirects(response, "/", status_code=302, target_status_code=200, fetch_redirect_response=True)
     
+    # test when user get to register page  will get response register.html
     def test_register_index(self):
         response = self.client.get(self.register_url)
         self.assertEqual(response.status_code, 200)
@@ -256,7 +257,8 @@ class TestView(TestCase):
         }
         response = self.client.post(url, body)
         self.assertEqual(response.status_code, 200)
-
+        
+    # test when user will register but take password != confirm password
     def test_register_fail_con_pass(self):
         url = "/users/register"
         body2 = {
@@ -277,6 +279,7 @@ class TestView(TestCase):
         response = self.client.post(url, body2)
         self.assertEqual(response.status_code, 400)
 
+    # test when user will register but take input not complete
     def test_register_fail_no_input(self):
         url = "/users/register"
         body3 = {
@@ -297,6 +300,7 @@ class TestView(TestCase):
         response = self.client.post(url, body3)
         self.assertEqual(response.status_code, 400)
     
+    # test when user will register but use same username in database
     def test_register_fail_username_same(self):
         url = "/users/register"
         body4 = {
@@ -317,6 +321,7 @@ class TestView(TestCase):
         response = self.client.post(url, body4)
         self.assertEqual(response.status_code, 400)
 
+    #test login when input is correct
     def test_login(self):
         url = "/users/login"
         body = {"username": "outside", "password": "password"}
@@ -324,6 +329,7 @@ class TestView(TestCase):
 
         self.assertRedirects(response, '/', status_code=302, target_status_code=200, fetch_redirect_response=True)
     
+    #test login when input is wrong
     def test_login_error(self):
         url = "/users/login"
         body2 = {"username": "newuser1", "password": "newuserpa"}
@@ -331,6 +337,7 @@ class TestView(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertTemplateUsed(response, 'users/login.html')
 
+    #test logout
     def test_logout(self):
         url = "/users/logout"
         response = self.client.post(url)

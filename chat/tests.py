@@ -139,7 +139,9 @@ class TestModel(TestCase):
         )
 
     def test_chat_room_str(self):
+        # check string from model ChatRoom
         self.assertEqual(self.chat_room.__str__(), self.chat_room.room_name)
 
     def test_message_str(self):
+        # Check string from model Message
         self.assertEqual(self.message.__str__(), self.message.room.room_name)

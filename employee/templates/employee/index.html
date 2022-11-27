@@ -3,15 +3,15 @@
 
 {% if role_name == "Housekeeper" %}
 <div class="text-center mt-4">
-    <h1>Housekeeper</h1>
+  <p id='about_us' class="header">Housekeeper</p>
 </div>
 {% elif role_name == "Technician" %}
 <div class="text-center mt-4">
-    <h1>Technician</h1>
+  <p id='about_us' class="header">Technician</p>
 </div>
 {% else %}
 <div class="text-center mt-4">
-  <h1>Who am i?</h1>
+  <p id='about_us' class="header">Who am i?</p>
 </div>
 {% endif %}
 
@@ -21,7 +21,7 @@
   <div class="container">
     <div class="py-3"></div>
     <div class="row">
-        <div class="col-lg-10 card" style="margin: auto">
+        <div class="col-6 card mx-4" style="margin: auto">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center py-3">
                     <h2 class="h5 mb-0">Profile</h2>
@@ -48,45 +48,39 @@
                 </table>
             </div>
         </div>
+        <div class="col-5 card mx-2">
+          <div class="card-body">
+            <table class="table table-borderless">
+              {% if role_name == "Housekeeper" %}
+                <tr>
+                  <td colspan="2">Cleaning Service:</td>
+                  <td>{{clean}}</td>
+                </tr>
+              {% endif %}
+              {% if role_name == "Technician" %}
+                <tr>
+                  <td colspan="2">Fix electric equipment:</td>
+                  <td>{{fix}}</td>
+                </tr>
+                <tr>
+                  <td colspan="2">Irrigation problem:</td>
+                  <td>{{iri}}</td>
+                </tr>
+              {% endif %}
+              <tr>
+                <td colspan="2">Move out:</td>
+                <td>{{move}}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   </div>    
 
 
-  <!--Working Small Detail-->
-  <div class="container">
-    <div class="py-3"></div>
-    <div class="row">
-      <div class="col card">
-        <div class="card-body">
-          <table class="table table-borderless">
-            {% if role_name == "Housekeeper" %}
-              <tr>
-                <td colspan="2">Cleaning Service:</td>
-                <td>{{clean}}</td>
-              </tr>
-            {% endif %}
-            {% if role_name == "Technician" %}
-              <tr>
-                <td colspan="2">Fix electric equipment:</td>
-                <td>{{fix}}</td>
-              </tr>
-              <tr>
-                <td colspan="2">Irrigation problem:</td>
-                <td>{{iri}}</td>
-              </tr>
-            {% endif %}
-            <tr>
-              <td colspan="2">Move out:</td>
-              <td>{{move}}</td>
-            </tr>
-          </table>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 <!--My job-->
-<dev class="container">
+<div class="container">
   <div class="py-3"></div>
   <div class="col card"></div>
   <div class="py-2"></div>
@@ -94,7 +88,7 @@
     <h2 class="h5 mb-0">My Job</h2>
 
   </div>
-  <table class="table table-bordered text-center">
+  <table class="table table-bordered text-center table-striped">
     <thead class="text-light" style="background-color: #192e80;">
       <tr>
         <th scope="col">#</th>
@@ -124,16 +118,16 @@
       </tbody>
     </thead>      
   </table>
-</dev>
+</div>
 <!--All of job-->
-<dev class="container">
+<div class="container">
   <div class="py-3"></div>
   <div class="col card"></div>
   <div class="py-2"></div>
   <div class="d-flex justify-content-between align-items-center py-3">
     <h2 class="h5 mb-0">All of Job</h2>
   </div>
-  <table class="table table-bordered text-center">
+  <table class="table table-bordered text-center table-striped">
     <thead class="text-light" style="background-color: #192e80;">
       <tr>
         <th scope="col">#</th>
@@ -163,5 +157,5 @@
       {% endfor %}
     </tbody>
   </table>
-</dev>
+</div>
 {% endblock %}

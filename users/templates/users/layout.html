@@ -14,7 +14,7 @@
   <link rel="stylesheet" href="{% static 'rooms/styles.css' %}" />
 </head>
 
-<body>
+<body class="h-100">
   <nav class="navbar navbar-expand-lg navbar-light bg-light mb-2">
     <a class="navbar-brand" href="{% url 'rooms:index' %}">
       <i class="fa-solid fa-building-user"></i>
@@ -52,12 +52,16 @@
       </ul>
       <div class="position-relative">
         <div class="position-absulute justify-content-center mx-2 display-flex">
-          <a href="{% url 'users:register' %}" class="text-dark mx-4">Sign Up</a>
-          <a class="btn btn-sm text-light" href="{% url 'users:login' %}" role="button" style="background-color: #192e80;">Sign In</a>
-          {% comment %}
-          <a href="#" class="text-bold text-dark mx-2">About us</a>
-          <a href="#" class="text-bold text-dark mx-2">About us</a> {%
-            endcomment %}
+          <a href="{% url 'users:register' %}" class="text-dark mx-4">
+            Sign Up
+            <i class="fa-solid fa-user-plus"></i>
+          </a>
+          {% if request.user.authenticated == False %}
+          <a class="btn btn-sm text-light" href="{% url 'users:login' %}" role="button" style="background-color: #192e80;">
+            Sign In
+            <i class="fa-solid fa-arrow-right-to-bracket"></i>
+          </a>
+          {% endif %}
         </div>
       </div>
       {% comment %}
@@ -72,7 +76,7 @@
   </nav>
 
   <div class="container-fluid">{% block body %} {% endblock %}</div>
-  <div class="footer">
+  <div class="footer w-100 b-0">
     <div class="container">
       <div class="row pt-2">
         <div class="col-7" class="font-mid p-4">

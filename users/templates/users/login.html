@@ -1,4 +1,4 @@
-{% extends 'users/layout.html' %}
+{% extends 'rooms/layout.html' %}
 {% block body %}
 <section class="about-header-section">
   <div class="text-center mt-4">
@@ -18,7 +18,14 @@
             <label for="exampleInputPassword1">Password</label>
             <input required type="password" class="form-control d-flex justify-content-center" name="password" placeholder="Password">
           </div>
-          <button type="submit" class="btn text-light" style="background-color: #192e80;">Sign In</button>
+          <a class="btn btn-secondary mx-2" href="/">
+            <i class="fa-solid fa-backward"></i>
+            Go back
+          </a>
+          <button type="submit" class="btn text-light mx-2" style="background-color: #192e80;">
+            <i class="fa-solid fa-arrow-right-to-bracket"></i>
+            Sign in
+          </button>
         </form>
       </div>
     </div>

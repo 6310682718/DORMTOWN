@@ -7,7 +7,7 @@ import sweetify
 
 def login(req):
     if req.user.is_authenticated:
-        return render(req, 'rooms/index.html', status=403)
+        return redirect("/")
     if (req.method == "POST"):
         username = req.POST.get("username", False)
         password = req.POST.get("password", False)
