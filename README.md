@@ -2,7 +2,7 @@
 Project Dormitory Website
 
 ## Member list
-* 6310682653 - Natnicha Faksang - 6310682635@student.tu.ac.th
+* 6310682635 - Natnicha Faksang - 6310682635@student.tu.ac.th
 * 6310682718 - Pongsakorn Parsoppornpiboon - 6310682718@student.tu.ac.th
 * 6310682734 - Thanapat Pongpipat - 6310682734@student.tu.ac.th
 * 6310682783 - Kantapat Kowadisai - 6310682783@student.tu.ac.th
