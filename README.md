@@ -33,7 +33,7 @@ You have to install software before using the project.
     ```sh
     cd dormtown
     ```
-3. Open the dirctory with Visual Studio Code
+3. Open the directory with Visual Studio Code
     ```sh
     code .
     ```
