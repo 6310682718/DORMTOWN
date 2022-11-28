@@ -27,14 +27,8 @@
                     <td>{{value}}</td>
                 {% endif %}
                 {% endfor %} 
-                <td>{{i.due_date}}</td>
-                {% if i.status_id.status_name == "Doing" %}
-                    <td style="color:#222bdd">{{i.status_id}}</td>
-                {% elif i.status_id.status_name == "Done" %}
-                    <td style="color:#23aa17">{{i.status_id}}</td>
-                {% else %}
-                    <td style="color:#f0750f">{{i.status_id}}</td>
-                {% endif %}
+                <td>{{i.due_date}}</td>   
+                <td>{{i.status_id}}</td>
             </tr>
           {% endfor %}
       </tbody>

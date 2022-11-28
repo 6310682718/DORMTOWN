@@ -1,7 +1,7 @@
 {% extends 'rooms/layout.html' %} {% block body %}
 <section class="about-header-section">
     <div class="text-center mt-4">
-        <p id='about_us' class="header">Rooms Reserved</p>
+        <p id='about_us' class="header">Reservetions</p>
     </div>
   {% load static %}
     <div class="container">
@@ -13,6 +13,7 @@
                     <th scope="col">Room type</th>
                     <th scope="col">Due date</th>
                     <th scope="col">Status</th>
+                    <th scope="col">Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -23,10 +24,26 @@
                     <td>{{room.room_type}}</td>
                     <td>{{room.due_date}}</td>
                     <td>{{room.status_type}}</td>
+                    <td>
+                        <form action="{% url 'manager:approve_reservation' room.user_id.id %}" method="POST">
+                            {% csrf_token %}
+                            <select required class="form-control-sm" id="room" name="room">
+                                <option selected disabled>Select room</option>
+                                {% for room in num_rooms %}
+                                    <option value="{{ room.room_number }}">{{ room.room_number }}</option>
+                                {% endfor %}
+                            </select>
+                            <button type="submit" class="btn-sm btn-success text-white"><i class="fa-solid fa-square-check"></i></button>
+                        </form> 
+
+                                {% comment %} <a class="btn btn-danger text-white" href="{% url 'manager:delete_user' user.user_id.id %}">Delete</a> {% endcomment %}
+                                
+                            {% comment %} <a class="btn btn-danger text-white" href="{% url 'manager:delete_user' user.user_id.id %}">Delete</a> {% endcomment %}
+                    </td>           
                 </tr>
                 {% empty %}
                     <tr>
-                        <td colspan="5"><i>No Data</i></td>
+                        <td colspan="6"><i>No Data</i></td>
                     </tr>
                 {% endfor %}
             </tbody>

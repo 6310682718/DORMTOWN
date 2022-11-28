@@ -20,7 +20,7 @@
                 <tr>
                     <th scope="row">{{forloop.counter}}</th>
                     <td>{{user.user_id}}</td>
-                    <td>{{user.room_id.room_number}}</td>
+                    <td>{{user.room_id}}</td>
                     <td>{{user.role_id.role_name}}</td>
                     <td colspan="2">
                         <a class="btn btn-dark text-white" href="{% url 'manager:edit_profile' user.user_id.id %}"> Edit</a>

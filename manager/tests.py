@@ -54,6 +54,12 @@ class TestUrl(SimpleTestCase):
     def test_delete_user_is_resolved(self):
         url = reverse("manager:delete_user", args=[1])
         self.assertEqual(resolve(url).func, delete_user)
+    
+    #test approve reserve
+    def test_approve_reserve_is_resolved(self):
+        url = reverse("manager:approve_reservation", args=[1])
+        self.assertEqual(resolve(url).func, approve_reservation)
+    
 class TestViews(TestCase):
 
     #set up urls
@@ -69,12 +75,25 @@ class TestViews(TestCase):
             "edit_profile": reverse("manager:edit_profile", args=[1]),
             "edit_profile_error": reverse("manager:edit_profile", args=[1000]),
             "delete_profile": reverse("manager:delete_user", args=[1]),
+            "approve_reservation": reverse("manager:approve_reservation", args=[1]),
             "delete_profile_error": reverse("manager:delete_user", args=[1000])
         }
         self.client = Client()
 
         # initial account
+
+        self.status_idle = StatusType.objects.create(
+            status_name='Idle'
+        )
+        self.status_doing = StatusType.objects.create(
+            status_name='Doing'
+        )
+        self.status_done = StatusType.objects.create(
+            status_name='Done'
+        )
         
+        
+
         #create roomtype S
         self.room_type_s = RoomType.objects.create(
             class_level='S',
@@ -131,6 +150,14 @@ class TestViews(TestCase):
             state='Nonthabuti',
             country='Thailand',
             zip_code='12345',
+        )
+
+        self.occupant_reserve = Reserve.objects.create(
+            user_id=self.manager_user,
+            room_type=self.room_type_a,
+            due_date=datetime.datetime.today(),
+            create_at=datetime.datetime.now(),
+            status_type=self.status_done
         )
 
         #create temp_manager
@@ -239,9 +266,12 @@ class TestViews(TestCase):
             self.assertEqual(response.status_code, 500)
             self.assertTemplateUsed(response, 'rooms/500.html')
 
+    def test_approve_reserve(self):
+            self.client.login(username=self.manager_username, password=self.manager_password)
+            response = self.client.post(self.urls["approve_reservation"])
+            self.assertTemplateUsed(response, 'manager/reserve_rooms.html')
 
-
-
+   
     #     response = self.client.get(self.urls["dashboard"])
     #     self.assertEqual(response.status_code, 200)
     #     self.assertTemplateUsed(response, "manager/dashboard.html")

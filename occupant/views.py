@@ -66,11 +66,12 @@ def create_reserve(request, room_type):
             due_date=due_date,
             status_type=status_type
             )
+        reserve = Reserve.objects.filter(user_id=user).first()
 
         return render(request, 'occupant/result_reserve.html', {
             'user_info': user_info,
             'room': reserve.room_type,
-            'reserve_id': reserve.id,
+            'reserve': reserve,
             'header': 'Summary of Reservation',
             'managers': managers
         })
@@ -94,10 +95,11 @@ def get_reserve(request):
         return render(request, 'rooms/500.html', status=500)
 
     if reserve is not None:
+        print(reserve.due_date)
         return render(request, 'occupant/result_reserve.html', {
             'user_info': user_info,
             'room': reserve.room_type,
-            'reserve_id': reserve.id,
+            'reserve': reserve,
             'header': 'List of Reservation',
             'managers': managers
         })
@@ -111,6 +113,7 @@ def delete_reserve(request, reserve_id):
     reserve = Reserve.objects.filter(pk=reserve_id, user_id=request.user).first()
 
     if reserve is not None:
+        print(reserve)
         reserve.delete()
 
     return redirect(reverse('occupant:index'))
